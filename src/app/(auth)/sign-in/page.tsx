@@ -4,7 +4,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import LoadingIcon from '@/components/ui/LoadingIcon'
 
-function page() {
+function Page() {
   const router = useRouter()
 
   const [username, setUsername] = useState<string>('')
@@ -88,4 +88,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

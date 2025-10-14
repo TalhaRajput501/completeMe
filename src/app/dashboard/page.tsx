@@ -2,7 +2,7 @@
 import React from 'react'
 import { useSession } from 'next-auth/react'
 
-function page() {
+export default function Page() {
 
   const { data: session } = useSession()
   console.log(session)
@@ -22,5 +22,4 @@ function page() {
     </div>
   )
 }
-
-export default page
+ 

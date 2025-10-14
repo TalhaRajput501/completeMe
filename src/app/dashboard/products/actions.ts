@@ -6,11 +6,11 @@ import { productSchema } from "@/schemas/product.schema";
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 
-type CloudResponse = {
-  secure_url: string;
-  public_id: string;
-  [key: string]: any;
-};
+// type CloudResponse = {
+//   secure_url: string;
+//   public_id: string;
+//   [key: string]: any;
+// };
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -43,7 +43,7 @@ export const addProduct = async (product: ProductType, images: File[]) => {
       console.log("pics are not reaching in backend");
       console.log(images);
       return;
-    }
+    } 
 
     const uploadResult = await Promise.all(
       images.map((file) => uploadPics(file))

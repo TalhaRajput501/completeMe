@@ -1,12 +1,11 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import {CircleArrowLeft, CircleArrowRight} from 'lucide-react'
- 
+import Image from 'next/image'
 
 interface BannerProps {
   images: string[];
   interval?: number;
-
 }
 
 function Banner() {
@@ -27,7 +26,7 @@ function Banner() {
 
 
   useEffect(() => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       setCurrent(prev => (prev + 1) % images.length)
     }, 3000);
 
@@ -61,7 +60,7 @@ function Banner() {
             {
               images.map((address, index) => (
 
-                <img
+                <Image
                   key={index}
                   className=' w-full  flex-shrink-0  object-center  '
                   src={address}

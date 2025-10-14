@@ -1,9 +1,8 @@
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { dbConnect } from "@/lib/dbConnect";
 import bcrypt from "bcrypt";
-import { User } from "@/models/user.model";
-import { NextResponse } from "next/server";
+import { User as UserModel } from "@/models/user.model"; 
 
 export const options: NextAuthOptions = {
   providers: [
@@ -14,14 +13,14 @@ export const options: NextAuthOptions = {
         username: { label: "username", type: "text" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials): Promise<any> {
+      async authorize(credentials): Promise<User | null> {
         // connect the database bro  
         // right now i decided to sleep but i will work hard to become a billionaire and i will be inshallah yes i will be    
         await dbConnect();
 
         console.log("this is the data coming from frontend ", credentials);
         try {
-          const user = await User.findOne({ username: credentials?.username });
+          const user = await UserModel.findOne({ username: credentials?.username });
 
           if (!user) {
             console.log("user not found");
@@ -43,7 +42,7 @@ export const options: NextAuthOptions = {
           return user;
         } catch (error) {
           console.log("Error in authorize:", error);
-          // return null
+          return null
         }
       },
     }),

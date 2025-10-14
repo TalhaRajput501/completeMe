@@ -9,7 +9,7 @@ import { Option } from '@/components/ui/MultiSelect'
 
 
 
-function page() {
+export default function Page() {
 
   // ERRORS
   const [error, setError] = useState<string | null>(null)
@@ -22,8 +22,9 @@ function page() {
   const [file, setFile] = useState<FileState>({
     selectedFiles: []
   })
+
   // handle change files (pics)
-  const handleFileChange = (event: any) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const newFiles: File[] = Array.from(event.target.files)
       console.log(newFiles)
@@ -378,4 +379,3 @@ function page() {
   )
 }
 
-export default page

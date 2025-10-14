@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import ProtectedRoute from '@/components/ui/ProtectedRoute'
 import CleanUrlWrapper from '@/components/ui/CleanUrlWrapper'
 import Link from 'next/link';
-import { Home, Settings, Eye, EyeOff, Store, LogOut, Inbox, Menu, X, ChartNoAxesCombined, ClipboardList, } from "lucide-react";
+import { Home, Settings, Eye, EyeOff, Store, LogOut, Menu, X, ChartNoAxesCombined, ClipboardList, } from "lucide-react";
 
-export default function layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
 
   const [showSideBar, setShowSideBar] = useState(false)
   const [showMobileBar, setShowMobileBar] = useState(false)

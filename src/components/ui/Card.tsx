@@ -1,5 +1,7 @@
 import React from 'react'
 import { ShoppingBag } from 'lucide-react' 
+import Image from 'next/image'
+
 
 function Card() {
   return (
@@ -10,7 +12,7 @@ function Card() {
 
 
       <div>
-        <img
+        <Image
           className='w-full'
           src="https://images.unsplash.com/photo-1757898023680-df17835d6b18?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
       </div>  
@@ -21,13 +23,13 @@ function Card() {
       >
 
         <div
-          className='flex justify-between   '
+          className='flex justify-between'
         >
           <h1>A watch is a timepiece carried or worn by a person. It is designed to maintain a consistent movement despite the motions caused by the person's activities.</h1>
 
           <p
             className='text-xl font-bold '
-          >$5555</p>
+          >PKR 5555</p>
         </div>
 
         <div
