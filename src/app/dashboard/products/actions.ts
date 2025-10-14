@@ -3,31 +3,25 @@ import { ProductType } from "@/schemas/product.schema";
 import { dbConnect } from "@/lib/dbConnect";
 import { Product } from "@/models/product.model";
 import { productSchema } from "@/schemas/product.schema";
-import { v2 as cloudinary } from "cloudinary";
-import { NextResponse } from "next/server";
+import { v2 as cloudinary,UploadApiResponse  } from "cloudinary"; 
+ 
 
-// type CloudResponse = {
-//   secure_url: string;
-//   public_id: string;
-//   [key: string]: any;
-// };
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
 // this functin can be reuse
 async function uploadPics(file: File) {
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const result = await new Promise((resolve, reject) => {
+  const result = await new Promise<UploadApiResponse>((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       { folder: "e-commerce-products" },
-      (error: any, result: any) => {
+      (error, result) => {
         if (error) reject(error);
-        else resolve(result);
+        else resolve(result!);
       }
     );
     uploadStream.end(buffer);
@@ -51,17 +45,17 @@ export const addProduct = async (product: ProductType, images: File[]) => {
 
     // console.log("this is the upload result", uploadResult);
 
-    const url_arr = uploadResult.map((res: any) => res.secure_url);
-    console.log("this is the url arr and will go the database", url_arr);
+    const url_array = uploadResult.map((res) => res.secure_url);
+    console.log("this is the url arr and will go the database", url_array);
 
-    const parsed = productSchema.safeParse({ ...product, images: url_arr });
+    const parsed = productSchema.safeParse({ ...product, images: url_array });
 
     if (!parsed.success) {
       const message = parsed.error.issues.map((e) => e.message);
       console.error("this is message", message);
       return;
     } else {
-      const pro = new Product({ ...product, images: url_arr });
+      const pro = new Product({ ...product, images: url_array });
       await pro.save();
       console.log("product is saved successfully ");
     }

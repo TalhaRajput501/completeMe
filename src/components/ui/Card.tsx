@@ -11,10 +11,14 @@ function Card() {
 
 
 
-      <div>
+      <div
+        className='relative'
+      >
         <Image
-          className='w-full'
+          className='w-full' 
+          fill
           src="https://images.unsplash.com/photo-1757898023680-df17835d6b18?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
+          
       </div>  
  
 
@@ -25,7 +29,7 @@ function Card() {
         <div
           className='flex justify-between'
         >
-          <h1>A watch is a timepiece carried or worn by a person. It is designed to maintain a consistent movement despite the motions caused by the person's activities.</h1>
+          <h1>A watch is a timepiece carried or worn by a person. It is designed to maintain a consistent movement despite the motions caused by the persons activities.</h1>
 
           <p
             className='text-xl font-bold '

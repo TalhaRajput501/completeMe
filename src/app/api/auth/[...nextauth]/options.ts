@@ -14,8 +14,7 @@ export const options: NextAuthOptions = {
         password: { label: "password", type: "password" },
       },
       async authorize(credentials): Promise<User | null> {
-        // connect the database bro  
-        // right now i decided to sleep but i will work hard to become a billionaire and i will be inshallah yes i will be    
+        // connect the database bro     
         await dbConnect();
 
         console.log("this is the data coming from frontend ", credentials);

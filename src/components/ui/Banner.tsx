@@ -60,12 +60,14 @@ function Banner() {
             {
               images.map((address, index) => (
 
-                <Image
+                <Image 
                   key={index}
                   className=' w-full  flex-shrink-0  object-center  '
                   src={address}
                   draggable='false'
-                  alt=""
+                  width={444}
+                  height={444}
+                  alt=""  
                 />
 
               ))
