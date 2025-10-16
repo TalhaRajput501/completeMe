@@ -1,15 +1,16 @@
 'use client'
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { useEffect, FormEvent, useState } from 'react'
 import { ProductType, productSchema } from '@/schemas/product.schema'
 import { addProduct } from '../actions'
 import Input from '@/components/ui/Input'
-import Select, { MultiValue } from 'react-select'
+import Select, { MultiValue, SingleValue } from 'react-select'
 import MultiSelect from '@/components/ui/MultiSelect'
 import { Option } from '@/components/ui/MultiSelect'
 
 
 
 export default function Page() {
+
 
   // ERRORS
   const [error, setError] = useState<string | null>(null)
@@ -23,59 +24,49 @@ export default function Page() {
     selectedFiles: []
   })
 
-  // handle change files (pics)
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const newFiles: File[] = Array.from(event.target.files)
-      console.log(newFiles)
-      setFile({ selectedFiles: newFiles })
-    }
-  }
-
   // SEO TAGS
   const [localTags, setLocalTags] = useState<string>('')
 
-  // MULTI SELECT OPTIONS
+  // ALL OPTIONS OF SELECT ELEMENTS
 
-  // gender options
   const allGenderOptions: Option[] = [
-    { value: 'male', label: 'Male' },
-    { value: 'felmale', label: 'Female' },
+    { value: 'men', label: 'Male' },
+    { value: 'women', label: 'Female' },
     { value: 'unisex', label: 'Unisex' },
   ];
 
-  // feature options
-  const allFeatureOptions: Option[] = [
-    { value: 'male', label: 'Male' },
-    { value: 'felmale', label: 'Female' },
-    { value: 'unisex', label: 'Unisex' },
+  const [allFeatureOptions, setAllFeatureOptions] = useState<Option[]>([
+    { value: "analog", label: "Analog Display" },
+    { value: "digital", label: "Digital Display" },
+    { value: "smart", label: "Smart Watch" },
+    { value: "waterresistant", label: "Water Resistant" },
+    { value: "stainlesssteel", label: "Stainless Steel" },
+    { value: "chronograph", label: "Chronograph Function" },
+    { value: "leatherstrap", label: "Leather Strap" },
+  ])
+
+  const [allSizeOptions, setAllSizeOptions] = useState<Option[]>([
+    { value: "28mm", label: "28 mm (Small)" },
+    { value: "32mm", label: "32 mm (Medium - Women)" },
+    { value: "36mm", label: "36 mm (Unisex)" },
+    { value: "40mm", label: "40 mm (Standard Men’s)" },
+    { value: "44mm", label: "44 mm (Large Dial)" },
+    { value: "46mm", label: "46 mm (Extra Large)" },
+  ]);
+  // it is sigle value
+  const categoryOptions: Option[] = [
+    { value: 'watch', label: 'Watches' },
+    { value: 'shoe', label: 'Shoes' },
+    { value: 'cloth', label: 'Clothes' },
   ];
 
-  // size options
-  const allSizeOptions: Option[] = [
-    { value: 'XS', label: 'Extra Small' },
-    { value: 'S', label: 'Small' },
-    { value: 'M', label: 'Medium' },
-    { value: 'L', label: 'Large' },
-    { value: 'XL', label: 'Extra Large' },
-    { value: 'XXL', label: 'Double Extra Large' },
-    { value: 'FREE', label: 'Free Size' },
-    { value: '6', label: 'Size 6' },
-    { value: '7', label: 'Size 7' },
-    { value: '8', label: 'Size 8' },
-    { value: '9', label: 'Size 9' },
-    { value: '10', label: 'Size 10' },
-  ];
-
+  // ALL SELECTED OPTIONS
   const [selectedGenders, setSelectedGenders] = useState<MultiValue<Option>>([])
   const [selectedFeatures, setSelectedFeatures] = useState<MultiValue<Option>>([])
   const [selectedSize, setSelectedSize] = useState<MultiValue<Option>>([])
+  // it is sigle value
+  const [category, setCategory] = useState<Option | null>(categoryOptions[0])
 
-  const showChoices = () => {
-    console.log('this is gender', selectedGenders)
-    console.log('this is features', selectedFeatures)
-    console.log('this is size', selectedSize)
-  }
 
   // --> PRODUCT <-- 
   const [product, setProduct] = useState<ProductType>({
@@ -88,12 +79,75 @@ export default function Page() {
     tags: [],
     category: 'watch',
     // optional fields
-    gender: 'men',
+    gender: ['men'],
     brand: '',
     features: [],
     material: '',
     sizeOptions: []
   })
+
+
+  useEffect(() => {
+    // FEATURES
+    const clothFeatures = [
+      { value: "cotton", label: "Cotton Fabric" },
+      { value: "linen", label: "Linen Material" },
+      { value: "polyester", label: "Polyester Blend" },
+      { value: "handmade", label: "Handmade" },
+      { value: "washable", label: "Machine Washable" },
+      { value: "casual", label: "Casual Wear" },
+      { value: "formal", label: "Formal Wear" }
+    ];
+
+    const shoeFeatures = [
+      { value: "leather", label: "Leather Material" },
+      { value: "sports", label: "Sports Type" },
+      { value: "waterproof", label: "Waterproof" },
+      { value: "lightweight", label: "Lightweight" },
+      { value: "slipresistant", label: "Slip Resistant" },
+      { value: "breathable", label: "Breathable Material" },
+      { value: "cushioned", label: "Cushioned Sole" },
+    ];
+
+    // SIZES
+    const shoeSizes = [
+      { value: "38", label: "EU 38 / US 6" },
+      { value: "39", label: "EU 39 / US 7" },
+      { value: "40", label: "EU 40 / US 7.5" },
+      { value: "41", label: "EU 41 / US 8" },
+      { value: "42", label: "EU 42 / US 9" },
+      { value: "43", label: "EU 43 / US 10" },
+      { value: "44", label: "EU 44 / US 11" },
+    ];
+
+    const clothSizes = [
+      { value: "xs", label: "XS (Extra Small)" },
+      { value: "s", label: "S (Small)" },
+      { value: "m", label: "M (Medium)" },
+      { value: "l", label: "L (Large)" },
+      { value: "xl", label: "XL (Extra Large)" },
+      { value: "xxl", label: "XXL (2X Large)" },
+    ];
+
+    if (category?.value === 'cloth') {
+      setAllFeatureOptions(clothFeatures)
+      setAllSizeOptions(clothSizes)
+    } else if (category?.value === 'shoe') {
+      setAllFeatureOptions(shoeFeatures)
+      setAllSizeOptions(shoeSizes)
+    }
+
+  }, [category])
+
+
+  // handle change files (pics)
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles: File[] = Array.from(event.target.files)
+      console.log(newFiles)
+      setFile({ selectedFiles: newFiles })
+    }
+  }
 
   // FORM SUBMIT  
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -101,7 +155,24 @@ export default function Page() {
     setError('')
     e.preventDefault()
 
-    const parsed = productSchema.safeParse({ ...product, tags: localTags.split(',') })
+    const parsed = productSchema.safeParse(
+      {
+        ...product,
+        tags: localTags.split(','),
+        category: category?.value || 'watch',
+        features: selectedFeatures.map(res => (res.value)),
+        sizeOptions: selectedSize.map(res => (res.value)),
+        gender: selectedGenders.map(res => (res.value)),
+      }
+    )
+    console.log({
+      ...product,
+      tags: localTags.split(','),
+      category: category?.value || 'watch',
+      features: selectedFeatures.map(res => (res.value)),
+      sizeOptions: selectedSize.map(res => (res.value)),
+      gender: selectedGenders.map(res => (res.value)),
+    })
 
     if (!parsed.success) {
       const message = parsed.error.issues.map(e => e.message)
@@ -120,14 +191,12 @@ export default function Page() {
   return (
     <div>
 
-
-
       <div
         className='p-2 px-4'
       >
 
         <button
-          onClick={showChoices}
+          onClick={() => console.log(category)}
           className='border bg-green-400 p-2 px-4 mx-1 cursor-pointer'
         >
           Add Product
@@ -165,10 +234,9 @@ export default function Page() {
             >
 
               {/* Product name */}
-              <input
+              <Input
                 value={product.name}
                 onChange={(e) => setProduct(prev => ({ ...prev, name: e.target.value }))}
-                className='h-10 bg-white py-2 text-2xl px-3 outline-none shadow-xl mx-3 mt-3 '
                 name='name'
                 placeholder="Product Name"
                 required
@@ -176,8 +244,7 @@ export default function Page() {
               />
 
               {/* Product Pictures */}
-              <input
-                className=' bg-white py-2 text-2xl px-3  outline-none shadow-xl mx-3 mt-3 '
+              <Input
                 required
                 name='name'
                 onChange={handleFileChange}
@@ -187,32 +254,58 @@ export default function Page() {
               />
 
               {/* Product Price */}
-              <input
+              <Input
                 value={product.price}
                 onChange={(e) => setProduct(prev => ({ ...prev, price: Number(e.target.value) }))}
                 name='price'
-                className='h-10 bg-white py-2 text-2xl px-3  outline-none shadow-xl mx-3 mt-3 '
                 required
                 placeholder='Enter the price'
                 type='number'
               />
 
-              {/* Product Status */}
-              <input
+              {/* <Input
                 checked={product.isActive}
                 onChange={(e) => setProduct(prev => ({ ...prev, isActive: e.target.checked }))}
                 name='isActive'
-                className='h-10 bg-white py-2 text-2xl px-3  outline-none shadow-xl mx-3 mt-3 '
                 required
                 type="checkbox"
-              />
+              /> */}
+
+              {/* Product Status */}
+              <div
+                className=' h-10 bg-white py-1 text-xl rounded px-3  outline-none shadow-xl mx-3 mt-3 '
+              >
+                <label>
+                  <input
+                    type="radio"
+                    name="isActive"
+                    value="true"
+                    checked={product.isActive === true}
+                    onChange={() => setProduct(prev => ({ ...prev, isActive: true }))}
+                  />
+                  Publish
+                </label>
+
+                <label
+                  className='ml-3'
+                >
+                  <input
+                    type="radio"
+                    name="isActive"
+                    value="false"
+                    checked={product.isActive === false}
+                    onChange={() => setProduct(prev => ({ ...prev, isActive: false }))}
+                  />
+                  Draft
+                </label>
+
+              </div>
 
               {/* Product Stock */}
-              <input
+              <Input
                 value={product.stock}
                 onChange={(e) => setProduct(prev => ({ ...prev, stock: Number(e.target.value) }))}
                 name='stock'
-                className='h-10 bg-white py-2 text-2xl px-3  outline-none shadow-xl mx-3 mt-3 '
                 required
                 placeholder='Enter the stock'
                 type='number'
@@ -220,19 +313,34 @@ export default function Page() {
 
               {/* Brand */}
               <Input
-                className='h-10 bg-white py-2 text-2xl px-3  outline-none shadow-xl mx-3 mt-3 '
                 type='text'
-                onChange={() => console.log('changed')}
-                value={'brand'}
+                value={product.brand}
+                placeholder='Enter the brand name'
+                onChange={(e) => setProduct(prev => ({ ...prev, brand: e.target.value }))}
               />
 
               {/* Material */}
               <Input
-                className='h-10 bg-white py-2 text-2xl px-3  outline-none shadow-xl mx-3 mt-3 '
                 type='text'
-                onChange={() => console.log('changed')}
-                value={'material'}
+                value={product.material}
+                placeholder='Material of the product'
+                onChange={(e) => setProduct(prev => ({ ...prev, material: e.target.value }))}
               />
+
+              {/* Category */}
+              <div
+                className='mx-3 mt-3'
+              >
+                <Select
+                  instanceId={'category'}
+                  options={categoryOptions}
+                  // defaultValue={categoryOptions[0]}
+                  value={category}
+                  onChange={(selected: SingleValue<Option>) => setCategory(selected)}
+                  placeholder="Select your category..."
+                  className="text-xl"
+                />
+              </div>
 
               {/* Gender */}
               <div
@@ -248,12 +356,11 @@ export default function Page() {
                 />
               </div>
 
+              {/* Feature */}
               <div
                 className='mx-3 mt-3'
               >
-                {/* Feature */}
-                <Select
-                  isMulti
+                <MultiSelect
                   instanceId={'feature'}
                   options={allFeatureOptions}
                   value={selectedFeatures}
@@ -263,12 +370,11 @@ export default function Page() {
                 />
               </div>
 
+              {/* Size */}
               <div
                 className='mx-3 mt-3'
               >
-                {/* Size */}
-                <Select
-                  isMulti
+                <MultiSelect
                   instanceId={'size'}
                   options={allSizeOptions}
                   value={selectedSize}
@@ -336,25 +442,23 @@ export default function Page() {
 
           {/* This is the lower form  */}
           <div
-            className='border w-full flex flex-col justify-center '
+            className='  w-full md:w-[95%] flex flex-col justify-center '
           >
             {/* Product Description */}
-            <input
+            <Input
               value={product.description}
               type="text"
               onChange={(e) => setProduct(prev => ({ ...prev, description: e.target.value }))}
-              className='h-10 bg-white mx-3 mt-3  md:mx-auto md:w-[95%] py-2 text-2xl px-3  outline-none shadow-xl p-3 '
               name='description'
               required
               placeholder="Product description"
             />
 
             {/* Product Tags */}
-            <input
+            <Input
               value={localTags}
               type="text"
               onChange={(e) => setLocalTags(e.target.value)}
-              className='h-10 bg-white mx-3 mt-3 md:mx-auto md:w-[95%]  py-2 text-2xl px-3  outline-none shadow-xl -3 '
               name='tags'
               required
               placeholder="Enter comma seperated tags for SEO"

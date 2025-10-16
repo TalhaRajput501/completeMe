@@ -19,9 +19,9 @@ export default function Page() {
     e.preventDefault()
     console.log('entering in handleSubmit')
     const res = await signIn('admin-login', {
-      redirect: false,
       username,
       password,
+      redirect: false,
     })
 
     // console.log('this is backend response ', res)

@@ -11,7 +11,7 @@ export const productSchema = z.object({
   category: z.enum(['watch','cloth','shoe']).default('watch'),
   // optional fields
   brand: z.string().optional(),
-  gender: z.enum(['men', 'women', 'unisex']).default('men').optional(),
+  gender: z.array(z.enum(['men', 'women', 'unisex'])).default(['men']).optional(),
   material: z.string().optional(),
   features: z.array(z.string()).optional(),
   sizeOptions: z.array(z.string()).optional()

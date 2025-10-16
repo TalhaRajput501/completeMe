@@ -61,9 +61,12 @@ const productSchema = new mongoose.Schema<Product>(
     material: String,
     features: [String],
     gender: {
-      type : String,
-      enum: ['men', 'women', 'unisex'],
-      default: 'men'
+      type : [String],
+      enum: {
+        values: ['men', 'women', 'unisex'],
+        message: '{VALUE} is not a valid gender option'
+      },
+      default: ['men']
     },
     sizeOptions: [String],
   },

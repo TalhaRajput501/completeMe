@@ -43,7 +43,7 @@ export const addProduct = async (product: ProductType, images: File[]) => {
       images.map((file) => uploadPics(file))
     );
 
-    // console.log("this is the upload result", uploadResult);
+    console.log("this is the upload result", uploadResult);
 
     const url_array = uploadResult.map((res) => res.secure_url);
     console.log("this is the url arr and will go the database", url_array);
