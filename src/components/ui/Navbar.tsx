@@ -1,15 +1,14 @@
 'use client';
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import { User, ShoppingCart } from "lucide-react";
+import { User, ShoppingCart } from "lucide-react"; 
 
 function Navbar() {
 
   const [show, setShow] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
 
-  
-  
+ 
   
   useEffect(() => { 
     const scrollPercent = (window.scrollY  / window.innerHeight) * 100
@@ -46,7 +45,7 @@ function Navbar() {
 
       >
         <div
-          className={`navigation transition-transform border-2 border-black duration-80 ${show ? ' sm:translate-y-0' : 'sm:-translate-y-full'} z-50 bg-black   dark:bg-[#111827] top-0 static sm:fixed  right-0 left-0  py-2 px-3  `}
+          className={`navigation transition-transform   duration-80 ${show ? ' sm:translate-y-0' : 'sm:-translate-y-full'} z-50 bg-black top-0 static   right-0 left-0  py-2 px-3  `}
         >
           <div
             className='flex items-center justify-between '
@@ -75,8 +74,6 @@ function Navbar() {
 
                 <User className="w-9 cursor-pointer  h-10 mx-3  text-white" />
               </Link>
-
-
 
               <ShoppingCart className="w-9 cursor-pointer  h-10 mx-3  text-white" />
 

@@ -18,6 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           className='  w-full   flex'
         >
 
+          {/* Mobile Hamburger Icon */}
           <Menu
             onClick={() => setShowMobileBar(prev => !prev)}
             className={`fixed top-18 block md:hidden w-9 h-9  left-2 bg-gray-500 rounded text-black`}
@@ -25,8 +26,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           />
           {/* This is the side bar */}
+
           <div
-            className={`bg-gray-800 h-screen select-none ${showSideBar ? 'md:w-2/12 ' : 'md:w-1/12 '} border-black border-r transition-all duration-400 ease-out fixed md:static md:translate-x-0 ${showMobileBar ? 'translate-x-0 w-[70%]' : '-translate-x-full'}`}
+            // todo manage its height 
+            className={`bg-gray-800  h-[calc(100vh-4rem)] select-none ${showSideBar ? 'md:w-2/12 ' : 'md:w-[72px]  '} border-black border-r transition-all duration-400  ease-out fixed md:static md:translate-x-0 ${showMobileBar ? 'translate-x-0 w-[70%]' : '-translate-x-full'}`}
           >
             <div className="flex  flex-col justify-center items-center">
 
@@ -130,38 +133,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </abbr>
                 </Link>
 
-                <Link href={'/'}>
-                  <abbr title="Show" className='no-underline'>
-                    <div
-                      className=' w-full hover:bg-gray-500 flex py-3 rounded-lg cursor-pointer  '
-                    >
-                      <Eye className={` w-6   md:w-8 text-white mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
-                      <p className={`text-white no-underline font-bold justify-center items-center  
-                        ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
-                        `}
-                      >
-                        Eye
-                      </p>
-                    </div>
-                  </abbr>
-                </Link>
-
-                <Link href={'/'}>
-                  <abbr title="Hide" className='no-underline'>
-                    <div
-                      className=' w-full hover:bg-gray-500 flex py-3 rounded-lg cursor-pointer  '
-                    >
-                      <EyeOff className={` w-6   md:w-8 text-white mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
-                      <p className={`text-white no-underline font-bold justify-center items-center  
-                        ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
-                        `}
-                      >
-                        Developer
-                      </p>
-                    </div>
-                  </abbr>
-                </Link>
-
                 <Link href={'/dashboard/analytics'}>
                   <abbr title="Analytics" className='no-underline'>
                     <div
@@ -201,8 +172,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* This is the actual content */}
           <div
-            // todo i have to make it unscrollable when mobile's navbar is visible
-            className={`flex-1 overflow-y-hidden ${showMobileBar ? '' : 'overflow-auto'}`}
+            // todo i have to make it unscrollable when mobile's navbar is visible 
+            className={` flex-1  h-[calc(100vh-4rem)] overflow-y-auto bg-gray-800   `}
             onClick={() => setShowMobileBar(false)}
           >
             {children}

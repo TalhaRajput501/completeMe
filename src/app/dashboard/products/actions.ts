@@ -3,8 +3,8 @@ import { ProductType } from "@/schemas/product.schema";
 import { dbConnect } from "@/lib/dbConnect";
 import { Product } from "@/models/product.model";
 import { productSchema } from "@/schemas/product.schema";
-import { v2 as cloudinary,UploadApiResponse  } from "cloudinary"; 
- 
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
+
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
@@ -29,6 +29,7 @@ async function uploadPics(file: File) {
   return result;
 }
 
+// Add Product 
 export const addProduct = async (product: ProductType, images: File[]) => {
   console.log("this is coming from frontend", product, images);
   dbConnect();
@@ -37,7 +38,7 @@ export const addProduct = async (product: ProductType, images: File[]) => {
       console.log("pics are not reaching in backend");
       console.log(images);
       return;
-    } 
+    }
 
     const uploadResult = await Promise.all(
       images.map((file) => uploadPics(file))
@@ -63,3 +64,19 @@ export const addProduct = async (product: ProductType, images: File[]) => {
     console.log("something happen in add Product", error);
   }
 };
+
+// Get all products 
+export const getProducts = async () => {
+  try {
+    const products = await Product.find()
+    // 
+    // const object = products.map(p => p.toObject({versionKey:false,}))
+    // console.log('this is products ',products)
+    // console.log('this is object ',object)
+    let parsedProducts = JSON.parse(JSON.stringify(products))
+    return parsedProducts
+    
+  } catch (error) {
+    console.log("Error occur in getProduct", error);
+  }
+}

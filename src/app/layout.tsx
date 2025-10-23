@@ -26,14 +26,21 @@ export default async function RootLayout({
         className={`  antia liased`}
       >
         <Providers session={session}>
-          <nav>
-            <Navbar />
-            
-          </nav>
           <div
-            className='sm:pt-16 bg-gray-800  '
+            className="h-screen flex flex-col "
           >
-            {children}
+            <nav>
+              <Navbar />
+            </nav>
+
+            <div
+              // todo manage its height
+              className=' flex-1'
+            >
+              {children}
+              <div id="portal-root" />
+            </div>
+
           </div>
         </Providers>
       </body>
