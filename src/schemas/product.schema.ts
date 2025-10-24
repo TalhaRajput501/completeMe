@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const productSchema = z.object({
+  _id: z.string().optional(),
   name: z.string().min(3, "Name must be at least 3 characters"),
   images: z.array(z.string()),
   description: z.string().min(10, "Description must be at least 10 characters"),

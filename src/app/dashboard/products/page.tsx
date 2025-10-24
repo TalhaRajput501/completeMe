@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { SlidersHorizontal, Plus, Funnel } from 'lucide-react'
+import { SlidersHorizontal, Plus, Funnel, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import FilterPopUp from '@/components/ui/FilterPopUp'
 import Pills, { Option } from '@/components/ui/Pills'
@@ -9,7 +9,7 @@ import { getProducts } from './actions'
 import { ProductType } from '@/schemas/product.schema'
 
 
-function page() {
+export default function Page() {
 
   const filterOptions: Record<string, Option[]> = {
     genderOptions: [
@@ -59,19 +59,17 @@ function page() {
 
   const [products, setProducts] = useState<ProductType[]>([])
 
-  const myProducts = async () => { 
-    console.log('entering in the my products section')
-    
-    try {
-      const allProducts = await getProducts()
-      // setProducts(allProducts ?? [])
-      console.log(typeof allProducts)
-      console.log(allProducts)
-    } catch (error) {
-      console.log('error in frontend in get all products ',error) 
-    }
-  }
   useEffect(() => {
+    const myProducts = async () => {
+      console.log('entering in the my products section')
+      try {
+        const allProducts = await getProducts()
+        setProducts(allProducts) 
+        console.log(allProducts)
+      } catch (error) {
+        console.log('error in frontend in get all products ', error)
+      }
+    }
 
     myProducts()
   }, [])
@@ -79,7 +77,7 @@ function page() {
 
   return (
     <div
-      className={`mx-5  `}
+      className={`mx-  `}
     >
       {/* This is the main div */}
       <div
@@ -145,28 +143,60 @@ function page() {
 
         {/* All Products */}
 
-        <div>
+        <div
+          className='bg-gray-950'
+        >
           <table className='w-full mt-5 text-white '>
             <thead>
               <tr>
-                <th className='border'>Image</th>
-                <th className='border'>name</th>
-                <th className='border'>description</th>
-                <th className='border'>price</th>
-                <th className='border'>Open</th>
-                <th className='border'>Action</th>
+                <th className=' border-b'>select</th>
+                <th className=' border-b'>view</th>
+                <th className=' border-b'>PRODUCT</th>
+                <th className=' border-b'>CATEGORY</th>
+                <th className=' border-b'>BRAND</th>
+                <th className=' border-b'>PRICE</th>
+                <th className=' border-b'>STOCK</th>
+                <th className=' border-b'>STATUS</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr>
-                <td className='border'>Image</td>
-                <td className='border'>Talha</td>
-                <td className='border'>Will be a billionaire Inshallah</td>
-                <td className='border'>smile</td>
-                <td className='border'>Disabled</td>
-                <td className='border'><button onClick={() => setShowUpdateDrawer(true)} className='bg-blue-500 rounded cursor-pointer'>Update</button></td>
-              </tr>
+
+              {
+                products && products.map(product => (
+                  <tr
+                    key={product._id}
+                    className='border-b'
+                  >
+                    <td>
+                      <input type="checkbox" />
+                    </td>
+                    <td>
+                      <ChevronDown />
+                    </td>
+                    <td className='flex'>
+                      <img src={product.images[0]} alt="pic" className='w-9 h-9 rounded-full' />
+                      <p>{product.name}</p>
+                    </td>
+                    <td className=''>{product.category}</td>
+                    <td className=''>{product.brand}</td>
+                    <td className=''>{product.price}</td>
+                    <td className=''>{product.stock}</td>
+                    <td className=''>{product.isActive ? `${product._id}` : 'disable ha bhai'}</td> 
+                  </tr>
+                ))
+                // : (
+                //   <tr className="fixed inset-0 flex items-center justify-center">
+                //     <td>
+                //       <div role="status" aria-label="Loading" className="inline-block">
+                //         <p className="w-12 h-12  border-b-4  border-b-black  border-b-t-transparent rounded-full animate-spin" />
+                //         <span className="sr-only">Loading...</span>
+                //       </div>
+                //     </td>
+                //   </tr>
+                // )
+              }
+
             </tbody>
           </table>
 
@@ -174,6 +204,10 @@ function page() {
 
 
         </div>
+
+
+
+
 
 
 
@@ -185,7 +219,6 @@ function page() {
         </button>
 
         <button
-          onClick={() => myProducts()}
           className='bg-red-400 m-5 px-3 py-1 text-white'
         >
           again call function
@@ -294,7 +327,7 @@ function page() {
               </div>
 
               <button
-                className='border items-center justify-center flex mt-4 mx-auto p-1 px-2 rounded-2xl bg-gray-950 cursor-pointer  text-white  content-center'
+                className=' border-b items-center justify-center flex mt-4 mx-auto p-1 px-2 rounded-2xl bg-gray-950 cursor-pointer  text-white  content-center'
               >
                 <p className='pr-2' >Apply Filters</p>
                 <Funnel className='text-white p-0.5' />
@@ -311,4 +344,4 @@ function page() {
   )
 }
 
-export default page
+ 
