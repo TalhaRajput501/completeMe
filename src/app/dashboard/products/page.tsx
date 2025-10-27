@@ -1,12 +1,14 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { SlidersHorizontal, Plus, Funnel, ChevronDown } from 'lucide-react'
+import { SlidersHorizontal, Plus, Funnel, ChevronDown, Trash2, SquarePen } from 'lucide-react'
 import Link from 'next/link'
 import FilterPopUp from '@/components/ui/FilterPopUp'
 import Pills, { Option } from '@/components/ui/Pills'
 import UpdateDrawer from '@/components/ui/UpdateDrawer'
 import { getProducts } from './actions'
 import { ProductType } from '@/schemas/product.schema'
+import Image from 'next/image'
+
 
 
 export default function Page() {
@@ -54,8 +56,10 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState<Option[]>([])
 
 
-  const [showFilterBox, setShowFilterBox] = useState(false)
-  const [showUpdateDrawer, setShowUpdateDrawer] = useState(false)
+  const [showFilterBox, setShowFilterBox] = useState<boolean>(false)
+  const [showUpdateDrawer, setShowUpdateDrawer] = useState<boolean>(false)
+  const [currentProductDetailBox, setCurrentProductDetailBox] = useState<string | null>(null)
+  const [showProductDetailBox, setShowProductDetailBox] = useState<boolean>(false)
 
   const [products, setProducts] = useState<ProductType[]>([])
 
@@ -64,7 +68,7 @@ export default function Page() {
       console.log('entering in the my products section')
       try {
         const allProducts = await getProducts()
-        setProducts(allProducts) 
+        setProducts(allProducts)
         console.log(allProducts)
       } catch (error) {
         console.log('error in frontend in get all products ', error)
@@ -75,9 +79,26 @@ export default function Page() {
   }, [])
 
 
+  const handleDetailBox = (productId: string) => {
+
+    if (currentProductDetailBox === productId) {
+      // now assume that box is already opened
+      setShowProductDetailBox(false);
+      setCurrentProductDetailBox(null);
+    }
+    // Otherwise → open the clicked one
+    else {
+      setCurrentProductDetailBox(productId);
+      setShowProductDetailBox(true);
+    }
+
+    console.log(showProductDetailBox)
+  }
+
+
   return (
     <div
-      className={`mx-  `}
+      className={`mx-2  `}
     >
       {/* This is the main div */}
       <div
@@ -101,7 +122,7 @@ export default function Page() {
           >
             <input
               // onClick={() => setInputClicked(prev => !prev)}
-              className={`h-9 bg-white py-2 text-xl px-3  outline-none shadow-xl  rounded-lg w-full`}
+              className={`h-9 text-gray-100 bg-gray-800 py-2 text-xl px-3  outline-none shadow-xl  rounded-lg w-full`}
               placeholder="Search products..."
               type="text"
               autoFocus
@@ -144,19 +165,23 @@ export default function Page() {
         {/* All Products */}
 
         <div
-          className='bg-gray-950'
+          className=''
         >
-          <table className='w-full mt-5 text-white '>
-            <thead>
-              <tr>
-                <th className=' border-b'>select</th>
-                <th className=' border-b'>view</th>
-                <th className=' border-b'>PRODUCT</th>
-                <th className=' border-b'>CATEGORY</th>
-                <th className=' border-b'>BRAND</th>
-                <th className=' border-b'>PRICE</th>
-                <th className=' border-b'>STOCK</th>
-                <th className=' border-b'>STATUS</th>
+          <table className='w-full rounded table-auto   mt-5    text-white '>
+            <thead
+              className='bg-gray-700'
+            >
+              <tr
+                className='border-b  border-gray-600'
+              >
+                <th className='text-left  py-2'></th>
+                <th className='text-left  py-2 '></th>
+                <th className='text-left  py-2'>PRODUCT</th>
+                <th className='text-left  py-2'>CATEGORY</th>
+                <th className='text-left  py-2'>BRAND</th>
+                <th className='text-left  py-2'>PRICE</th>
+                <th className='text-left  py-2'>STOCK</th>
+                <th className='text-left  py-2'>STATUS</th>
               </tr>
             </thead>
 
@@ -164,38 +189,189 @@ export default function Page() {
 
               {
                 products && products.map(product => (
-                  <tr
-                    key={product._id}
-                    className='border-b'
-                  >
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td>
-                      <ChevronDown />
-                    </td>
-                    <td className='flex'>
-                      <img src={product.images[0]} alt="pic" className='w-9 h-9 rounded-full' />
-                      <p>{product.name}</p>
-                    </td>
-                    <td className=''>{product.category}</td>
-                    <td className=''>{product.brand}</td>
-                    <td className=''>{product.price}</td>
-                    <td className=''>{product.stock}</td>
-                    <td className=''>{product.isActive ? `${product._id}` : 'disable ha bhai'}</td> 
-                  </tr>
+                  <React.Fragment key={product._id}>
+                    <tr
+                      // key={product._id}
+                      onClick={() => handleDetailBox(product._id!)}
+                      className={`'border-b border-gray-600 px-2 duration-300 hover:bg-gray-700 cursor-pointer' ${product._id === currentProductDetailBox ? 'bg-gray-700' : ''}`}
+                    >
+
+                      {/* Select checkbox  */}
+                      <td
+                        className='py-2'
+                      >
+                        <div
+                          className='flex  justify-center'
+                        >
+                          <input className='bg-gray-600 rounded' type="checkbox" />
+                        </div>
+                      </td>
+
+                      {/* arrow view detail button */}
+                      <td
+                        className='py-2'
+                      >
+                        <div
+                          className='flex  justify-center'
+                        >
+                          <ChevronDown />
+                        </div>
+                      </td>
+
+                      {/* name and pic of product */}
+                      <td
+                        className='py-2'
+                      >
+                        <div
+                          className='flex justify- items-center'
+                        >
+                          <img src={product.images[0]} alt={product.name} draggable={false} className='w-9 h-9  rounded-full mr-1' />
+                          <p>{product.name}</p>
+                        </div>
+                      </td>
+                      <td className='mx-auto text-left text-gray-200 py-2'>{product.category}</td>
+                      <td className='mx-auto text-left font-bold py-2'>{product.brand}</td>
+                      <td className='mx-auto text-left font-bold py-2'>{product.price}</td>
+                      <td className='mx-auto text-left font-bold py-2'>{product.stock}</td>
+                      <td className={`mx-auto text-left text-sm font- py-2 `}>
+                        {product.isActive ?
+                          <p
+                            className={`rounded bg-[rgb(1,71,55)] text-[rgb(132,225,188)] w-fit px-1 `}>
+                            Active
+                          </p>
+                          : <p
+                            className={`rounded bg-[rgb(119,29,29)] text-[rgb(248,180,180)] w-fit px-1 `}>
+                            Inactive
+                          </p>
+                        }
+                      </td>
+                    </tr>
+
+                    {
+                      product._id === currentProductDetailBox && showProductDetailBox &&
+                      <>
+                        <tr
+                        // key={product.name}
+                        >
+                          <td
+                            colSpan={8}
+                          >
+                            <div
+                              className='flex flex-col'
+                            >
+                              {/* Products Pictures */}
+                              <div
+                                className='flex '
+                              >
+                                {
+                                  ['TALHA', 'HASSAN', 'ATTIQ', 'BILLIONAIRE'].map(p => (
+                                    <div
+                                      key={p}
+                                      className='w-[25%] relative    h-48 '
+                                    >
+                                      <Image
+                                        fill
+                                        alt='a beautifull g wagon'
+                                        className='p-3 rounded-3xl'
+                                        src={'https://images.unsplash.com/photo-1523983388277-336a66bf9bcd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=870'}
+                                      />
+                                    </div>
+                                  ))
+                                }
+                              </div>
+
+                              {/* Product Additional Info */}
+                              <div
+                                className='flex justify-center items-center flex-wrap'
+                              >
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 1</p>
+                                </div>
+
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 2</p>
+                                </div>
+
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 3</p>
+                                </div>
+
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 4</p>
+                                </div>
+
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 5</p>
+                                </div>
+
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 6</p>
+                                </div>
+
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 7</p>
+                                </div>
+
+                                <div
+                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                >
+                                  <p>talha 8</p>
+                                </div>
+
+                              </div>
+
+
+                              {/* Edit and Delete Buttons  */}
+                              <div className='flex'>
+                                <div
+                                  className='m-2 flex'
+                                >
+                                  <button className='py-1 px-2 bg-green-500 text-white rounded-lg'>
+                                    <SquarePen className='' />
+                                    <span>
+                                      Edit
+                                    </span>
+                                  </button>
+                                </div>
+                                <div
+                                  className='m-2 flex'
+                                >
+                                  <button className='py-1 px-2 bg-red-500 text-white rounded-lg'>
+                                    <Trash2 className='' />
+                                    <span>
+                                      Delete
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+
+
+
+
+                            </div>
+                          </td>
+                        </tr>
+                      </>
+                    }
+                  </React.Fragment>
                 ))
-                // : (
-                //   <tr className="fixed inset-0 flex items-center justify-center">
-                //     <td>
-                //       <div role="status" aria-label="Loading" className="inline-block">
-                //         <p className="w-12 h-12  border-b-4  border-b-black  border-b-t-transparent rounded-full animate-spin" />
-                //         <span className="sr-only">Loading...</span>
-                //       </div>
-                //     </td>
-                //   </tr>
-                // )
               }
+
+
 
             </tbody>
           </table>
@@ -344,4 +520,3 @@ export default function Page() {
   )
 }
 
- 

@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div
             // todo manage its height 
-            className={`bg-gray-800  h-[calc(100vh-4rem)] select-none ${showSideBar ? 'md:w-2/12 ' : 'md:w-[72px]  '} border-black border-r transition-all duration-400  ease-out fixed md:static md:translate-x-0 ${showMobileBar ? 'translate-x-0 w-[70%]' : '-translate-x-full'}`}
+            className={`bg-gray-900  h-[calc(100vh-4rem)] select-none ${showSideBar ? 'md:w-2/12 ' : 'md:w-[72px]  '} border-black border-r transition-all duration-400  ease-out fixed md:static md:translate-x-0 ${showMobileBar ? 'translate-x-0 w-[70%]' : '-translate-x-full'}`}
           >
             <div className="flex  flex-col justify-center items-center">
 
@@ -173,7 +173,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* This is the actual content */}
           <div
             // todo i have to make it unscrollable when mobile's navbar is visible 
-            className={` flex-1  h-[calc(100vh-4rem)] overflow-y-auto bg-gray-800   `}
+            className={` flex-1  h-[calc(100vh-4rem)] overflow-y-auto bg-gray-900   `}
             onClick={() => setShowMobileBar(false)}
           >
             {children}
