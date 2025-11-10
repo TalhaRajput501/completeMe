@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { SlidersHorizontal, Plus, Funnel, ChevronDown, Trash2, SquarePen } from 'lucide-react'
+import { SlidersHorizontal, Plus, Funnel, ChevronDown, Trash2, SquarePen, ListRestart, RotateCw } from 'lucide-react'
 import Link from 'next/link'
 import FilterPopUp from '@/components/ui/FilterPopUp'
 import Pills, { Option } from '@/components/ui/Pills'
@@ -8,6 +8,7 @@ import UpdateDrawer from '@/components/ui/UpdateDrawer'
 import { getProducts } from './actions'
 import { ProductType } from '@/schemas/product.schema'
 import Image from 'next/image'
+import { Badge } from '@/components/ui/badge'
 
 
 
@@ -60,21 +61,25 @@ export default function Page() {
   const [showUpdateDrawer, setShowUpdateDrawer] = useState<boolean>(false)
   const [currentProductDetailBox, setCurrentProductDetailBox] = useState<string | null>(null)
   const [showProductDetailBox, setShowProductDetailBox] = useState<boolean>(false)
-
+  const [reloadEnable, setReloadEnable] = useState<boolean>(true)
   const [products, setProducts] = useState<ProductType[]>([])
 
-  useEffect(() => {
-    const myProducts = async () => {
-      console.log('entering in the my products section')
-      try {
-        const allProducts = await getProducts()
-        setProducts(allProducts)
-        console.log(allProducts)
-      } catch (error) {
-        console.log('error in frontend in get all products ', error)
-      }
-    }
 
+  // This is for Reload Button
+  const myProducts = async () => {
+    setReloadEnable(false)
+    console.log('entering in the my products section')
+    try {
+      const allProducts = await getProducts()
+      setProducts(allProducts)
+      console.log(allProducts)
+      setReloadEnable(true)
+    } catch (error) {
+      console.log('error in frontend in get all products ', error)
+    }
+  }
+
+  useEffect(() => {
     myProducts()
   }, [])
 
@@ -140,7 +145,7 @@ export default function Page() {
               href={'/dashboard/products/new'}
             >
               <button
-                className='rounded bg-green-400 p-2 px-4 w-full  items-center justify-center cursor-pointer flex'
+                className='rounded bg-green-400 p-2 px-3 w-full  items-center justify-center cursor-pointer flex'
               >
                 <Plus className='   h-4' />
                 <p>Add Product</p>
@@ -153,10 +158,24 @@ export default function Page() {
               onClick={() => setShowFilterBox(true)}
             >
               <button
-                className='rounded bg-green-400 p-2 px-4 w-full  items-center justify-center cursor-pointer flex'
+                className='rounded bg-green-400 p-2 px-3 w-full  items-center justify-center cursor-pointer flex'
               >
                 <SlidersHorizontal className='  h-4 ' />
                 <p>Filter</p>
+              </button>
+            </div>
+
+
+            <div
+              className='mx-2'
+              onClick={myProducts}
+            >
+              <button
+                disabled={!reloadEnable}
+                className={`rounded bg-[rgb(37,99,235)] p-2 px-3 w-full  items-center justify-center cursor-pointer flex `}
+              >
+                <RotateCw className=' mr-0.5 h-4 ' />
+                <p>Reload</p>
               </button>
             </div>
           </div>
@@ -165,9 +184,9 @@ export default function Page() {
         {/* All Products */}
 
         <div
-          className=''
+          className='w-280   md:w-full   overflow-y-auto '
         >
-          <table className='w-full rounded table-auto   mt-5    text-white '>
+          <table className=' w-full rounded mt-5    text-white '>
             <thead
               className='bg-gray-700'
             >
@@ -193,7 +212,7 @@ export default function Page() {
                     <tr
                       // key={product._id}
                       onClick={() => handleDetailBox(product._id!)}
-                      className={`'border-b border-gray-600 px-2 duration-300 hover:bg-gray-700 cursor-pointer' ${product._id === currentProductDetailBox ? 'bg-gray-700' : ''}`}
+                      className={`border-b border-gray-600 px-2 duration-300 hover:bg-gray-700 cursor-pointer' ${product._id === currentProductDetailBox ? 'bg-gray-700' : ''}`}
                     >
 
                       {/* Select checkbox  */}
@@ -203,7 +222,7 @@ export default function Page() {
                         <div
                           className='flex  justify-center'
                         >
-                          <input className='bg-gray-600 rounded' type="checkbox" />
+                          <input onClick={(e) => e.stopPropagation()} className='bg-gray-600 rounded' type="checkbox" />
                         </div>
                       </td>
 
@@ -247,6 +266,7 @@ export default function Page() {
                       </td>
                     </tr>
 
+                    {/* Product Info Box  */}
                     {
                       product._id === currentProductDetailBox && showProductDetailBox &&
                       <>
@@ -264,7 +284,7 @@ export default function Page() {
                                 className='flex '
                               >
                                 {
-                                  ['TALHA', 'HASSAN', 'ATTIQ', 'BILLIONAIRE'].map(p => (
+                                  product.images.map(p => (
                                     <div
                                       key={p}
                                       className='w-[25%] relative    h-48 '
@@ -273,94 +293,136 @@ export default function Page() {
                                         fill
                                         alt='a beautifull g wagon'
                                         className='p-3 rounded-3xl'
-                                        src={'https://images.unsplash.com/photo-1523983388277-336a66bf9bcd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=870'}
+                                        // src={'https://images.unsplash.com/photo-1523983388277-336a66bf9bcd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=870'}
+                                        src={p}
                                       />
                                     </div>
                                   ))
                                 }
                               </div>
 
+                              {/* Product Description and Material*/}
+                              <div
+                                className='mx-3  '
+                              >
+                                <div>
+                                  <h1 className='font-semibold text-[rgb(37,99,235)] text-xl '>Description</h1>
+                                  <p className='text-gray-300'>{product.description}</p>
+                                </div>
+                                {
+                                  product.material &&
+                                  <div>
+                                    <h1 className='font-semibold text-[rgb(37,99,235)] text-xl '>Material</h1>
+                                    <p className='text-gray-300'>{product.material}</p>
+                                  </div>
+                                }
+                              </div>
+
                               {/* Product Additional Info */}
                               <div
-                                className='flex justify-center items-center flex-wrap'
+                                className='flex justify-center  items-center flex-wrap'
                               >
-                                <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
-                                >
-                                  <p>talha 1</p>
-                                </div>
 
-                                <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
-                                >
-                                  <p>talha 2</p>
-                                </div>
+                                {/* Features */}
+                                {
+                                  product.features?.length !== 0 &&
+                                  <div
+                                    className='bg-gray-800 m-1 basis-[49%] rounded-lg p-1 '
+                                  >
+                                    <h1 className='  text-xl font-semibold ml-2' >Features</h1>
+                                    <p className='flex flex-wrap ' >
+                                      {
+                                        product.features?.map(p => (
+                                          <span
+                                            key={p}
+                                          >
+                                            <Badge className='bg-[rgb(25,55,109)] text-[rgb(186,207,255)]    p-1 m-1 rounded-lg text-auto' >{p}</Badge>
+                                          </span>
+                                        ))
+                                      }
+                                    </p>
+                                  </div>
+                                }
 
-                                <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
-                                >
-                                  <p>talha 3</p>
-                                </div>
+                                {/* Genders */}
+                                {
+                                  product.gender?.length !== 0 &&
+                                  <div
+                                    className='bg-gray-800 m-1 basis-[49%] rounded-lg p-1    '
+                                  >
+                                    <h1 className='  text-xl font-semibold ml-2' >Gender </h1>
+                                    <p
+                                      className='flex flex-wrap   '
+                                    >
+                                      {
+                                        product.gender?.map(p =>
+                                          <span key={p}  >
+                                            <Badge className='bg-[rgb(25,55,109)] text-[rgb(186,207,255)]  p-1 m-1 rounded-lg text-auto' >{p}</Badge>
+                                          </span>
+                                        )
+                                      }
+                                    </p>
+                                  </div>
+                                }
 
-                                <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
-                                >
-                                  <p>talha 4</p>
-                                </div>
+                                {/* Size Options */}
+                                {
+                                  product.sizeOptions?.length !== 0 &&
+                                  <div
+                                    className='bg-gray-800 m-1 basis-[49%] rounded-lg p-1 '
+                                  >
+                                    <h1 className='  text-xl font-semibold ml-2' >Size Options</h1>
+                                    {
+                                      product.sizeOptions?.map(p =>
+                                        <span key={p}  >
+                                          <Badge className='bg-[rgb(25,55,109)] text-[rgb(179,201,252)] p-1 m-1 rounded-lg  ' >{p}</Badge>
+                                        </span>
+                                      )
+                                    }
+                                  </div>
+                                }
 
+                                {/* Tags */}
                                 <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
+                                  className='bg-gray-800 m-1 basis-[49%] rounded-lg p-1 '
                                 >
-                                  <p>talha 5</p>
-                                </div>
-
-                                <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
-                                >
-                                  <p>talha 6</p>
-                                </div>
-
-                                <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
-                                >
-                                  <p>talha 7</p>
-                                </div>
-
-                                <div
-                                  className='border m-1 basis-[24%] rounded-lg p-1 '
-                                >
-                                  <p>talha 8</p>
+                                  <h1 className='  text-xl font-semibold ml-2' >Tags</h1>
+                                  {
+                                    product.tags?.map(p =>
+                                      <span key={p}  >
+                                        <Badge className='bg-[rgb(25,55,109)] text-[rgb(186,207,255)]  p-1 m-1 rounded-lg text-auto' >#{p}</Badge>
+                                      </span>
+                                    )
+                                  }
                                 </div>
 
                               </div>
 
 
                               {/* Edit and Delete Buttons  */}
-                              <div className='flex'>
+                              <div className='flex mx-1'>
                                 <div
-                                  className='m-2 flex'
+                                  className='m-2'
                                 >
-                                  <button className='py-1 px-2 bg-green-500 text-white rounded-lg'>
-                                    <SquarePen className='' />
+                                  <button className='py-1 px-2 bg-green-500 text-white rounded-lg flex justify-center cursor-pointer hover:bg-[rgb(40,189,40)] items-center'>
+                                    <SquarePen className='h-7 w-4 mr-1' />
                                     <span>
                                       Edit
                                     </span>
                                   </button>
                                 </div>
+
                                 <div
-                                  className='m-2 flex'
+                                  className='my-2 '
                                 >
-                                  <button className='py-1 px-2 bg-red-500 text-white rounded-lg'>
-                                    <Trash2 className='' />
+                                  <button className='py-1 px-2 bg-[rgb(225,36,36)] text-white rounded-lg flex justify-center cursor-pointer hover:bg-[rgb(200,40,40)] items-center'>
+                                    <Trash2 className='h-7 w-4 mr-1' />
                                     <span>
                                       Delete
                                     </span>
                                   </button>
                                 </div>
                               </div>
-
-
-
 
                             </div>
                           </td>
@@ -399,11 +461,6 @@ export default function Page() {
         >
           again call function
         </button>
-
-
-
-
-
 
 
       </div>

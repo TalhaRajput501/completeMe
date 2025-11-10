@@ -19,7 +19,7 @@ export interface Orders extends Document {
 }
 
 const ordersSchema = new mongoose.Schema<Orders>(
-  {
+  { 
     products: [
       {
         _id: false, 
@@ -55,7 +55,8 @@ const ordersSchema = new mongoose.Schema<Orders>(
     status: {
       type: String,
       required: true,
-      default: 'pending'
+      default: 'pending',
+      enum: ['pending', 'processing', 'delivered', 'cancelled']
     },
     totalAmount: Number
   },

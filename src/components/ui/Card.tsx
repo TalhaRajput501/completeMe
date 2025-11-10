@@ -1,5 +1,5 @@
 import React from 'react'
-import { ShoppingBag } from 'lucide-react' 
+import { ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
 
 
@@ -15,12 +15,12 @@ function Card() {
         className='relative'
       >
         <Image
-          className='w-full' 
+          className='w-full'
           fill
           src="https://images.unsplash.com/photo-1757898023680-df17835d6b18?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
-          
-      </div>  
- 
+
+      </div>
+
 
       <div
         className='flex flex-col item-center jusitfy-cneter '

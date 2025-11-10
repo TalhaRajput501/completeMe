@@ -67,6 +67,7 @@ export const addProduct = async (product: ProductType, images: File[]) => {
 // Get all products
 export const getProducts = async () => {
   try {
+    dbConnect()
     const products = await Product.find();
     //
     // const object = products.map(p => p.toObject({versionKey:false,}))
