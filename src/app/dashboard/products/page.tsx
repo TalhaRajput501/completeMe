@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { SlidersHorizontal, Plus, Funnel, ChevronDown, Trash2, SquarePen, ListRestart, RotateCw } from 'lucide-react'
+import { SlidersHorizontal, Plus, Funnel, ChevronDown, Trash2, SquarePen, ListRestart, RotateCw, View, Eye } from 'lucide-react'
 import Link from 'next/link'
 import FilterPopUp from '@/components/ui/FilterPopUp'
 import Pills, { Option } from '@/components/ui/Pills'
@@ -9,7 +9,7 @@ import { getProducts } from './actions'
 import { ProductType } from '@/schemas/product.schema'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
-
+import loader from '@/assets/loader2.gif'
 
 
 export default function Page() {
@@ -207,7 +207,7 @@ export default function Page() {
             <tbody>
 
               {
-                products && products.map(product => (
+                products.length !== 0 ? products.map(product => (
                   <React.Fragment key={product._id}>
                     <tr
                       // key={product._id}
@@ -245,7 +245,7 @@ export default function Page() {
                           className='flex justify- items-center'
                         >
                           <img src={product.images[0]} alt={product.name} draggable={false} className='w-9 h-9  rounded-full mr-1' />
-                          <p>{product.name}</p>
+                          <p>{product.name.replaceAll(' ', '-')} </p>
                         </div>
                       </td>
                       <td className='mx-auto text-left text-gray-200 py-2'>{product.category}</td>
@@ -291,7 +291,7 @@ export default function Page() {
                                     >
                                       <Image
                                         fill
-                                        alt='a beautifull g wagon'
+                                        alt={product.name}
                                         className='p-3 rounded-3xl'
                                         // src={'https://images.unsplash.com/photo-1523983388277-336a66bf9bcd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=870'}
                                         src={p}
@@ -399,12 +399,13 @@ export default function Page() {
                               </div>
 
 
-                              {/* Edit and Delete Buttons  */}
+                              {/* Edit, Delete, Preview Buttons  */}
                               <div className='flex mx-1'>
+                                {/* Edit */}
                                 <div
-                                  className='m-2'
+                                  className='m-2 mr-1'
                                 >
-                                  <button className='py-1 px-2 bg-green-500 text-white rounded-lg flex justify-center cursor-pointer hover:bg-[rgb(40,189,40)] items-center'>
+                                  <button className='py-1 px-3 bg-green-500 text-white rounded-lg flex justify-center cursor-pointer hover:bg-[rgb(40,189,40)] items-center'>
                                     <SquarePen className='h-7 w-4 mr-1' />
                                     <span>
                                       Edit
@@ -412,10 +413,25 @@ export default function Page() {
                                   </button>
                                 </div>
 
+                                {/* View */}
                                 <div
-                                  className='my-2 '
+                                  className='m-1 my-2'
                                 >
-                                  <button className='py-1 px-2 bg-[rgb(225,36,36)] text-white rounded-lg flex justify-center cursor-pointer hover:bg-[rgb(200,40,40)] items-center'>
+                                  <Link href={`/product/${product._id}/${product.name.replaceAll(' ', '-')}`}>
+                                    <button className='py-1 px-3 bg-gray-600 text-white rounded-lg flex justify-center cursor-pointer hover:bg-gray-700 items-center'>
+                                      <Eye className='h-7 w-4 mr-1' />
+                                      <span>
+                                        View
+                                      </span>
+                                    </button>
+                                  </Link>
+                                </div>
+
+                                {/* Delete */}
+                                <div
+                                  className='my-2 m-1'
+                                >
+                                  <button className='py-1 px-3 bg-[rgb(225,36,36)] text-white rounded-lg flex justify-center cursor-pointer hover:bg-[rgb(200,40,40)] items-center'>
                                     <Trash2 className='h-7 w-4 mr-1' />
                                     <span>
                                       Delete
@@ -430,7 +446,17 @@ export default function Page() {
                       </>
                     }
                   </React.Fragment>
-                ))
+                )) :
+                  // Loading until products fetched
+                  (
+                    <tr>
+                      <td colSpan={8}>
+                        <div>
+                          <Image className='w-16 mt-12 mx-auto ' src={loader} alt="loading..." />
+                        </div>
+                      </td>
+                    </tr>
+                  )
               }
 
 
@@ -449,7 +475,7 @@ export default function Page() {
 
 
 
-        <button
+        {/* <button
           onClick={() => console.log(products)}
           className='bg-red-400 px-3 py-1 text-white'
         >
@@ -460,7 +486,7 @@ export default function Page() {
           className='bg-red-400 m-5 px-3 py-1 text-white'
         >
           again call function
-        </button>
+        </button> */}
 
 
       </div>

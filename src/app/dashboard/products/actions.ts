@@ -4,6 +4,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import { Product } from "@/models/product.model";
 import { productSchema } from "@/schemas/product.schema";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
+import { ObjectId } from "mongodb";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
@@ -67,7 +68,7 @@ export const addProduct = async (product: ProductType, images: File[]) => {
 // Get all products
 export const getProducts = async () => {
   try {
-    dbConnect()
+    dbConnect();
     const products = await Product.find();
     //
     // const object = products.map(p => p.toObject({versionKey:false,}))
@@ -76,6 +77,19 @@ export const getProducts = async () => {
     const parsedProducts = JSON.parse(JSON.stringify(products));
     return parsedProducts;
   } catch (error) {
-    console.log("Error occur in getProduct", error);
+    console.log("Error occur in getProducts", error);
+  }
+};
+
+// Get single products
+export const singleProduct = async (id: string) => {
+  try {
+    dbConnect();
+    const typedId = new ObjectId(id)
+    const product = await Product.find({_id: typedId});
+    const parsedProduct = JSON.parse(JSON.stringify(product));
+    return parsedProduct;
+  } catch (error) {
+    console.log("Error in singleProduct", error);
   }
 };
