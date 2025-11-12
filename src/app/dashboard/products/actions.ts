@@ -32,7 +32,7 @@ async function uploadPics(file: File) {
 // Add Product
 export const addProduct = async (product: ProductType, images: File[]) => {
   console.log("this is coming from frontend", product, images);
-  dbConnect();
+  await dbConnect();
   try {
     if (images.length <= 0) {
       console.log("pics are not reaching in backend");
@@ -68,7 +68,7 @@ export const addProduct = async (product: ProductType, images: File[]) => {
 // Get all products
 export const getProducts = async () => {
   try {
-    dbConnect();
+    await dbConnect();
     const products = await Product.find();
     //
     // const object = products.map(p => p.toObject({versionKey:false,}))
@@ -84,9 +84,9 @@ export const getProducts = async () => {
 // Get single products
 export const singleProduct = async (id: string) => {
   try {
-    dbConnect();
+    await dbConnect();
     const typedId = new ObjectId(id)
-    const product = await Product.find({_id: typedId});
+    const product = await Product.findOne({_id: typedId});
     const parsedProduct = JSON.parse(JSON.stringify(product));
     return parsedProduct;
   } catch (error) {
