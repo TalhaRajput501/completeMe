@@ -417,7 +417,7 @@ export default function Page() {
                                 <div
                                   className='m-1 my-2'
                                 >
-                                  <Link href={`/product/${product._id}/${product.name.replaceAll(' ', '-')}`}>
+                                  <Link href={`/product/${product.category}/${product._id}/${product.name.replaceAll(' ', '-')}`}>
                                     <button className='py-1 px-3 bg-gray-600 text-white rounded-lg flex justify-center cursor-pointer hover:bg-gray-700 items-center'>
                                       <Eye className='h-7 w-4 mr-1' />
                                       <span>
