@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { ProductType } from '@/schemas/product.schema'
 import { Badge } from '@/components/ui/badge'
 import LoadingIcon from '@/components/ui/LoadingIcon'
+import StockStatusPill from '@/components/ui/StockStatusPill'
 
 export default function Page() {
 
@@ -170,12 +171,13 @@ export default function Page() {
                 {/* Price and Stock Info */}
                 <div className='flex justify-between w-[95%] mx-auto items-center mt-2'>
                   <p className='text-xl ml-1'>
-                    PKR:&#8203;  
+                    PKR: &#8203;  
                     <span className='text-2xl font-semibold'>
                       {product.price}
                     </span>
                   </p>
-                  <Badge className={` text-sm ${product.isActive ? 'bg-[rgb(1,71,55)] text-[rgb(132,225,188)] ' : 'bg-[rgb(119,29,29)] text-[rgb(248,180,180)] '} `}>{product.isActive ? 'In Stock' : 'Out of stock'}</Badge>
+                  {/* Green for inStock and Red for outOfStock */}
+                  <StockStatusPill  totalStock={product.stock} />
                 </div>
 
 

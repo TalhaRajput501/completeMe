@@ -10,6 +10,7 @@ import { ProductType } from '@/schemas/product.schema'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import loader from '@/assets/loader2.gif'
+import StockStatusPill from '@/components/ui/StockStatusPill'
 
 
 export default function Page() {
@@ -263,7 +264,7 @@ export default function Page() {
                             Inactive
                           </p>
                         }
-                      </td>
+                        </td>
                     </tr>
 
                     {/* Product Info Box  */}
