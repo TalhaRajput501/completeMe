@@ -7,6 +7,7 @@ import { ProductType } from '@/schemas/product.schema'
 import { Badge } from '@/components/ui/badge'
 import LoadingIcon from '@/components/ui/LoadingIcon'
 import StockStatusPill from '@/components/ui/StockStatusPill'
+import Card from '@/components/ui/Card'
 
 export default function Page() {
 
@@ -98,7 +99,7 @@ export default function Page() {
 
               {/* Product Information */}
               <div
-                className='flex  basis-[53%] flex-col pl-3 p-1'
+                className='flex basis-[53%] flex-col pl-3 p-1'
               >
                 {/* Heading */}
                 <h1 className="text-3xl font-semibold text-[#11283d]">{product.name}</h1>
@@ -169,23 +170,23 @@ export default function Page() {
 
 
                 {/* Price and Stock Info */}
-                <div className='flex justify-between w-[95%] mx-auto items-center mt-2'>
+                <div className='flex justify-between w-[98%] mx-auto items-center mt-2'>
                   <p className='text-xl ml-1'>
-                    PKR: &#8203;  
+                    PKR: &#8203;
                     <span className='text-2xl font-semibold'>
                       {product.price}
                     </span>
                   </p>
                   {/* Green for inStock and Red for outOfStock */}
-                  <StockStatusPill  totalStock={product.stock} />
+                  <StockStatusPill className='mr-1' totalStock={product.stock} />
                 </div>
 
 
                 {/* Add to cart and counter */}
-                <div className='flex  mx-auto justify-between mt-  w-[95%] items-center'>
-                  {/* Cart counter */}
+                <div className='flex  mx-auto justify-between mt-2  w-[98%] items-center'>
+                  {/* counter */}
                   <div
-                    className='flex justify-center border-[#3dbdf1] border rounded-full items-cetner w-[20%]'
+                    className='flex justify-center border-[#3dbdf1] border rounded-full items-cetner max-w-[20%] w-[20%]'
                   >
                     {/* Decrement Button */}
                     <button onClick={() => setCartValue(prev => Math.max(1, prev - 1))} className=' w-full text-center rounded-l-full px-2 cursor-pointer border-r-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>-</button>
@@ -194,10 +195,11 @@ export default function Page() {
                     {/* Increment Button */}
                     <button onClick={() => setCartValue(prev => prev >= 5 ? prev : prev + 1)} className=' w-full text-center rounded-r-full px-2 cursor-pointer border-l-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>+</button>
                   </div>
+                  {/* button */}
                   <div
                     className='  w-[59%]'
                   >
-                    <button onClick={show} className="bg-[#3dbdf1]  hover:bg-[#3dbdf1]   font-semibold   cursor-pointer text-white rounded-lg w-full  px-4 py-2 mt-3">Add to cart</button>
+                    <button onClick={show} className="bg-[#27acdf] hover:bg-[#0d91c5] font-semibold   cursor-pointer text-white rounded-lg w-full  px-4 py-2  ">Add to cart</button>
                   </div>
 
                 </div>
@@ -211,7 +213,7 @@ export default function Page() {
               <h1 className='text-3xl text-[#11283d] font-bold '>Other Information</h1>
               <div className='flex w-full justify-'>
                 {/* Size Options  */}
-                <div className='border-r-2 mb-9 border-purple-500 w-[50%]'>
+                <div className='border-r-2 mb-9 border-[#27acdf] w-[50%]'>
                   {
                     product.sizeOptions?.length !== 0 && (
                       <>
@@ -224,7 +226,7 @@ export default function Page() {
                               product.sizeOptions?.map(s => (
                                 <Badge className='text-sm bg-[gainsboro] text-[#11283d] mr-2    ' key={s}>{s}</Badge>
                               ))
-                            } 
+                            }
                           </div>
                         </div>
                       </>
@@ -276,11 +278,16 @@ export default function Page() {
 
 
             {/* Related Products Cards*/}
-            <div
-              className='flex'
-            >
-              <h1></h1>
-              <div></div>
+            <div>
+            <h1 className='text-3xl text-[#11283d] font-bold px-4 mt-3 '>You might like </h1>
+              <div
+                className='flex items-center flex-wrap justify-center'
+              >
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+              </div>
             </div>
 
           </div>

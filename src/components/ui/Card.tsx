@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 import { Heart, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
 import StockStatusPill from './StockStatusPill';
@@ -12,13 +13,17 @@ interface CardProps {
 
 }
 
-const truncate = (text: string) => {
-  let truncatedText = text.trim().substring(0, 87).concat('.....')
-
-  return truncatedText
-}
 
 function Card() {
+
+  const [heartFill, setHeartFill] = useState<boolean>(false)
+
+  const truncate = (text: string) => {
+    const truncatedText = text.trim().substring(0, 87).concat('.....')
+
+    return truncatedText
+  }
+
   return (
     <div
       className='hover:border  border hover:border-black border-white   bg-[#edece8]  sm:w-[45%]  md:w-[30%] lg:w-[24%] w-full mt-3  p-4  group  h-106 '
@@ -66,7 +71,7 @@ function Card() {
             <p
               className='text-xl '
             >
-              Rs: &#8203;  
+              Rs: &#8203;
               <span className='font-semibold'>
                 5555
               </span>
@@ -81,24 +86,24 @@ function Card() {
 
         {/* CTA and Like Button */}
         <div
-          className='group-hover:flex group-hover:justify-center  hidden gorup-hover:block   '
+          className=' flex  justify-center     mt-1   '
         >
 
           <button
-            className='flex border cursor-pointer items-center justify-center bg-black w-[93%]  '
+            className='flex border cursor-pointer items-center justify-center bg-[#27acdf] hover:bg-[#0d91c5] rounded w-[93%]  '
           >
 
             <div
-              className=' py-2 text-white '
+              className=' font-semibold text-white '
             >
-              Add to Bag
+              Add to Cart
             </div>
-            <ShoppingBag className="w-8 h-8 text-white ml-4" />
+            <ShoppingBag className=" p-0.5  text-white ml-1" />
 
           </button>
 
           <button>
-            <Heart fill='red' className="w-8 h- cursor-pointer text-transparent ml-4" />
+            <Heart onClick={() => setHeartFill(prev => !prev)} fill={`${heartFill ? 'red' : 'white'}`} className="w-8 h-8 transition-all duration-300 cursor-pointer text-[#3dbdf1]  ml-4" />
           </button>
 
         </div>
