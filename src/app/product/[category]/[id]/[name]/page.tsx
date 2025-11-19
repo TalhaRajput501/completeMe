@@ -8,10 +8,12 @@ import { Badge } from '@/components/ui/badge'
 import LoadingIcon from '@/components/ui/LoadingIcon'
 import StockStatusPill from '@/components/ui/StockStatusPill'
 import Card from '@/components/ui/Card'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/lib/store/store'
 
 export default function Page() {
 
-
+  const cartProducts = useSelector((state: RootState) => state.cart.products )   
   const [product, setProduct] = useState<ProductType | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [cartValue, setCartValue] = useState(1)
@@ -34,12 +36,13 @@ export default function Page() {
     getProduct()
   }, [params.id])
 
-  const show = () => {
+  const addToCart = () => {
     console.log(product)
+    localStorage.setItem('cartProducts', JSON.stringify([id]))
   }
 
   if (loading || !product) {
-    return <LoadingIcon />
+    return <LoadingIcon /> 
   }
 
   return (
@@ -199,7 +202,7 @@ export default function Page() {
                   <div
                     className='  w-[59%]'
                   >
-                    <button onClick={show} className="bg-[#27acdf] hover:bg-[#0d91c5] font-semibold   cursor-pointer text-white rounded-lg w-full  px-4 py-2  ">Add to cart</button>
+                    <button onClick={addToCart} className="bg-[#27acdf] hover:bg-[#0d91c5] font-semibold   cursor-pointer text-white rounded-lg w-full  px-4 py-2  ">Add to cart</button>
                   </div>
 
                 </div>

@@ -4,6 +4,7 @@ import Navbar from "@/components/ui/Navbar";
 import Providers from "@/components/ui/Providers";
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { getServerSession } from "next-auth";
+import ReduxProvider from "@/lib/store/ReduxProvider";
 
 
 
@@ -25,24 +26,26 @@ export default async function RootLayout({
       <body
         className={`  antia liased`}
       >
-        <Providers session={session}>
-          <div
-            className="h-screen flex flex-col "
-          >
-            <nav>
-              <Navbar />
-            </nav>
-
+        <ReduxProvider>
+          <Providers session={session}>
             <div
-              // todo manage its height
-              className=' flex-1'
+              className="h-screen flex flex-col "
             >
-              {children}
-              <div id="portal-root" />
-            </div>
+              <nav>
+                <Navbar />
+              </nav>
 
-          </div>
-        </Providers>
+              <div
+                // todo manage its height
+                className=' flex-1'
+              >
+                {children}
+                <div id="portal-root" />
+              </div>
+
+            </div>
+          </Providers>
+        </ReduxProvider>
       </body>
     </html>
   );
