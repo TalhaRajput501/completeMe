@@ -13,7 +13,7 @@ import { RootState } from '@/lib/store/store'
 
 export default function Page() {
 
-  const cartProducts = useSelector((state: RootState) => state.cart.products )   
+  const cartProducts = useSelector((state: RootState) => state.cart.products)
   const [product, setProduct] = useState<ProductType | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [cartValue, setCartValue] = useState(1)
@@ -36,13 +36,35 @@ export default function Page() {
     getProduct()
   }, [params.id])
 
+  
   const addToCart = () => {
     console.log(product)
-    localStorage.setItem('cartProducts', JSON.stringify([id]))
+    const oldCart = localStorage.getItem('cartProduct')
+    console.log('this is oldcart ', oldCart)
+
+    if (oldCart) {
+      interface eachCartProduct {
+        product: string;
+        quantity: number;
+      }
+      let oldJson = JSON.parse(oldCart)
+      oldJson.length !== 0 && oldJson.map((eachProduct: eachCartProduct) => {
+        if (eachProduct.product === id) {
+          console.log('right now i am in .map')
+          localStorage.setItem('cartProduct', JSON.stringify([...oldJson]))
+        } else {
+          localStorage.setItem('cartProduct', JSON.stringify([...oldJson, { product: id, quantity: 1 }]))
+        }
+      })
+
+    } else {
+      localStorage.setItem('cartProduct', JSON.stringify([{ product: id, quantity: 1 }]))
+    }
+
   }
 
   if (loading || !product) {
-    return <LoadingIcon /> 
+    return <LoadingIcon />
   }
 
   return (
@@ -282,7 +304,7 @@ export default function Page() {
 
             {/* Related Products Cards*/}
             <div>
-            <h1 className='text-3xl text-[#11283d] font-bold px-4 mt-3 '>You might like </h1>
+              <h1 className='text-3xl text-[#11283d] font-bold px-4 mt-3 '>You might like </h1>
               <div
                 className='flex items-center flex-wrap justify-center'
               >
