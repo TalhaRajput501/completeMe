@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, FormEvent, useState } from 'react'
 import { ProductType, productSchema } from '@/schemas/product.schema'
-import { addProduct } from '../actions'
+import { addProduct } from '../../../../lib/actions/products.actions'
 import Input from '@/components/ui/Input'
 import Select, { MultiValue, SingleValue } from 'react-select'
 import MultiSelect from '@/components/ui/MultiSelect'

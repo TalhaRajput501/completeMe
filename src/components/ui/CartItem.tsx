@@ -1,37 +1,87 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import QuantityCounter from './QuantityCounter'
+import { ProductType } from '@/schemas/product.schema'
+import { ObjectId } from 'mongoose';
+import Image from 'next/image';
+import { eachCartProduct } from '@/app/product/[category]/[id]/[name]/page';
 
-function CartItem() {
+export interface cartProduct {
+  _id: string | ObjectId;
+  name: string;
+  images: string[];
+  price: number;
+  stock: number
+}
+
+interface cartItemProps {
+  product: cartProduct;
+  localCart: eachCartProduct[]
+}
+
+function CartItem({ product, localCart }: cartItemProps) {
+
+  const [quantityToBuy, setQuantityToBuy] = useState<number>(1)
+  // todo: After clicking on plus or minus button localstorage should update
+
+  useEffect(() => {
+    localCart.map(item => item.product === product._id && setQuantityToBuy(item.quantity))
+  }, [])
+
   return (
     <div className='flex   w-[70%] mt-3 mx-auto  '>
-      <div className='flex w-full  border items-center justify-evenly  '>
-        {/* Image */}
-        <div>
-          <img className='border w-55 h-32 rounded' src="https://media.istockphoto.com/id/1158547769/photo/car-driving-on-a-road.jpg?s=612x612&w=0&k=20&c=DWvTgClPT_kTsAkSJLIzVdThYuySNBN_aHpz8MMHITQ=" alt="" />
+      <div className='flex w-full  border items-center gap-2  '>
+
+        <div className=''>
+          {/* Image */}
+          {
+            product.images.map(image => (
+              <div key={image} className='relative w-55 h-32 '>
+                <Image className='border rounded' fill src={image} alt={image} />
+              </div>
+            ))
+          }
         </div>
 
-        {/* Information */}
-        <div className='flex flex-col ml-2'>
-          <div>
-            <h1 className='text-lg font-bold  text-[#11283d] ' >Product Name</h1>
-            <p>Macbook</p>
+        <div className='flex w-full items-center justify-around'>
+          {/* Information */}
+          <div className='flex  flex-col ml-2'>
+            <div>
+              <h1 className='text-lg font-bold  text-[#11283d] ' >Name</h1>
+              <p>{product.name}</p>
+            </div>
+
+            <div>
+              <h1 className='text-lg font-bold  text-[#11283d] ' >Unit Price: </h1>
+              <p className='font-semibold'>{product.price}</p>
+            </div>
           </div>
 
-          <div>
-            <h1 className='text-lg font-bold  text-[#11283d] ' >Unit Price: </h1>
-            <p className='font-semibold'>444</p>
+          {/* Counter */}
+          <div className='flex flex-col'>
+            <QuantityCounter
+              deleteIcon
+              value={quantityToBuy!}
+              setQty={setQuantityToBuy}
+              className=' p-0.5 px-1 ' />
+          </div>
+
+          {/* Total */}
+          <div className='w-[25%]  '>
+            <h1 className='text-lg font-semibold  text-[#11283d] ' >Total</h1>
+            {
+              localCart.map(item => item.product === product._id && (
+                <p key={item.product} >PKR:
+                  <span className='font-bold border '>
+                    {product.price * quantityToBuy!}
+                  </span>
+                </p>
+              )
+              )
+            }
           </div>
         </div>
 
-        {/* Counter */}
-        <div className='flex flex-col'>
-          <QuantityCounter deleteIcon className='  px-0 ' />
-        </div>
-
-        <div>
-          <h1 className='text-lg font-semibold  text-[#11283d] ' >Total</h1>
-          <p className='font-bold'>3434</p>
-        </div>
       </div>
     </div>
   )

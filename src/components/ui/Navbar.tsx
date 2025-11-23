@@ -1,18 +1,18 @@
 'use client';
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import { User, ShoppingCart } from "lucide-react"; 
+import { User, ShoppingCart } from "lucide-react";
 
 function Navbar() {
 
   const [show, setShow] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
 
- 
-  
-  useEffect(() => { 
-    const scrollPercent = (window.scrollY  / window.innerHeight) * 100
-    
+
+
+  useEffect(() => {
+    const scrollPercent = (window.scrollY / window.innerHeight) * 100
+
     const handleScroll = () => {
 
       if (scrollPercent > 20) {
@@ -28,9 +28,9 @@ function Navbar() {
 
     window.addEventListener('scroll', handleScroll)
   }, [lastScrollY])
-  
+
   const dummy = () => {
-    const currentScroll = window.scrollY 
+    const currentScroll = window.scrollY
     const scrollPercent = (currentScroll / window.innerHeight) * 100
 
     console.log(currentScroll)  // obtained marks --> how much i scrolled
@@ -71,11 +71,14 @@ function Navbar() {
               <Link
                 href={'/sign-in'}
               >
-
                 <User className="w-9 cursor-pointer  h-10 mx-3  text-black" />
               </Link>
 
-              <ShoppingCart className="w-9 cursor-pointer  h-10 mx-3  text-black" />
+              <Link
+                href={'/cart'}
+              >
+                <ShoppingCart className="w-9 cursor-pointer  h-10 mx-3  text-black" />
+              </Link>
 
             </div>
 

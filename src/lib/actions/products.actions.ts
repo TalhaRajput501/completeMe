@@ -5,6 +5,7 @@ import { Product } from "@/models/product.model";
 import { productSchema } from "@/schemas/product.schema";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { ObjectId } from "mongodb";
+import { cartProduct } from "@/components/ui/CartItem";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
@@ -85,11 +86,47 @@ export const getProducts = async () => {
 export const singleProduct = async (id: string) => {
   try {
     await dbConnect();
-    const typedId = new ObjectId(id)
-    const product = await Product.findOne({_id: typedId});
+    const typedId = new ObjectId(id);
+    const product = await Product.findOne({ _id: typedId });
     const parsedProduct = JSON.parse(JSON.stringify(product));
     return parsedProduct;
   } catch (error) {
     console.log("Error in singleProduct", error);
+  }
+};
+
+// Get Products with list of ID's
+export const getProductsWithIds = async (productIds: (string | ObjectId)[]) => {
+  try {
+    // console.log('this is array of ids coming from frontend', productIds)
+    await dbConnect();
+    const validObjectIds = productIds.map((id) =>
+      typeof id === "string" ? new ObjectId(id) : id
+    );
+
+    // const products = await Product.find({ _id: { $in: validObjectIds } });
+    const aggre: cartProduct[] = await Product.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: validObjectIds,
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          images: 1,
+          name: 1, 
+          price: 1,
+          stock: 1,
+        },
+      },
+    ]);
+    const parsedProducts = JSON.parse(JSON.stringify(aggre));
+    // console.log('this is what going out in return ', parsedProducts)
+    return parsedProducts;
+  } catch (error) {
+    console.log("Error in getProductwithIds", error);
   }
 };

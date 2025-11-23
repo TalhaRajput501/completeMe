@@ -1,5 +1,5 @@
 'use client'
-import { singleProduct } from '@/app/dashboard/products/actions'
+import { singleProduct } from '@/lib/actions/products.actions'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -10,6 +10,11 @@ import StockStatusPill from '@/components/ui/StockStatusPill'
 import Card from '@/components/ui/Card'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/lib/store/store'
+
+export interface eachCartProduct {
+  product: string;
+  quantity: number;
+}
 
 export default function Page() {
 
@@ -36,29 +41,26 @@ export default function Page() {
     getProduct()
   }, [params.id])
 
-  
+
   const addToCart = () => {
     console.log(product)
-    const oldCart = localStorage.getItem('cartProduct')
+    const oldCart = localStorage.getItem('cartProducts')
     console.log('this is oldcart ', oldCart)
 
     if (oldCart) {
-      interface eachCartProduct {
-        product: string;
-        quantity: number;
-      }
-      let oldJson = JSON.parse(oldCart)
+  
+      
+      const oldJson = JSON.parse(oldCart)
       oldJson.length !== 0 && oldJson.map((eachProduct: eachCartProduct) => {
-        if (eachProduct.product === id) {
-          console.log('right now i am in .map')
-          localStorage.setItem('cartProduct', JSON.stringify([...oldJson]))
+        if (eachProduct.product === id) { 
+          localStorage.setItem('cartProducts', JSON.stringify([...oldJson]))
         } else {
-          localStorage.setItem('cartProduct', JSON.stringify([...oldJson, { product: id, quantity: 1 }]))
+          localStorage.setItem('cartProducts', JSON.stringify([...oldJson, { product: id, quantity: 1 }]))
         }
       })
 
     } else {
-      localStorage.setItem('cartProduct', JSON.stringify([{ product: id, quantity: 1 }]))
+      localStorage.setItem('cartProducts', JSON.stringify([{ product: id, quantity: 1 }]))
     }
 
   }
@@ -220,6 +222,7 @@ export default function Page() {
                     {/* Increment Button */}
                     <button onClick={() => setCartValue(prev => prev >= 5 ? prev : prev + 1)} className=' w-full text-center rounded-r-full px-2 cursor-pointer border-l-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>+</button>
                   </div>
+
                   {/* button */}
                   <div
                     className='  w-[59%]'
