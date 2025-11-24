@@ -10,6 +10,7 @@ import StockStatusPill from '@/components/ui/StockStatusPill'
 import Card from '@/components/ui/Card'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/lib/store/store'
+import QuantityCounter from '@/components/ui/QuantityCounter'
 
 export interface eachCartProduct {
   product: string;
@@ -30,7 +31,6 @@ export default function Page() {
     if (!params?.id) return
     const getProduct = async () => {
       setLoading(true)
-
       const stringId = id as string
       const product = await singleProduct(stringId)
       setProduct(product)
@@ -48,19 +48,20 @@ export default function Page() {
     console.log('this is oldcart ', oldCart)
 
     if (oldCart) {
-  
-      
       const oldJson = JSON.parse(oldCart)
-      oldJson.length !== 0 && oldJson.map((eachProduct: eachCartProduct) => {
-        if (eachProduct.product === id) { 
-          localStorage.setItem('cartProducts', JSON.stringify([...oldJson]))
-        } else {
-          localStorage.setItem('cartProducts', JSON.stringify([...oldJson, { product: id, quantity: 1 }]))
-        }
-      })
-
+      // oldJson.length !== 0 && 
+      if (oldJson.length !== 0) {
+        const newCart = oldJson.map((eachProduct: eachCartProduct) => 
+          eachProduct.product === id ?
+            { ...eachProduct, quantity: 23 } :
+            { product: id, quantity: cartValue }
+            // todo this is giving me error while i add more than one items in cart
+        )
+        console.log('this is new Cart', newCart)
+        localStorage.setItem('cartProducts', JSON.stringify(newCart))
+      }
     } else {
-      localStorage.setItem('cartProducts', JSON.stringify([{ product: id, quantity: 1 }]))
+      localStorage.setItem('cartProducts', JSON.stringify([{ product: id, quantity: cartValue }]))
     }
 
   }
@@ -84,7 +85,7 @@ export default function Page() {
             >
               {/* Images */}
               <div
-                className='flex     basis-[45%] grow-0 shrink-0 flex-col h-[50vh]'
+                className='flex basis-[45%] grow-0 shrink-0 flex-col h-[50vh]'
               >
                 {/* Big Image */}
                 <div
@@ -213,14 +214,19 @@ export default function Page() {
                 <div className='flex  mx-auto justify-between mt-2  w-[98%] items-center'>
                   {/* counter */}
                   <div
-                    className='flex justify-center border-[#3dbdf1] border rounded-full items-cetner max-w-[20%] w-[20%]'
+                    className='flex justify-center   rounded-full items-cetner max-w-[20%] w-[20%]'
                   >
                     {/* Decrement Button */}
-                    <button onClick={() => setCartValue(prev => Math.max(1, prev - 1))} className=' w-full text-center rounded-l-full px-2 cursor-pointer border-r-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>-</button>
+                    {/* <button onClick={() => setCartValue(prev => Math.max(1, prev - 1))} className=' w-full text-center rounded-l-full px-2 cursor-pointer border-r-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>-</button> */}
                     {/* Cart Value */}
-                    <p className=' w-full text-center text-[#3dbdf1] px-1.5 p-1 font-bold text-lg  bg-gray-200'>{cartValue}</p>
+                    {/* <p className=' w-full text-center text-[#3dbdf1] px-1.5 p-1 font-bold text-lg  bg-gray-200'>{cartValue}</p> */}
                     {/* Increment Button */}
-                    <button onClick={() => setCartValue(prev => prev >= 5 ? prev : prev + 1)} className=' w-full text-center rounded-r-full px-2 cursor-pointer border-l-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>+</button>
+                    {/* <button onClick={() => setCartValue(prev => prev >= 5 ? prev : prev + 1)} className=' w-full text-center rounded-r-full px-2 cursor-pointer border-l-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>+</button> */}
+                    <QuantityCounter
+                      currentProduct={product._id!}
+                      setQty={setCartValue}
+                      value={cartValue}
+                    />
                   </div>
 
                   {/* button */}

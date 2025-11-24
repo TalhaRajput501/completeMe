@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { eachCartProduct } from '../product/[category]/[id]/[name]/page'
 import { getProductsWithIds } from '@/lib/actions/products.actions'
 import { ProductType } from '@/schemas/product.schema'
+import EmptyCart from '@/components/ui/EmptyCart'
 
 
 export default function Page() {
@@ -23,7 +24,6 @@ export default function Page() {
         const products = await getProductsWithIds(productIds)
         console.log('these are the prodict coming with aggregation', products)
         setCartProducts(products)
-
       }
     }
     getCartProduct()
@@ -31,9 +31,9 @@ export default function Page() {
 
   return (
     <div
-      className=' '
+      className='  '
     >
-      {/* Cart Product and Side Bar */}
+      { /* Cart Product and Side Bar */}
       <div
         className='w-full justify-center   flex item-center '
       >
@@ -49,14 +49,14 @@ export default function Page() {
           {/* Cart Items */}
 
           <div className='flex flex-col mt-7 flex-wrap w-full'>
-            <h1 className='text-3xl  font-bold mx-auto w-[70%] mb-0.5 '>Cart Items</h1>
+            <h1 className='text-3xl text-[#11283d] font-bold mx-auto w-[70%] mb-0.5 '>Cart Items</h1>
             {
               cartProducts && localCart ? (
                 cartProducts.map(eachProduct => (
                   <CartItem key={eachProduct.name} product={eachProduct} localCart={localCart} />
                 ))
-              ) : (
-                <div>there is no cart items start you shopping kanjoos </div>
+              ) : ( 
+                <EmptyCart />
               )
             }
 
@@ -108,5 +108,3 @@ export default function Page() {
     </div>
   )
 }
-
- 

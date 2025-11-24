@@ -22,7 +22,6 @@ interface cartItemProps {
 function CartItem({ product, localCart }: cartItemProps) {
 
   const [quantityToBuy, setQuantityToBuy] = useState<number>(1)
-  // todo: After clicking on plus or minus button localstorage should update
 
   useEffect(() => {
     localCart.map(item => item.product === product._id && setQuantityToBuy(item.quantity))
@@ -47,32 +46,41 @@ function CartItem({ product, localCart }: cartItemProps) {
           {/* Information */}
           <div className='flex  flex-col ml-2'>
             <div>
-              <h1 className='text-lg font-bold  text-[#11283d] ' >Name</h1>
+              <h1 className='text-lg font-semibold  text-[#11283d] ' >Name:</h1>
               <p>{product.name}</p>
             </div>
 
             <div>
-              <h1 className='text-lg font-bold  text-[#11283d] ' >Unit Price: </h1>
-              <p className='font-semibold'>{product.price}</p>
+              <h1 className='text-lg font-semibold  text-[#11283d] ' >Unit Price:</h1>
+              <p className=''>
+                PKR: &#8203;
+                <span className='font-bold   '>
+                  {product.price}
+                </span>
+              </p>
             </div>
           </div>
 
           {/* Counter */}
           <div className='flex flex-col'>
+            <h1 className='text-md font-semibold  text-[#11283d] ' >Quantity:</h1>
             <QuantityCounter
+              controlToChangeCart
               deleteIcon
               value={quantityToBuy!}
               setQty={setQuantityToBuy}
+              currentProduct={product._id as string}
               className=' p-0.5 px-1 ' />
           </div>
 
           {/* Total */}
           <div className='w-[25%]  '>
-            <h1 className='text-lg font-semibold  text-[#11283d] ' >Total</h1>
+            <h1 className='text-lg font-semibold  text-[#11283d] ' >Total:</h1>
             {
               localCart.map(item => item.product === product._id && (
-                <p key={item.product} >PKR:
-                  <span className='font-bold border '>
+                <p key={item.product} >
+                  PKR: &#8203;
+                  <span className='font-bold   '>
                     {product.price * quantityToBuy!}
                   </span>
                 </p>
