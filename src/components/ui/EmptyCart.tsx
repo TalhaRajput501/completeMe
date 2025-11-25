@@ -1,13 +1,12 @@
 import React from 'react'
-import Image from 'next/image'
-import emptyCart from '@/assets/emptyCart.svg'
+import Image from 'next/image' 
 import Link from 'next/link'
 
 function EmptyCart() {
   return (
     <div className='  mx-auto mt-4 w-[70%] flex flex-col justify-center items-center'>
       <div className='relative w-44 h-44 mx-auto' >
-        <Image draggable='false' fill src={emptyCart} className='w-full' alt='empty cart pic' />
+        <Image draggable='false' fill src='/empty-cart.svg'className='w-full' alt='empty cart pic' />
       </div>
 
       <div className='w-full   flex flex-col items-center'>

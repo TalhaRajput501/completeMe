@@ -49,14 +49,16 @@ export default function Page() {
 
     if (oldCart) {
       const oldJson = JSON.parse(oldCart)
-      // oldJson.length !== 0 && 
       if (oldJson.length !== 0) {
-        const newCart = oldJson.map((eachProduct: eachCartProduct) => 
-          eachProduct.product === id ?
-            { ...eachProduct, quantity: 23 } :
-            { product: id, quantity: cartValue }
-            // todo this is giving me error while i add more than one items in cart
-        )
+        let newCart = oldJson
+        const exists = oldJson.find((item: eachCartProduct) => item.product === id)
+        if (exists) {
+          newCart = oldJson.map((item: eachCartProduct) => item.product === id ? { ...item, quantity: cartValue } : item)
+        } else {
+          newCart.push({ product: id, quantity: cartValue })
+        }
+
+
         console.log('this is new Cart', newCart)
         localStorage.setItem('cartProducts', JSON.stringify(newCart))
       }
