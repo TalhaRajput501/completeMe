@@ -28,7 +28,7 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
           )
         }
         {/* Line */}
-        <hr className='mx-2 text-[#3dbdf1] w-90 ' />
+        <hr className='mx-2 text-[#3dbdf1] w-1/2   ' />
         {
           secondDone ? (
 
@@ -38,7 +38,7 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
           )
         }
         {/* Line */}
-        <hr className='text-white w-90 mx-2' />
+        <hr className='text-white w-1/2   mx-2' />
         {
           thirdDone ? (
 
@@ -50,7 +50,7 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
       </div>
 
       <div
-        className='uppercase mt-0.5 text-[#3dbdf1] font-semibold flex items-center justify-between'
+        className='uppercase mt-0.5   text-[#3dbdf1] font-semibold flex items-center justify-between'
       >
         <p>Shipping Details</p>
         <p>Payment</p>

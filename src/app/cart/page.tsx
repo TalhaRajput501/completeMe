@@ -13,6 +13,7 @@ export default function Page() {
 
   const [cartProducts, setCartProducts] = useState<cartProduct[] | null>(null)
   const [localCart, setLocalCart] = useState<eachCartProduct[] | null>(null)
+  const [total, setTotal] = useState<number>(0)
 
   useEffect(() => {
     const getCartProduct = async () => {
@@ -25,13 +26,32 @@ export default function Page() {
         console.log('these are the prodict coming with aggregation', products)
         setCartProducts(products)
       }
+
+      if (cartProducts?.length !== 0) {
+        const cartMap = new Map(cartProducts?.map(item => [item._id, item]))
+        const finalArr = localCart?.map(cart => ({
+          ...cartMap.get(cart.product),
+          quantity: cart.quantity
+        }))
+
+        const result = finalArr?.reduce((acc, curr) => {
+          const total = curr.price! * curr.quantity
+          return acc + total 
+        }, 0)
+
+        
+
+        console.log('this is the result of total shopping that you did in the past decades',result)
+        setTotal(result!)
+      
+      }
     }
     getCartProduct()
   }, [])
 
   return (
     <div
-      className='  '
+      className='bg-gray-900 text-white  '
     >
       { /* Cart Product and Side Bar */}
       <div
@@ -55,7 +75,7 @@ export default function Page() {
                 cartProducts.map(eachProduct => (
                   <CartItem key={eachProduct.name} product={eachProduct} localCart={localCart} />
                 ))
-              ) : ( 
+              ) : (
                 <EmptyCart />
               )
             }
@@ -89,7 +109,7 @@ export default function Page() {
 
             <div className='flex justify-between mt-0.5'>
               <p>Total</p>
-              <p className='font-semibold'>3443</p>
+              <p className='font-semibold'>{total}</p>
             </div>
 
             <div className=' w-full border flex items-center mt-9 justify-center   '>

@@ -22,12 +22,13 @@ function QuantityCounter({ deleteIcon, className, value, setQty, currentProduct,
         const jsonCart = JSON.parse(cart)
         const newCart = jsonCart.map((item: eachCartProduct) => {
           if (item.product === currentProduct) {
-            return { ...item, quantity: updatedValue }
+            return { product: item.product, quantity: updatedValue }
           }
+          return item 
         }
         )
         localStorage.setItem('cartProducts', JSON.stringify(newCart))
-      }  
+      }
     }
   }
 
