@@ -23,7 +23,7 @@ export default function Page() {
         setLocalCart(jsonCartProductIds)
         const productIds = jsonCartProductIds.map((pro: eachCartProduct) => (pro.product))
         const products = await getProductsWithIds(productIds)
-        console.log('these are the prodict coming with aggregation', products)
+        // console.log('these are the prodict coming with aggregation', products)
         setCartProducts(products)
       }
 
@@ -36,14 +36,10 @@ export default function Page() {
 
         const result = finalArr?.reduce((acc, curr) => {
           const total = curr.price! * curr.quantity
-          return acc + total 
+          return acc + total
         }, 0)
-
-        
-
-        console.log('this is the result of total shopping that you did in the past decades',result)
+        console.log('this is the result of total shopping that you did in the past decades', result)
         setTotal(result!)
-      
       }
     }
     getCartProduct()
@@ -91,6 +87,7 @@ export default function Page() {
         <div
           className='w-[30%]     '
         >
+          {/* todo is ka alag component banana ha k nai??  */}
           {/* Order summary box */}
           <div className='m-6 p-6 pt-4 sticky inset-0 top-11 bg-[#c0e8fb] text-[#11283d] rounded'>
             <h1 className='font-bold text-2xl'>Order Summary</h1>
@@ -112,7 +109,9 @@ export default function Page() {
               <p className='font-semibold'>{total}</p>
             </div>
 
-            <div className=' w-full border flex items-center mt-9 justify-center   '>
+            <div
+              className=' w-full border flex items-center mt-9 justify-center   '
+            >
               <Link className='w-full' href={'/checkout'}>
                 <button className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
                   Continue to Checkout
@@ -121,6 +120,7 @@ export default function Page() {
 
 
             </div>
+
           </div>
         </div>
       </div>
