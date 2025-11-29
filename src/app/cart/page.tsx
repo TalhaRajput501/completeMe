@@ -47,7 +47,7 @@ export default function Page() {
 
   return (
     <div
-      className='bg-gray-900 text-white  '
+      className='   '
     >
       { /* Cart Product and Side Bar */}
       <div
@@ -81,7 +81,7 @@ export default function Page() {
         </div>
 
         {/*  The vertical line */}
-        <div className="w-px bg-gray-800 h-[calc(100vh-4rem)]"></div>
+        <div className=" bg-gray-800 h-[calc(100vh-4rem)]"></div>
 
         {/* Side Bar */}
         <div
