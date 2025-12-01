@@ -18,13 +18,13 @@ function page() {
       {/* Page content */}
       <div className='  flex items-center justify-center w-full flex-col h-full'>
         {/* success box */}
-        <div className=' border-[#11283d]  w-1/3 rounded mb-4 h-1/2'>
-          {/* tick mark and message */}
+        <div className=' border-[#11283d] border bg-[#c0e8fb]  w-1/3 rounded mb-4 h-2/3'>
+          {/* tick mark and success */}
           <div className='w-1/2  mx-auto h-full flex flex-col justify-evenly    '>
             {/* tick mark */}
-            <div className='border-[#11283d] flex flex-col items-center  rounded-full p-6 px-9 mx-auto '>
+            <div className='border-[#11283d] border flex flex-col items-center  rounded-full p-6 px-9 mx-auto '>
               <Check className='w-23 h-23 text-green-700' />
-              <p className=' text-md text-green-700'>Success</p>
+              <p className=' text-md font-semibold text-green-700'>Success</p>
             </div>
 
             {/* meassage */}
