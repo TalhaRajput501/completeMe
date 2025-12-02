@@ -5,6 +5,8 @@ import Providers from "@/components/ui/Providers";
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { getServerSession } from "next-auth";
 import ReduxProvider from "@/lib/store/ReduxProvider";
+import { Toaster } from "@/components/ui/sonner"
+
 
 
 
@@ -35,10 +37,8 @@ export default async function RootLayout({
                 <Navbar />
               </nav>
 
-              <div
-                // todo manage its height
-                className=' flex-1'
-              >
+              <Toaster position="top-right" className="bg-black" />
+              <div className=' flex-1'>
                 {children}
                 <div id="portal-root" />
               </div>

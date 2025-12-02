@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
-import CheckOutPage from '@/components/ui/CheckOutPage'
+import PaymentForm from '@/components/ui/PaymentForm'
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined')
@@ -33,80 +33,46 @@ function Page() {
       .finally(() => console.log('this is client secret coming from', clientSecret))
   }, [amount])
 
-  if(!clientSecret){
-    return <p>Loading...</p>
-  }
 
 
   return (
     <div
       className='  bg-gray-900 text-white h-screen'
     >
-
       <div className='flex w-full'>
-
-        <Elements
-          stripe={stripePromise}
-          options={{
-            clientSecret, 
-          }}
-        >
-          <CheckOutPage   />
-        </Elements>
 
         {/* Payment Form and Progress Bar */}
         <div
-          className='w-[70%]   mx-auto   hidden flex-col'
+          className='w-[70%]  mx-auto    flex-col'
         >
+
           {/* Checkout Progress Bar*/}
           <div className='w-[90%] mx-auto mt-5'>
             <CheckoutProgress secondPage firstDone />
           </div>
 
-          {/* Payment Form */}
-          <div className='w-[90%] mx-auto   mt-9  '>
+          {/* Stripe payment form */}
 
-            <div className='w-[97.5%]   mx-auto'>
-              <h1 className='text-[#11283d] font-bold text-3xl'>Payment Information</h1>
-            </div>
-
-            <div className='w-full flex'>
-              <div className='w-1/2 my-1.5 rounded flex justify-center  not-last:'>
-                <input className='text-[#11283d]  outline-none border-[#02aaf5] border rounded text-xl px-2 py-1 w-[95%] ' />
+          {
+            clientSecret ? (
+              <div className='w-full mt-9'>
+                <Elements
+                  stripe={stripePromise}
+                  options={{
+                    clientSecret,
+                  }}
+                >
+                  <PaymentForm />
+                </Elements>
               </div>
-
-              <div className='w-1/2 my-1.5 rounded flex justify-center  '>
-                <input className=' text-[#11283d] outline-none border-[#02aaf5] border rounded text-xl px-2 py-1 w-[95%] ' />
+            ) : (
+              <div role="status" className="w-full items-cneter justify-center mt-9 flex  items-center">
+                <div className="w-8 h-8 border-4 border-[#3dbdf1] border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+                <span className="sr-only">Loading...</span>
               </div>
-            </div>
+            )
+          }
 
-            <div className='w-[97.5%]  my-2 1.5 rounded mx-auto' >
-              <input className='text-[#11283d] w-full  outline-none border-[#02aaf5] border rounded  text-xl px-2 py-1  ' />
-            </div>
-
-            <div className='w-full   flex'>
-              <div className='w-1/2 my-1.5 rounded flex justify-center  '>
-                <input className=' text-[#11283d] outline-none border-[#02aaf5] border rounded text-xl px-2 py-1 w-[95%] ' />
-              </div>
-
-              <div className='w-1/2 my-1.5 rounded flex justify-center  '>
-                <input className=' text-[#11283d] outline-none  border-[#02aaf5] border rounded text-xl px-2 py-1 w-[95%] ' />
-              </div>
-            </div>
-
-            {/* Process Button */}
-            <div className='flex w-[95%] mt-3  mx-auto   '>
-              <Link
-                className=' mx-auto  '
-                href={'/order-success'}
-              >
-                <button className=' bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold '>
-                  Save & Continue to Payment
-                </button>
-              </Link>
-            </div>
-
-          </div>
         </div>
 
 

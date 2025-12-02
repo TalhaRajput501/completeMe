@@ -58,23 +58,26 @@ export default function Page() {
           className='w-[70%] mx-auto flex flex-col'
         >
           {/* Checkout Progress Bar*/}
-          <div className='w-[90%] mx-auto mt-5'>
+          {/* <div className='w-[90%] mx-auto mt-5'>
             <CheckoutProgress firstPage />
-          </div>
+          </div> */}
 
           {/* Cart Items */}
 
-          <div className='flex flex-col mt-7 flex-wrap w-full'>
-            <h1 className='text-3xl text-[#11283d] font-bold mx-auto w-[70%] mb-0.5 '>Cart Items</h1>
-            {
-              cartProducts && localCart ? (
-                cartProducts.map(eachProduct => (
-                  <CartItem key={eachProduct.name} product={eachProduct} localCart={localCart} />
-                ))
-              ) : (
-                <EmptyCart />
-              )
-            }
+          <div className='flex flex-col mt-7  flex-wrap w-full'>
+            <h1 className='text-3xl text-[#11283d] font-bold w-[80%] mx-auto  mb-0.5 '>Cart Items</h1>
+
+            <div className=''>
+              {
+                cartProducts && localCart ? (
+                  cartProducts.map(eachProduct => (
+                    <CartItem key={eachProduct.name} product={eachProduct} localCart={localCart} />
+                  ))
+                ) : (
+                  <EmptyCart />
+                )
+              }
+            </div>
 
           </div>
 
@@ -85,7 +88,7 @@ export default function Page() {
 
         {/* Side Bar */}
         <div
-          className='w-[30%]     '
+          className='w-[30%] '
         >
           {/* todo is ka alag component banana ha k nai??  */}
           {/* Order summary box */}
@@ -112,7 +115,7 @@ export default function Page() {
             <div
               className=' w-full border flex items-center mt-9 justify-center   '
             >
-              <Link className='w-full' href={'/checkout'}>
+              <Link className='w-full' href={'/shipping-details'}>
                 <button className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
                   Continue to Checkout
                 </button>
