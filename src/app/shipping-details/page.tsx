@@ -1,3 +1,4 @@
+import Button from '@/components/ui/Button'
 import CheckoutProgress from '@/components/ui/CheckoutProgress'
 import Link from 'next/link'
 import React from 'react'
@@ -18,9 +19,9 @@ function Page() {
           </div>
 
           <Link className='w-fit bg-gray-300 ' href={'/checkout'}>
-            <button className='w-auto bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
-              Continue to Payment 
-            </button>
+            <Button className='w-auto  py-2 px-3 font-semibold'>
+              Continue to Payment
+            </Button>
           </Link>
 
 
