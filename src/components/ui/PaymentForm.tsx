@@ -21,11 +21,12 @@ function PaymentForm() {
 
     const { error: submitError } = await elements.submit()
     if (submitError) {
-      // console.log('this is submit error', submitError)
+      console.log('this is submit error', )
       setLoading(false)
       toast.error(submitError.message)
     }
 
+    // const { error: confirmPaymentError } = await stripe.confirmPayment({
     const { error: confirmPaymentError } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -35,7 +36,11 @@ function PaymentForm() {
 
     if (confirmPaymentError.decline_code === 'card_declined') {
       toast.error(confirmPaymentError.message)
-    }
+    }  
+  
+
+
+
     setLoading(false)
   }
 

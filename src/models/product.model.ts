@@ -73,6 +73,5 @@ const productSchema = new mongoose.Schema<Product>(
   { timestamps: true }
 );
 
-// But if i go with the names you have 
-
+ 
 export const Product =  mongoose.models.Product || mongoose.model<Product>("Product", productSchema);

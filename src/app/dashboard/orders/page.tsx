@@ -4,10 +4,16 @@ function page() {
   return (
     <div>
       <h1
-        className='bg-red-500 text-4xl '
+        className=' text-4xl '
       >
-        this is Orders page
+        Manage Your Orders
       </h1>
+
+
+      <div>
+        
+      </div>
+
 
     </div>
   )

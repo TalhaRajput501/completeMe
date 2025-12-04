@@ -15,31 +15,39 @@ export default function Page() {
   const [localCart, setLocalCart] = useState<eachCartProduct[] | null>(null)
   const [total, setTotal] = useState<number>(0)
 
+
+  // todo  it is doing three things i have to rerun this for making total automatic how to do this 
+  // ! i am going to orders page i have to check it with free mind
   useEffect(() => {
     const getCartProduct = async () => {
+      // getting product Ids from localstorage
       const cartProductIds = localStorage.getItem('cartProducts')
+      
       if (cartProductIds) {
-        const jsonCartProductIds = JSON.parse(cartProductIds)
+
+        const jsonCartProductIds: eachCartProduct[] = JSON.parse(cartProductIds)
         setLocalCart(jsonCartProductIds)
         const productIds = jsonCartProductIds.map((pro: eachCartProduct) => (pro.product))
-        const products = await getProductsWithIds(productIds)
-        // console.log('these are the prodict coming with aggregation', products)
+        // getting actual products via aggregation form db
+        const products: cartProduct[] = await getProductsWithIds(productIds)
         setCartProducts(products)
-      }
 
-      if (cartProducts?.length !== 0) {
-        const cartMap = new Map(cartProducts?.map(item => [item._id, item]))
-        const finalArr = localCart?.map(cart => ({
-          ...cartMap.get(cart.product),
-          quantity: cart.quantity
-        }))
+        // it will make the total amount that user has to pay in summary box
+        if (products) {
+          const cartMap = new Map(products?.map(item => [item._id, item]))
+          const finalArr = jsonCartProductIds?.map(cart => ({
+            ...cartMap.get(cart.product),
+            quantity: cart.quantity
+          }))
 
-        const result = finalArr?.reduce((acc, curr) => {
-          const total = curr.price! * curr.quantity
-          return acc + total
-        }, 0)
-        console.log('this is the result of total shopping that you did in the past decades', result)
-        setTotal(result!)
+          const result = finalArr?.reduce((acc, curr) => {
+            const total = curr.price! * curr.quantity
+            return acc + total
+          }, 0)
+          console.log('this is the result of total shopping that you did in the past decades', finalArr)
+          console.log('this is the result of ff shopping that you did in the past decades', products)
+          setTotal(result!)
+        }
       }
     }
     getCartProduct()

@@ -92,7 +92,7 @@ export default function Page() {
       setShowProductDetailBox(false);
       setCurrentProductDetailBox(null);
     }
-    // Otherwise → open the clicked one
+    // Otherwise → open the clicked one 
     else {
       setCurrentProductDetailBox(productId);
       setShowProductDetailBox(true);

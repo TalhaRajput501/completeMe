@@ -51,7 +51,7 @@ function QuantityCounter({ deleteIcon, className, value, setQty, currentProduct,
         className={` w-full text-center rounded-l-full cursor-pointer border-r-[#3dbdf1]  font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300  ${className ?? 'px-2 p-1'} `} >
         {
           deleteIcon && value === 1 ? (
-            <Trash className='p-0.5' />
+            <Trash onClick={() => console.log('now i clicked on trash icon')} className='p-0.5' />
           ) : (
             <Minus className='p-0.5' />
           )
