@@ -16,7 +16,10 @@ export async function POST(request: NextRequest) {
       amount: amount,
       currency: "usd",
       // automatic_payment_methods: { enabled: true },
-      payment_method_types: ['card']
+      payment_method_types: ['card'],
+      metadata: {
+        
+      }
     });
 
     return NextResponse.json({clientSecret: paymentIntent.client_secret})

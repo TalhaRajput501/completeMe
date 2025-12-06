@@ -13,7 +13,7 @@ export default function Page() {
 
   const [cartProducts, setCartProducts] = useState<cartProduct[] | null>(null)
   const [localCart, setLocalCart] = useState<eachCartProduct[] | null>(null)
-  const [total, setTotal] = useState<number>(0)
+  const [total, setTotal] = useState<number>(0) 
 
 
   // todo  it is doing three things i have to rerun this for making total automatic how to do this 
@@ -22,14 +22,14 @@ export default function Page() {
     const getCartProduct = async () => {
       // getting product Ids from localstorage
       const cartProductIds = localStorage.getItem('cartProducts')
-      
+      let products: cartProduct[]
       if (cartProductIds) {
 
         const jsonCartProductIds: eachCartProduct[] = JSON.parse(cartProductIds)
         setLocalCart(jsonCartProductIds)
         const productIds = jsonCartProductIds.map((pro: eachCartProduct) => (pro.product))
         // getting actual products via aggregation form db
-        const products: cartProduct[] = await getProductsWithIds(productIds)
+        products = await getProductsWithIds(productIds)
         setCartProducts(products)
 
         // it will make the total amount that user has to pay in summary box
@@ -55,7 +55,7 @@ export default function Page() {
 
   return (
     <div
-      className='   '
+      className=' bg-gray-900 text-white  '
     >
       { /* Cart Product and Side Bar */}
       <div
@@ -79,7 +79,7 @@ export default function Page() {
               {
                 cartProducts && localCart ? (
                   cartProducts.map(eachProduct => (
-                    <CartItem key={eachProduct.name} product={eachProduct} localCart={localCart} />
+                    <CartItem key={eachProduct.name}   product={eachProduct} localCart={localCart} />
                   ))
                 ) : (
                   <EmptyCart />
@@ -127,7 +127,7 @@ export default function Page() {
                 <button className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
                   Continue to Checkout
                 </button>
-              </Link>
+              </Link> 
 
 
             </div>

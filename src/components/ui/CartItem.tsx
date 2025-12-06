@@ -16,16 +16,24 @@ export interface cartProduct {
 
 interface cartItemProps {
   product: cartProduct;
-  localCart: eachCartProduct[]
+  localCart: eachCartProduct[], 
+
 }
 
-function CartItem({ product, localCart }: cartItemProps) {
+function CartItem({ product, localCart,   }: cartItemProps) {
 
   const [quantityToBuy, setQuantityToBuy] = useState<number>(1)
 
   useEffect(() => {
-    localCart.map(item => item.product === product._id && setQuantityToBuy(item.quantity))
+    localCart.map(item => {
+      if (item.product === product._id) {
+        setQuantityToBuy(item.quantity)
+      }
+    }
+    )
   }, [])
+
+
 
   return (
     <div className='flex   w-[70%] mt-3 mx-auto  '>
@@ -81,7 +89,7 @@ function CartItem({ product, localCart }: cartItemProps) {
                 <p key={item.product} >
                   PKR: &#8203;
                   <span className='font-bold   '>
-                    {product.price * quantityToBuy!}
+                    {product.price * quantityToBuy}
                   </span>
                 </p>
               )

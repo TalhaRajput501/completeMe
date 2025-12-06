@@ -4,7 +4,6 @@ interface Product {
   productId: mongoose.Types.ObjectId;
   orderedQuantity: number;
   price: number;
-  
 }
 
 export interface Orders extends Document {
@@ -14,24 +13,25 @@ export interface Orders extends Document {
     address: string;
     phone: number;
   };
+  paymentIntentId: string;
   status: string;
-  totalAmount: number
+  totalAmount: number;
 }
 
 const ordersSchema = new mongoose.Schema<Orders>(
-  { 
+  {
     products: [
       {
-        _id: false, 
+        _id: false,
         productId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product',
+          ref: "Product",
           required: true,
         },
         orderedQuantity: {
-          type: Number, 
+          type: Number,
           required: true,
-        },  
+        },
         price: {
           type: Number,
           required: true,
@@ -52,15 +52,20 @@ const ordersSchema = new mongoose.Schema<Orders>(
         required: true,
       },
     },
+    paymentIntentId: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       required: true,
-      default: 'pending',
-      enum: ['pending', 'processing', 'delivered', 'cancelled']
+      default: "pending",
+      enum: ["pending", "processing", "delivered", "cancelled"],
     },
-    totalAmount: Number
+    totalAmount: Number,
   },
   { timestamps: true }
 );
 
-export const Orders = mongoose.models.Order || mongoose.model<Orders>("Order", ordersSchema);
+export const Orders =
+  mongoose.models.Order || mongoose.model<Orders>("Order", ordersSchema);
