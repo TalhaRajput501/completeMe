@@ -1,10 +1,17 @@
+'use client'
 import Banner from "@/components/ui/Banner";
 import Card from "@/components/ui/Card";
-import * as React from "react"
+import React, {useEffect} from "react"
 
 
 export default function Home() {
  
+
+  useEffect(() => {
+    
+  }, [])
+
+
   return (
     <>
       <div

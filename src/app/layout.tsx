@@ -28,8 +28,8 @@ export default async function RootLayout({
       <body
         className={`  antia liased`}
       >
-        <ReduxProvider>
-          <Providers session={session}>
+        <Providers session={session}>
+          <ReduxProvider>
             <div
               className="h-screen flex flex-col "
             >
@@ -44,8 +44,8 @@ export default async function RootLayout({
               </div>
 
             </div>
-          </Providers>
-        </ReduxProvider>
+          </ReduxProvider>
+        </Providers>
       </body>
     </html>
   );

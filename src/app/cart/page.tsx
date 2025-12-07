@@ -7,17 +7,18 @@ import { eachCartProduct } from '../product/[category]/[id]/[name]/page'
 import { getProductsWithIds } from '@/lib/actions/products.actions'
 import { ProductType } from '@/schemas/product.schema'
 import EmptyCart from '@/components/ui/EmptyCart'
+import { useSelector } from 'react-redux'
+import { useAppSelector } from '@/lib/store/reduxHooks'
 
 
 export default function Page() {
 
   const [cartProducts, setCartProducts] = useState<cartProduct[] | null>(null)
   const [localCart, setLocalCart] = useState<eachCartProduct[] | null>(null)
-  const [total, setTotal] = useState<number>(0) 
+  const [total, setTotal] = useState<number>(0)
 
+  const reduxCart = useAppSelector(state => state.cart.products)
 
-  // todo  it is doing three things i have to rerun this for making total automatic how to do this 
-  // ! i am going to orders page i have to check it with free mind
   useEffect(() => {
     const getCartProduct = async () => {
       // getting product Ids from localstorage
@@ -79,7 +80,7 @@ export default function Page() {
               {
                 cartProducts && localCart ? (
                   cartProducts.map(eachProduct => (
-                    <CartItem key={eachProduct.name}   product={eachProduct} localCart={localCart} />
+                    <CartItem key={eachProduct.name} setSummaryTotal={setTotal} product={eachProduct} localCart={localCart} />
                   ))
                 ) : (
                   <EmptyCart />
@@ -127,7 +128,12 @@ export default function Page() {
                 <button className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
                   Continue to Checkout
                 </button>
-              </Link> 
+              </Link>
+                <button
+                onClick={() => console.log(reduxCart)}
+                className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
+                  show me the redux cart
+                </button>
 
 
             </div>

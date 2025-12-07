@@ -17,10 +17,10 @@ export interface cartProduct {
 interface cartItemProps {
   product: cartProduct;
   localCart: eachCartProduct[], 
-
+  setSummaryTotal: React.Dispatch<React.SetStateAction<number>>
 }
 
-function CartItem({ product, localCart,   }: cartItemProps) {
+function CartItem({ product, localCart, setSummaryTotal  }: cartItemProps) {
 
   const [quantityToBuy, setQuantityToBuy] = useState<number>(1)
 
@@ -77,7 +77,9 @@ function CartItem({ product, localCart,   }: cartItemProps) {
               deleteIcon
               value={quantityToBuy!}
               setQty={setQuantityToBuy}
-              currentProduct={product._id as string}
+              setSummary={setSummaryTotal}
+              productPrice={product.price}
+              currentProductId={product._id as string}
               className=' p-0.5 px-1 ' />
           </div>
 

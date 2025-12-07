@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
         // if order dont exist then add order to db             
 
-        // todo i returned from here back to cart page becaue the cart product and user info from shipping details should in the payment intent api so it is necessary to make sure cart is correctly working so you have to go back on cart page and the set that the total amount in summary should change when quantity to buy change 
+ 
 
 
         

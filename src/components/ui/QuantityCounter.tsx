@@ -8,27 +8,45 @@ interface CounterProps {
   className?: string;
   value: number;
   setQty: React.Dispatch<React.SetStateAction<number>>;
-  currentProduct: string;
+  setSummary: React.Dispatch<React.SetStateAction<number>>;
+  productPrice: number;
+  currentProductId: string;
   controlToChangeCart?: boolean
 }
 
-function QuantityCounter({ deleteIcon, className, value, setQty, currentProduct, controlToChangeCart = false }: CounterProps) {
 
-  const setCartQuantity = (updatedValue: number) => {
+function QuantityCounter({ deleteIcon, className, value, setQty, currentProductId, controlToChangeCart = false, setSummary, productPrice }: CounterProps) {
+
+
+  const setCartQuantity = (updatedValue: number ) => {
 
     if (controlToChangeCart) {
       const cart = localStorage.getItem('cartProducts')
       if (cart) {
         const jsonCart = JSON.parse(cart)
         const newCart = jsonCart.map((item: eachCartProduct) => {
-          if (item.product === currentProduct) {
+          if (item.product === currentProductId) {
             return { product: item.product, quantity: updatedValue }
           }
-          return item 
+          return item
         }
         )
         localStorage.setItem('cartProducts', JSON.stringify(newCart))
       }
+    }
+  }
+
+  const deleteCartItem = (productId: string) => {
+    const localCart = localStorage.getItem('cartProducts')
+    if(localCart){
+      const cartJson = JSON.parse(localCart)
+      console.log(cartJson)
+      if(cartJson.length === 1){
+        localStorage.removeItem('cartProducts')
+        return;
+      }
+      // const finalCart = cartJson.filter((item: eachCartProduct) => item.product !== productId)
+      // localStorage.setItem('cartProducts', JSON.stringify(finalCart))
     }
   }
 
@@ -44,14 +62,15 @@ function QuantityCounter({ deleteIcon, className, value, setQty, currentProduct,
           const updated = Math.max(1, prev - 1)
           setCartQuantity(updated);
           return updated
-        }
-        );
+        }); 
+        // it will change the grand total as product quantity changes in cart
+        setSummary(prev => prev - productPrice)
       }
       }
         className={` w-full text-center rounded-l-full cursor-pointer border-r-[#3dbdf1]  font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300  ${className ?? 'px-2 p-1'} `} >
         {
           deleteIcon && value === 1 ? (
-            <Trash onClick={() => console.log('now i clicked on trash icon')} className='p-0.5' />
+            <Trash onClick={() => deleteCartItem(currentProductId)} className='p-0.5' />
           ) : (
             <Minus className='p-0.5' />
           )
@@ -67,8 +86,9 @@ function QuantityCounter({ deleteIcon, className, value, setQty, currentProduct,
           const updated = prev >= 5 ? prev : prev + 1
           setCartQuantity(updated);
           return updated
-
-        });
+        }); 
+        // it will change the grand total as product quantity changes in cart
+        setSummary(prev => prev + productPrice)
       }
       }
         className={`w-full text-center rounded-r-full cursor-pointer border-l-[#3dbdf1] font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300   ${className ?? 'px-2 p-1'} `}>
