@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { eachCartProduct } from '@/app/product/[category]/[id]/[name]/page';
 
 export interface cartProduct {
-  _id: string | ObjectId;
+  _id: string // i just remove | ObjectId from here in case any error occur 
   name: string;
   images: string[];
   price: number;

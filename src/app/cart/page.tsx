@@ -8,7 +8,8 @@ import { getProductsWithIds } from '@/lib/actions/products.actions'
 import { ProductType } from '@/schemas/product.schema'
 import EmptyCart from '@/components/ui/EmptyCart'
 import { useSelector } from 'react-redux'
-import { useAppSelector } from '@/lib/store/reduxHooks'
+import { useAppDispatch, useAppSelector } from '@/lib/store/reduxHooks'
+import { setCartItem } from '@/lib/features/cartSlice'
 
 
 export default function Page() {
@@ -18,11 +19,12 @@ export default function Page() {
   const [total, setTotal] = useState<number>(0)
 
   const reduxCart = useAppSelector(state => state.cart.products)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const getCartProduct = async () => {
       // getting product Ids from localstorage
-      const cartProductIds = localStorage.getItem('cartProducts')
+      const cartProductIds = localStorage.getItem('cartProducts') 
       let products: cartProduct[]
       if (cartProductIds) {
 
@@ -33,9 +35,11 @@ export default function Page() {
         products = await getProductsWithIds(productIds)
         setCartProducts(products)
 
+        dispatch(setCartItem(products))
+
         // it will make the total amount that user has to pay in summary box
-        if (products) {
-          const cartMap = new Map(products?.map(item => [item._id, item]))
+        if (products) { 
+          const cartMap = new Map(reduxCart.map(item => [item._id, item]))
           const finalArr = jsonCartProductIds?.map(cart => ({
             ...cartMap.get(cart.product),
             quantity: cart.quantity
@@ -129,11 +133,11 @@ export default function Page() {
                   Continue to Checkout
                 </button>
               </Link>
-                <button
+              <button
                 onClick={() => console.log(reduxCart)}
                 className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
-                  show me the redux cart
-                </button>
+                show me the redux cart
+              </button>
 
 
             </div>
