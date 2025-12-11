@@ -52,8 +52,8 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
       <div
         className='uppercase mt-0.5   text-[#3dbdf1] font-semibold flex items-center justify-between'
       >
-        <p>Shipping Details</p>
-        <p>Payment</p>
+        <p>Cart</p>
+        <p>Checkout</p>
         <p>Confirmation</p>
       </div>
     </div>

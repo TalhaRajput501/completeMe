@@ -24,7 +24,7 @@ export default function Page() {
   useEffect(() => {
     const getCartProduct = async () => {
       // getting product Ids from localstorage
-      const cartProductIds = localStorage.getItem('cartProducts') 
+      const cartProductIds = localStorage.getItem('cartProducts')
       let products: cartProduct[]
       if (cartProductIds) {
 
@@ -35,10 +35,10 @@ export default function Page() {
         products = await getProductsWithIds(productIds)
         setCartProducts(products)
 
-        dispatch(setCartItem(products))
+        // dispatch(setCartItem(products))
 
         // it will make the total amount that user has to pay in summary box
-        if (products) { 
+        if (products) {
           const cartMap = new Map(reduxCart.map(item => [item._id, item]))
           const finalArr = jsonCartProductIds?.map(cart => ({
             ...cartMap.get(cart.product),
@@ -71,9 +71,9 @@ export default function Page() {
           className='w-[70%] mx-auto flex flex-col'
         >
           {/* Checkout Progress Bar*/}
-          {/* <div className='w-[90%] mx-auto mt-5'>
+          <div className='w-[90%] mx-auto mt-5'>
             <CheckoutProgress firstPage />
-          </div> */}
+          </div>
 
           {/* Cart Items */}
 
@@ -128,7 +128,7 @@ export default function Page() {
             <div
               className=' w-full border flex items-center mt-9 justify-center   '
             >
-              <Link className='w-full' href={'/shipping-details'}>
+              <Link className='w-full' href={'/checkout'}>
                 <button className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
                   Continue to Checkout
                 </button>
