@@ -1,31 +1,48 @@
 import { cartProduct } from "@/components/ui/CartItem";
 import { ProductType } from "@/schemas/product.schema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store/store";
 
 interface initialStateType {
   products: cartProduct[];
 }
 
+// default state
 const initialState: initialStateType = {
-  products: [ {
-    _id: 'talha', // now test the 
-    images: ['https://images.unsplash.com/photo-1683322499436-f4383dd59f5a?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'],
-    name: 'hello',
-    price: 43,
-    stock: 34
-  }],
+  products: [],
 };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setCartItem(state, action: PayloadAction<cartProduct[]>){  
-      state.products.push(...action.payload)
+    addCartItems(state, action: PayloadAction<cartProduct[]>) {
+      state.products.push(...action.payload); // expecting array and then spreading it in state
     },
-
+    updateQuantity(
+      state,
+      action: PayloadAction<{ currentProductId: string; updatedValue: number }>
+    ) {
+      state.products = state.products.map((item) =>
+        item._id === action.payload.currentProductId
+          ? { ...item, qtyToBuy: action.payload.updatedValue }
+          : { ...item }
+      );
+    },
+    deleteItem(state , action: PayloadAction<string>) {
+       
+      state.products = state.products.filter((item) => item._id !== action.payload)
+    }
   },
 });
 
+export const { addCartItems, updateQuantity, deleteItem } = cartSlice.actions;
+
+export const selectCartTotal = (state: RootState) => {
+  return state.cart.products.reduce(
+    (total, item) => total + item.price * item.qtyToBuy,
+    0
+  );
+};
+
 export default cartSlice.reducer;
-export const {setCartItem} = cartSlice.actions

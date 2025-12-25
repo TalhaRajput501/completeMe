@@ -18,7 +18,7 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
   return (
     <div className='flex flex-col mx-auto mt-3' >
       <div
-        className='flex items-center  '
+        className='flex items-center    '
       >
         {
           firstDone ? (
@@ -50,10 +50,10 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
       </div>
 
       <div
-        className='uppercase mt-0.5   text-[#3dbdf1] font-semibold flex items-center justify-between'
+        className='uppercase    text-[#3dbdf1] font-semibold flex  items-center justify-between'
       >
-        <p>Cart</p>
-        <p>Checkout</p>
+        <p className='ml-6'>Cart</p>
+        <p className='ml-12'>Checkout</p>
         <p>Confirmation</p>
       </div>
     </div>

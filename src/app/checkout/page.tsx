@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import PaymentForm from '@/components/ui/PaymentForm'
+import OrderSummary from '@/components/ui/OrderSummary'
+import { useAppSelector } from '@/lib/store/reduxHooks'
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined')
@@ -16,9 +18,12 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY)
 
 function Page() {
 
-  const amount = 555 * 100
+  // const amount = 555 * 100
 
+  // fetch redux cart here and it should include quantity to  buy
+  // to create total in backend  
   const [clientSecret, setClientSecret] = useState('')
+  const products = useAppSelector(state => state.cart.products)
 
   useEffect(() => {
     fetch('/api/payment-intent', {
@@ -26,14 +31,16 @@ function Page() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ amount })
+      body: JSON.stringify({ products: products.map(({_id, qtyToBuy}) => ({_id, qtyToBuy})) })
     })
       .then(res => res.json())
       .then(data => setClientSecret(data.clientSecret))
-      .finally(() => console.log('this is client secret coming from', clientSecret))
-  }, [amount])
+      .finally(() => console.log('this is client secret coming from', clientSecret, products))
 
 
+  }, [products])
+
+  
 
   return (
     <div
@@ -64,10 +71,12 @@ function Page() {
                 >
                   <PaymentForm />
                 </Elements>
+ 
               </div>
             ) : (
+              // Loader spinner while payment form load
               <div role="status" className="w-full items-cneter justify-center mt-9 flex  items-center">
-                <div className="w-8 h-8 border-4 border-[#3dbdf1] border-t-transparent rounded-full animate-spin" aria-hidden="true"></div> 
+                <div className="w-8 h-8 border-4 border-[#3dbdf1] rounded-full animate-spin border-b-transparent" aria-hidden="true"></div>
               </div>
             )
           }
@@ -77,8 +86,9 @@ function Page() {
 
         {/* Order Summary */}
         <div className=' border w-[30%]'>
-
+          <OrderSummary />
         </div>
+
       </div>
     </div>
   )

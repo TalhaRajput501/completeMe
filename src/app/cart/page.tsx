@@ -6,61 +6,22 @@ import React, { useEffect, useState } from 'react'
 import { eachCartProduct } from '../product/[category]/[id]/[name]/page'
 import { getProductsWithIds } from '@/lib/actions/products.actions'
 import { ProductType } from '@/schemas/product.schema'
-import EmptyCart from '@/components/ui/EmptyCart'
-import { useSelector } from 'react-redux'
-import { useAppDispatch, useAppSelector } from '@/lib/store/reduxHooks'
-import { setCartItem } from '@/lib/features/cartSlice'
+import EmptyCart from '@/components/ui/EmptyCart' 
+import { useAppSelector } from '@/lib/store/reduxHooks'
+import { addCartItems } from '@/lib/features/cartSlice'
+import OrderSummary from '@/components/ui/OrderSummary'
 
 
 export default function Page() {
+ 
 
-  const [cartProducts, setCartProducts] = useState<cartProduct[] | null>(null)
-  const [localCart, setLocalCart] = useState<eachCartProduct[] | null>(null)
-  const [total, setTotal] = useState<number>(0)
+  const reduxCart = useAppSelector(state => state.cart.products) 
 
-  const reduxCart = useAppSelector(state => state.cart.products)
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const getCartProduct = async () => {
-      // getting product Ids from localstorage
-      const cartProductIds = localStorage.getItem('cartProducts')
-      let products: cartProduct[]
-      if (cartProductIds) {
-
-        const jsonCartProductIds: eachCartProduct[] = JSON.parse(cartProductIds)
-        setLocalCart(jsonCartProductIds)
-        const productIds = jsonCartProductIds.map((pro: eachCartProduct) => (pro.product))
-        // getting actual products via aggregation form db
-        products = await getProductsWithIds(productIds)
-        setCartProducts(products)
-
-        // dispatch(setCartItem(products))
-
-        // it will make the total amount that user has to pay in summary box
-        if (products) {
-          const cartMap = new Map(reduxCart.map(item => [item._id, item]))
-          const finalArr = jsonCartProductIds?.map(cart => ({
-            ...cartMap.get(cart.product),
-            quantity: cart.quantity
-          }))
-
-          const result = finalArr?.reduce((acc, curr) => {
-            const total = curr.price! * curr.quantity
-            return acc + total
-          }, 0)
-          console.log('this is the result of total shopping that you did in the past decades', finalArr)
-          console.log('this is the result of ff shopping that you did in the past decades', products)
-          setTotal(result!)
-        }
-      }
-    }
-    getCartProduct()
-  }, [])
+ 
 
   return (
     <div
-      className=' bg-gray-900 text-white  '
+      className='    '
     >
       { /* Cart Product and Side Bar */}
       <div
@@ -82,14 +43,14 @@ export default function Page() {
 
             <div className=''>
               {
-                cartProducts && localCart ? (
-                  cartProducts.map(eachProduct => (
-                    <CartItem key={eachProduct.name} setSummaryTotal={setTotal} product={eachProduct} localCart={localCart} />
+                reduxCart.length !== 0 ? (
+                  reduxCart.map(eachProduct => (
+                    <CartItem key={eachProduct.name}  product={eachProduct} />
                   ))
                 ) : (
                   <EmptyCart />
                 )
-              }
+              } 
             </div>
 
           </div>
@@ -103,46 +64,7 @@ export default function Page() {
         <div
           className='w-[30%] '
         >
-          {/* todo is ka alag component banana ha k nai??  */}
-          {/* Order summary box */}
-          <div className='m-6 p-6 pt-4 sticky inset-0 top-11 bg-[#c0e8fb] text-[#11283d] rounded'>
-            <h1 className='font-bold text-2xl'>Order Summary</h1>
-
-            <div className='flex justify-between mt-0.5'>
-              <p>Products</p>
-              <p className='font-semibold'>444</p>
-            </div>
-
-            <div className='flex justify-between mt-0.5'>
-              <p>Discount</p>
-              <p className='font-semibold'>43</p>
-            </div>
-
-            <hr className="border-none h-0.5 bg-gray-900 mt-2" />
-
-            <div className='flex justify-between mt-0.5'>
-              <p>Total</p>
-              <p className='font-semibold'>{total}</p>
-            </div>
-
-            <div
-              className=' w-full border flex items-center mt-9 justify-center   '
-            >
-              <Link className='w-full' href={'/checkout'}>
-                <button className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
-                  Continue to Checkout
-                </button>
-              </Link>
-              <button
-                onClick={() => console.log(reduxCart)}
-                className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
-                show me the redux cart
-              </button>
-
-
-            </div>
-
-          </div>
+          <OrderSummary buttonVisibility buttonText='Continue to Checkout' buttonUrl='checkout' />
         </div>
       </div>
 

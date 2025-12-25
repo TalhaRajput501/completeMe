@@ -119,7 +119,7 @@ export const getProductsWithIds = async (productIds: (string | ObjectId)[]) => {
           images: 1,
           name: 1, 
           price: 1,
-          stock: 1,
+          // stock: 1, // comment it because i think it is not being used any where
         },
       },
     ]);
@@ -130,3 +130,35 @@ export const getProductsWithIds = async (productIds: (string | ObjectId)[]) => {
     console.log("Error in getProductwithIds", error);
   }
 };
+
+
+// products for calculating total bill in payment intent
+export const productsForCharge = async(products: (string | ObjectId)[]) => {
+  try {
+    await dbConnect()
+
+    const objectIds = products.map(i => typeof i === 'string' ? new ObjectId(i) : i)
+
+    const finalResult = await Product.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: objectIds
+          }
+        }
+      }, 
+      {
+        $project: {
+          _id: 1,
+          price: 1
+        }
+      }
+    ])
+
+    const parsedProducts = JSON.parse(JSON.stringify(finalResult))
+    return parsedProducts
+
+  } catch (error) {
+    console.log('Error in productsforcharge ', error)
+  }
+}

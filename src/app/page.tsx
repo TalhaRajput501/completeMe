@@ -3,8 +3,7 @@ import Banner from "@/components/ui/Banner";
 import Card from "@/components/ui/Card";
 import React, { useEffect } from "react"
 import { store } from "@/lib/store/store";
-import { useAppDispatch } from "@/lib/store/reduxHooks";
-import { setCartItem } from "@/lib/features/cartSlice";
+import { useAppDispatch } from "@/lib/store/reduxHooks"; 
 import { getProductsWithIds } from "@/lib/actions/products.actions";
 import { eachCartProduct } from "./product/[category]/[id]/[name]/page";
 

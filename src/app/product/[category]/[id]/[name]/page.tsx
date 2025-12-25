@@ -10,8 +10,10 @@ import StockStatusPill from '@/components/ui/StockStatusPill'
 import Card from '@/components/ui/Card'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/lib/store/store'
-import QuantityCounter from '@/components/ui/QuantityCounter'
+import { useAppDispatch } from '@/lib/store/reduxHooks'
+import { addCartItems } from '@/lib/features/cartSlice'
 
+// local storage product
 export interface eachCartProduct {
   product: string;
   quantity: number;
@@ -23,6 +25,8 @@ export default function Page() {
   const [product, setProduct] = useState<ProductType | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [cartValue, setCartValue] = useState(1)
+
+  const dispatch = useAppDispatch()
 
   const params = useParams()
   const { id, name } = params
@@ -45,7 +49,7 @@ export default function Page() {
   const addToCart = () => {
     console.log(product)
     const oldCart = localStorage.getItem('cartProducts')
-    console.log('this is oldcart ', oldCart)
+    // console.log('this is oldcart ', oldCart)
 
     if (oldCart) {
       const oldJson = JSON.parse(oldCart)
@@ -53,13 +57,24 @@ export default function Page() {
         let newCart = oldJson
         const exists = oldJson.find((item: eachCartProduct) => item.product === id)
         if (exists) {
-          newCart = oldJson.map((item: eachCartProduct) => item.product === id ? { ...item, quantity: cartValue } : item)
+          newCart = oldJson.map((item: eachCartProduct) => {
+            if (item.product === id) {
+              const newItem = { ...item, quantity: cartValue }
+              // dispatch(addNewItem([newItem]))
+              return newItem
+            } else {
+              return item
+            }
+          }
+          )
+
         } else {
           newCart.push({ product: id, quantity: cartValue })
+
         }
 
 
-        console.log('this is new Cart', newCart)
+        // console.log('this is new Cart', newCart)
         localStorage.setItem('cartProducts', JSON.stringify(newCart))
       }
     } else {
@@ -219,16 +234,16 @@ export default function Page() {
                     className='flex justify-center   rounded-full items-cetner max-w-[20%] w-[20%]'
                   >
                     {/* Decrement Button */}
-                    {/* <button onClick={() => setCartValue(prev => Math.max(1, prev - 1))} className=' w-full text-center rounded-l-full px-2 cursor-pointer border-r-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>-</button> */}
+                    <button onClick={() => setCartValue(prev => Math.max(1, prev - 1))} className=' w-full text-center rounded-l-full px-2 cursor-pointer border-r-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>-</button>
                     {/* Cart Value */}
-                    {/* <p className=' w-full text-center text-[#3dbdf1] px-1.5 p-1 font-bold text-lg  bg-gray-200'>{cartValue}</p> */}
+                    <p className=' w-full text-center text-[#3dbdf1] px-1.5 p-1 font-bold text-lg  bg-gray-200'>{cartValue}</p>
                     {/* Increment Button */}
-                    {/* <button onClick={() => setCartValue(prev => prev >= 5 ? prev : prev + 1)} className=' w-full text-center rounded-r-full px-2 cursor-pointer border-l-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>+</button> */}
-                    <QuantityCounter
-                      currentProduct={product._id!}
+                    <button onClick={() => setCartValue(prev => prev >= 5 ? prev : prev + 1)} className=' w-full text-center rounded-r-full px-2 cursor-pointer border-l-[#3dbdf1]  p-1 font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300'>+</button>
+                    {/* <QuantityCounter
+                      currentProductId={product._id!}
                       setQty={setCartValue}
                       value={cartValue}
-                    />
+                    /> */}
                   </div>
 
                   {/* button */}

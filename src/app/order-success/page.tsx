@@ -6,7 +6,7 @@ import React from 'react'
 function page() {
   return (
     <div
-      className=' flex flex-col  items-center justify-center h-[calc(100vh-4rem)]'
+      className=' flex flex-col  bg-gray-900 text-white items-center justify-center h-[calc(100vh-4rem)]'
     >
       {/* Progress bar */}
       <div className='w-[70%] mt-4 '>

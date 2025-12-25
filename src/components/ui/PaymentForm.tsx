@@ -26,8 +26,7 @@ function PaymentForm() {
       toast.error(submitError.message)
     }
 
-    // const { error: confirmPaymentError } = await stripe.confirmPayment({
-    const { error: confirmPaymentError } = await stripe.confirmPayment({
+     const { error: confirmPaymentError } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: `http://localhost:3000/order-success`
