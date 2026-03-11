@@ -71,13 +71,13 @@ function Navbar() {
               <Link
                 href={'/sign-in'}
               >
-                <User className="w-9 cursor-pointer  h-10 mx-3  text-black" />
+                <User className="w-9 cursor-pointer  h-10 mx-3  text-[#11283d]" />
               </Link>
 
               <Link
                 href={'/cart'}
               >
-                <ShoppingCart className="w-9 cursor-pointer  h-10 mx-3  text-black" />
+                <ShoppingCart className="w-9 cursor-pointer  h-10 mx-3  text-[#11283d]" />
               </Link>
 
             </div>

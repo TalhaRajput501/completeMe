@@ -27,7 +27,7 @@ export default async function RootLayout(
   return (
     <html lang="en">
       <body
-        className={`  antia liased`}
+        className='antia liased'
       >
         <Providers session={session}>
           <ReduxProvider>

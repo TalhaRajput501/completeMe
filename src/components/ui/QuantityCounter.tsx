@@ -6,8 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/store/reduxHooks';
 import { deleteItem, updateQuantity } from '@/lib/features/cartSlice';
 
 interface CounterProps {
-  value: number;
-  setQty: React.Dispatch<React.SetStateAction<number>>;
+  qtyToBuy: number
   productPrice: number;
   currentProductId: string;
   deleteIcon?: boolean;
@@ -16,17 +15,27 @@ interface CounterProps {
 }
 
 
-function QuantityCounter({ deleteIcon, className, value, setQty, currentProductId, controlToChangeCart = false, productPrice }: CounterProps) {
+function QuantityCounter({ deleteIcon, className, qtyToBuy, currentProductId, controlToChangeCart = false, productPrice }: CounterProps) {
 
 
-  const [disableBtn, setDisableBtn] = useState(false)
-  // const reduxCart = useAppSelector(state => state.cart.products)
+  const [disableBtn, setDisableBtn] = useState(false) 
   const dispatch = useAppDispatch()
 
 
-  const setCartQuantity = (updatedValue: number) => {
+  const setCartQuantity = (quantity: number, action: 'increment' | 'decrement') => {
+    // console.log('getting this ', quantity)
     if (controlToChangeCart) {
-      dispatch(updateQuantity({ currentProductId, updatedValue }))
+      if (action === 'decrement') { 
+        // console.log(quantity - 1)
+        if(quantity <= 5) setDisableBtn(false)
+        dispatch(updateQuantity({ currentProductId, updatedValue: quantity - 1 }))
+      }
+
+      if (action === 'increment') { 
+        // console.log(quantity + 1)
+        if(quantity >= 4  ) setDisableBtn(true)
+        dispatch(updateQuantity({ currentProductId, updatedValue: quantity + 1 }))
+      }
     }
   }
 
@@ -43,18 +52,13 @@ function QuantityCounter({ deleteIcon, className, value, setQty, currentProductI
     >
       {/* Decrement Button */}
 
-      <button onClick={() => {
-        setQty(prev => {
-          prev <= 5 ? setDisableBtn(false) : setDisableBtn(true)
-          const updated = Math.max(1, prev - 1)
-          setCartQuantity(updated);
-          return updated
-        }); 
+      <button onClick={() => { 
+        setCartQuantity(qtyToBuy, 'decrement');
       }
       }
         className={` w-full text-center rounded-l-full cursor-pointer border-r-[#3dbdf1]  font-bold text-xl border  bg-gray-200 hover:bg-gray-300 text-[#3dbdf1] transition-colors duration-300  ${className ?? 'px-2 p-1'} `} >
         {
-          deleteIcon && value === 1 ? (
+          deleteIcon && qtyToBuy === 1 ? (
             <Trash onClick={() => deleteCartItem(currentProductId)} className='p-0.5' />
           ) : (
             <Minus className='p-0.5' />
@@ -63,17 +67,12 @@ function QuantityCounter({ deleteIcon, className, value, setQty, currentProductI
       </button>
 
       {/* Cart Value */}
-      <p className={` w-full text-center text-[#3dbdf1]   font-bold text-xl  bg-gray-200 ${className ?? 'px-2 p-1'}`}>{value}</p>
+      <p className={` w-full text-center text-[#3dbdf1]   font-bold text-xl  bg-gray-200 ${className ?? 'px-2 p-1'}`}>{qtyToBuy}</p>
 
       {/* Increment Button */}
       <button
-        onClick={() => {
-          setQty(prev => {
-            prev >= 4 ? setDisableBtn(true) : setDisableBtn(false)
-            const updated = prev >= 5 ? prev : prev + 1
-            setCartQuantity(updated);
-            return updated
-          }); 
+        onClick={() => { 
+          setCartQuantity(qtyToBuy, 'increment'); 
         }
         }
         disabled={disableBtn}

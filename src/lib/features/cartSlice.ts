@@ -38,7 +38,7 @@ const cartSlice = createSlice({
 
 export const { addCartItems, updateQuantity, deleteItem } = cartSlice.actions;
 
-export const selectCartTotal = (state: RootState) => {
+export const  selectCartTotal = (state: RootState) => {
   return state.cart.products.reduce(
     (total, item) => total + item.price * item.qtyToBuy,
     0

@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import React from 'react'
 import { useAppSelector } from '@/lib/store/reduxHooks';
@@ -13,6 +14,7 @@ interface OrderSummaryProps {
 function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false }: OrderSummaryProps) {
 
   const total: number = useAppSelector(selectCartTotal)
+  // const  products = useAppSelector(state => state.cart.products)
 
   return (
 
@@ -49,7 +51,7 @@ function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false }: Order
             </button>
           </Link>
           {/* <button
-          onClick={() => console.log(total)}
+          onClick={() => console.log(products)}
           className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
           show me the redux cart
           </button> */}

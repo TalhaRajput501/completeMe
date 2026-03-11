@@ -6,6 +6,7 @@ import { productSchema } from "@/schemas/product.schema";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { ObjectId } from "mongodb";
 import { cartProduct } from "@/components/ui/CartItem";
+import { toast } from "sonner";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
@@ -55,11 +56,13 @@ export const addProduct = async (product: ProductType, images: File[]) => {
     if (!parsed.success) {
       const message = parsed.error.issues.map((e) => e.message);
       console.error("this is message", message);
+      toast.error(`${message}`)
       return;
     } else {
       const pro = new Product({ ...product, images: url_array });
       await pro.save();
       console.log("product is saved successfully ");
+      toast.success('Product saved successfully.')
     }
   } catch (error) {
     console.log("something happen in add Product", error);
@@ -130,9 +133,9 @@ export const getProductsWithIds = async (productIds: (string | ObjectId)[]) => {
     console.log("Error in getProductwithIds", error);
   }
 };
+ 
 
-
-// products for calculating total bill in payment intent
+// Get products for calculating total bill in payment intent
 export const productsForCharge = async(products: (string | ObjectId)[]) => {
   try {
     await dbConnect()

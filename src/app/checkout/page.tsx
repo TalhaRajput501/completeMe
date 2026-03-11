@@ -1,6 +1,5 @@
 'use client'
-import CheckoutProgress from '@/components/ui/CheckoutProgress'
-import Link from 'next/link'
+import CheckoutProgress from '@/components/ui/CheckoutProgress' 
 import React, { useEffect, useState } from 'react'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
@@ -23,6 +22,7 @@ function Page() {
   // fetch redux cart here and it should include quantity to  buy
   // to create total in backend  
   const [clientSecret, setClientSecret] = useState('')
+  const [orderId, setOrderId] = useState('')
   const products = useAppSelector(state => state.cart.products)
 
   useEffect(() => {
@@ -31,20 +31,22 @@ function Page() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ products: products.map(({_id, qtyToBuy}) => ({_id, qtyToBuy})) })
+      body: JSON.stringify({ products: products.map(({ _id, qtyToBuy }) => ({ _id, qtyToBuy })) })
     })
       .then(res => res.json())
-      .then(data => setClientSecret(data.clientSecret))
-      .finally(() => console.log('this is client secret coming from', clientSecret, products))
-
+      .then(data => {
+        setClientSecret(data.clientSecret)
+        setOrderId(data.orderId)
+      })
+      .finally(() => console.log('client secret: ', clientSecret))
 
   }, [products])
 
-  
+
 
   return (
     <div
-      className='  bg-gray-900 text-white h-screen'
+      className='   '
     >
       <div className='flex w-full'>
 
@@ -59,19 +61,18 @@ function Page() {
           </div>
 
           {/* Stripe payment form */}
-
           {
             clientSecret ? (
-              <div className='w-full mt-9'>
+              <div className='w-full mt-5'>
                 <Elements
                   stripe={stripePromise}
                   options={{
                     clientSecret,
                   }}
                 >
-                  <PaymentForm />
+                  <PaymentForm orderId={orderId} />
                 </Elements>
- 
+
               </div>
             ) : (
               // Loader spinner while payment form load
@@ -81,11 +82,12 @@ function Page() {
             )
           }
 
+
         </div>
 
 
         {/* Order Summary */}
-        <div className=' border w-[30%]'>
+        <div className=' border-0 border-l-1 w-[30%] h-[calc(100vh-4rem)]'>
           <OrderSummary />
         </div>
 

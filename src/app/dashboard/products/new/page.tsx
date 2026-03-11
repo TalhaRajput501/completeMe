@@ -165,14 +165,14 @@ export default function Page() {
         gender: selectedGenders.map(res => (res.value)),
       }
     )
-    console.log({
-      ...product,
-      tags: localTags.split(','),
-      category: category?.value || 'watch',
-      features: selectedFeatures.map(res => (res.value)),
-      sizeOptions: selectedSize.map(res => (res.value)),
-      gender: selectedGenders.map(res => (res.value)),
-    })
+    // console.log({
+    //   ...product,
+    //   tags: localTags.split(','),
+    //   category: category?.value || 'watch',
+    //   features: selectedFeatures.map(res => (res.value)),
+    //   sizeOptions: selectedSize.map(res => (res.value)),
+    //   gender: selectedGenders.map(res => (res.value)),
+    // })
 
     if (!parsed.success) {
       const message = parsed.error.issues.map(e => e.message)
@@ -180,7 +180,7 @@ export default function Page() {
       return
     }
     else {
-      console.log('this is the final data going to backend ', parsed.data, ' and files ', file.selectedFiles)
+      // console.log('this is the final data going to backend ', parsed.data, ' and files ', file.selectedFiles)
       await addProduct(parsed.data, file.selectedFiles)
     }
 

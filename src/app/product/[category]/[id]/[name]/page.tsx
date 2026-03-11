@@ -12,6 +12,9 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/lib/store/store'
 import { useAppDispatch } from '@/lib/store/reduxHooks'
 import { addCartItems } from '@/lib/features/cartSlice'
+import InnerImageZoom from 'react-inner-image-zoom'
+import 'react-inner-image-zoom/lib/styles.min.css';
+
 
 // local storage product
 export interface eachCartProduct {
@@ -102,21 +105,35 @@ export default function Page() {
             >
               {/* Images */}
               <div
-                className='flex basis-[45%] grow-0 shrink-0 flex-col h-[50vh]'
+                className='flex basis-[45%] grow-0 shrink-0 flex-col h-[65vh]'
               >
                 {/* Big Image */}
                 <div
                   className='px-1    w-full h-[80%] '
                 >
-                  <div
-                    className='relative  border  rounded-2xl  mx-auto w-full h-full  '
-                  >
-                    <Image
+                  <div className="border rounded-2xl mx-auto w-full max-h-[600px] h-full overflow-hidden aspect-square  ">
+                    <InnerImageZoom  
+                    // todo set this Inner zoom image it is not working well on product page 
+                      src={product.images[0]}
+                      zoomType="hover"
+                      hasSpacer
+                      hideHint
+                      className="rounded-2xl"
+                      imgAttributes={{
+                        style: {
+                          objectFit: "contain",
+                          width: "100%",
+                          height: "100%",
+                        },
+                      }}
+                    />
+                    {/* <Image
                       className='rounded-2xl object-contain'
                       alt="lamborghini"
                       fill
                       src={product.images[0]}
-                    />
+                    /> */}
+
                   </div>
                 </div>
 

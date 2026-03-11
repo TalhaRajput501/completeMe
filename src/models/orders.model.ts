@@ -1,24 +1,26 @@
 import mongoose, { Document } from "mongoose";
 
-interface Product {
+export interface OrderProduct {
   productId: mongoose.Types.ObjectId;
   orderedQuantity: number;
   price: number;
 }
 
-export interface Orders extends Document {
-  products: Product[];
-  customerInfo: {
+type OrderStatus = "draft" | "pending" | "processing" | "delivered" | "cancelled";  
+
+export interface OrderType extends Document {
+  products: OrderProduct[];
+  customerInfo?: {
     name: string;
     address: string;
     phone: number;
   };
   paymentIntentId: string;
-  status: string;
+  status: OrderStatus;
   totalAmount: number;
 }
 
-const ordersSchema = new mongoose.Schema<Orders>(
+const ordersSchema = new mongoose.Schema<OrderType>(
   {
     products: [
       {
@@ -41,15 +43,15 @@ const ordersSchema = new mongoose.Schema<Orders>(
     customerInfo: {
       name: {
         type: String,
-        required: true,
+        // required: true,
       },
       address: {
         type: String,
-        required: true,
+        // required: true,
       },
       phone: {
         type: Number,
-        required: true,
+        // required: true,
       },
     },
     paymentIntentId: {
@@ -60,12 +62,11 @@ const ordersSchema = new mongoose.Schema<Orders>(
       type: String,
       required: true,
       default: "pending",
-      enum: ["pending", "processing", "delivered", "cancelled"],
+      enum: ["draft", "pending", "processing", "delivered", "cancelled"],
     },
     totalAmount: Number,
   },
   { timestamps: true }
 );
 
-export const Orders =
-  mongoose.models.Order || mongoose.model<Orders>("Order", ordersSchema);
+export const Order = mongoose.models.Order || mongoose.model<OrderType>("Order", ordersSchema);

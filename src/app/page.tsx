@@ -2,10 +2,6 @@
 import Banner from "@/components/ui/Banner";
 import Card from "@/components/ui/Card";
 import React, { useEffect } from "react"
-import { store } from "@/lib/store/store";
-import { useAppDispatch } from "@/lib/store/reduxHooks"; 
-import { getProductsWithIds } from "@/lib/actions/products.actions";
-import { eachCartProduct } from "./product/[category]/[id]/[name]/page";
 
 
 export default function Home() {
@@ -37,7 +33,7 @@ export default function Home() {
           <Card />
           <Card />
           <Card />
-          <Card />
+
           <Card />
         </div>
 

@@ -23,20 +23,9 @@ interface cartItemProps {
 }
 
 function CartItem({ product }: cartItemProps) {
-
-  const [quantityToBuy, setQuantityToBuy] = useState<number>(1)
+ 
   const reduxCart = useAppSelector(state => state.cart.products)
   const dispatch = useAppDispatch()
-
-
-  useEffect(() => {
-    reduxCart.forEach(item => {
-      if (item._id === product._id) {
-        setQuantityToBuy(item.qtyToBuy)
-      }
-    })
-  }, [reduxCart])
-
 
   return (
     <div className='flex   w-[70%] mt-3 mx-auto  '>
@@ -78,8 +67,8 @@ function CartItem({ product }: cartItemProps) {
             <QuantityCounter
               controlToChangeCart
               deleteIcon
-              value={quantityToBuy!}
-              setQty={setQuantityToBuy}
+              qtyToBuy={product.qtyToBuy}  
+              // setQty={setQuantityToBuy}
               // setSummary={setSummaryTotal}
               productPrice={product.price}
               currentProductId={product._id as string}
@@ -95,7 +84,7 @@ function CartItem({ product }: cartItemProps) {
                 <p key={item._id} >
                   PKR: &#8203;
                   <span className='font-bold   '>
-                    {product.price * quantityToBuy}
+                    {product.price * product.qtyToBuy}
                   </span>
                 </p>
               )

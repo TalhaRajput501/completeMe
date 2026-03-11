@@ -28,7 +28,7 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
           )
         }
         {/* Line */}
-        <hr className='mx-2 text-[#3dbdf1] w-1/2   ' />
+        <hr className={`mx-2 w-1/2 ${secondPage && 'border-[#0ba0db]'}`} />
         {
           secondDone ? (
 
@@ -38,7 +38,7 @@ export default function CheckoutProgress({ firstDone = false, secondDone = false
           )
         }
         {/* Line */}
-        <hr className='text-white w-1/2   mx-2' />
+        <hr className={`mx-2 w-1/2  ${thirdPage && 'border-[#0ba0db]'}`} />
         {
           thirdDone ? (
 

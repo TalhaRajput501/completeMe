@@ -58,11 +58,11 @@ export default function Page() {
         </div>
 
         {/*  The vertical line */}
-        <div className=" bg-gray-800 h-[calc(100vh-4rem)]"></div>
+        {/* <div className=" bg-gray-800 "></div> */}
 
         {/* Side Bar */}
         <div
-          className='w-[30%] '
+          className='w-[30%] border-0 border-l-1 h-[calc(100vh-4rem)]'
         >
           <OrderSummary buttonVisibility buttonText='Continue to Checkout' buttonUrl='checkout' />
         </div>
