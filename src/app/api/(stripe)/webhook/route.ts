@@ -3,22 +3,20 @@ import Stripe from "stripe";
 import { dbConnect } from "@/lib/dbConnect";
 import { Order } from "@/models/orders.model";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("Stripe secret key is required");
-}
-
-if (!process.env.STRIPE_WEBHOOK_SECRET_KEY) {
-  throw new Error("Stripe webhook secret key is required");
-}
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2026-01-28.clover",
-});
-
-
 // ? this is server to server api 
 // ** stripe server will hit this api for informing me that payemnt received or not
 export async function POST(request: Request) {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json({ message: "Stripe secret key is required" }, { status: 500 });
+  }
+
+  if (!process.env.STRIPE_WEBHOOK_SECRET_KEY) {
+    return NextResponse.json({ message: "Stripe webhook secret key is required" }, { status: 500 });
+  }
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2026-01-28.clover",
+  });
   // Get the raw body as text. Stripe signature verification requires raw body.
   const rawBody = await request.text();
   console.log("whole request: ", request);
