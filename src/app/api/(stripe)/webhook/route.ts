@@ -3,15 +3,21 @@ import Stripe from "stripe";
 import { dbConnect } from "@/lib/dbConnect";
 import { Order } from "@/models/orders.model";
 
-// ? this is server to server api 
+// ? this is server to server api
 // ** stripe server will hit this api for informing me that payemnt received or not
 export async function POST(request: Request) {
   if (!process.env.STRIPE_SECRET_KEY) {
-    return NextResponse.json({ message: "Stripe secret key is required" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Stripe secret key is required" },
+      { status: 500 },
+    );
   }
 
   if (!process.env.STRIPE_WEBHOOK_SECRET_KEY) {
-    return NextResponse.json({ message: "Stripe webhook secret key is required" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Stripe webhook secret key is required" },
+      { status: 500 },
+    );
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -34,7 +40,7 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(
       rawBody,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET as string
+      process.env.STRIPE_WEBHOOK_SECRET as string,
     );
   } catch (error: unknown) {
     if (error instanceof Stripe.errors.StripeSignatureVerificationError) {

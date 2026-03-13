@@ -2,6 +2,9 @@
 import Banner from "@/components/ui/Banner";
 import Card from "@/components/ui/Card";
 import React, { useEffect } from "react"
+import Button from "@/components/ui/Button";
+import Heading from "@/components/ui/Heading";
+
 
 
 export default function Home() {
@@ -9,7 +12,7 @@ export default function Home() {
   // const dispatch = useAppDispatch()
 
   useEffect(() => {
-    
+
   }, [])
 
 
@@ -35,10 +38,18 @@ export default function Home() {
           <Card />
 
           <Card />
+
+          <div className="mt-5">
+
+          <Heading>
+            This is custom component
+          </Heading>
+          <Button >Click Me</Button>
+
+          </div>
         </div>
 
       </div>
-
 
 
     </>

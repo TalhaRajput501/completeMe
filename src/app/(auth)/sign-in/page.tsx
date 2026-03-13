@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import LoadingIcon from '@/components/ui/LoadingIcon'
 import Button from '@/components/ui/Button'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
 export default function Page() {
   const router = useRouter()
@@ -12,6 +13,7 @@ export default function Page() {
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string | null>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [showPass, setShowPass] = useState<boolean>(false)
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,11 +60,11 @@ export default function Page() {
                 <div className='  before:absolute before:inset-0 before:bg-black/10 '></div>
                 <div className=' z-10 relative flex flex-col items-center justify-center'>
                   <h1 className='font-bold text-2xl  bg-[#3dbdf1] px-1 '>Welcome back</h1>
-                  <p className='font-semibold text-md text-[#11283d]  '>Contine with your credentials </p>  
+                  <p className='font-semibold text-md text-[#11283d]  '>Contine with your credentials </p>
                 </div>
               </div>
 
-            </div>  
+            </div>
 
 
             {/* Sign In form */}
@@ -78,23 +80,43 @@ export default function Page() {
                 {error}
               </p>
 
-              <input
-                autoFocus
-                autoComplete='username'
-                value={username}
-                type="text"
-                onChange={(e) => setUsername(e.target.value)}
-                className='bg-[#e8f0fe] text-[#11283d] py-1  mt-1  text-xl w-[60%]'
-              />
+              <label
+                className='bg-[#e8f0fe] flex flex-col  justify-center text-[#11283d] py-1 mt-4 px-2  text-xl w-[60%] focus:border-2 focus:border-black'
+              >
+                <p className='text-sm font-bold' >Email</p>
+                <input
+                  autoFocus
+                  autoComplete='username'
+                  placeholder='mail@mail.com'
+                  value={username}
+                  type="text"
+                  onChange={(e) => setUsername(e.target.value)}
+                  className='outline-none w-full mt-0.5'
+                />
+              </label>
 
-
-              <input
-                autoComplete='current-password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                className='bg-[#e8f0fe]  text-[#11283d] py-1 mt-4   text-xl w-[60%]'
-              />
+              <label
+                className='bg-[#e8f0fe]  text-[#11283d] py-1 mt-4  px-2 text-xl w-[60%]'
+              >
+                <label className='text-sm font-bold' htmlFor="username">Password</label>
+                <div className='flex flex-row items-center justify-center'>
+                  <input
+                    autoComplete='current-password'
+                    placeholder='*******'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type={showPass ? 'text' : 'password'}
+                    className='outline-none  w-full mt-0.5'
+                  />
+                  {
+                    showPass ? (
+                      <EyeOffIcon onClick={() => setShowPass(prev => !prev)} className='cursor-pointer' />
+                    ) : (
+                      <EyeIcon onClick={() => setShowPass(prev => !prev)} className='cursor-pointer' />
+                    )
+                  }
+                </div>
+              </label>
 
 
               <Button

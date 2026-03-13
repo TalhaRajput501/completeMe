@@ -95,7 +95,6 @@ export default function Page() {
       {
         product && (
 
-
           // bg-[#f9fafb] text-black 
           <div className=' pt-6 bg-[#f9fafb] text-black h-screen mx-auto  ' >
 
