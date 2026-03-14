@@ -1,7 +1,9 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {CircleArrowLeft, CircleArrowRight} from 'lucide-react'
 import Image from 'next/image'
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 interface BannerProps {
   images: string[];
@@ -11,8 +13,24 @@ interface BannerProps {
 function Banner() {
 
 
-  const [current, setCurrent] = useState<number>(0)
-
+  // const [current, setCurrent] = useState<number>(0)
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+      { loop: true, align: 'start' },
+      [Autoplay({ delay: 3000, stopOnInteraction: false })]
+    )
+  
+    const scrollPrev = useCallback(() => {
+      emblaApi?.scrollPrev()
+    }, [emblaApi])
+  
+    const scrollNext = useCallback(() => {
+      emblaApi?.scrollNext()
+    }, [emblaApi])
+  
+    const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'ArrowLeft') scrollPrev()
+      if (e.key === 'ArrowRight') scrollNext()
+    }
 
   const images = [
     "https://plus.unsplash.com/premium_photo-1679082307632-8906691802e0?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -25,23 +43,23 @@ function Banner() {
   ]
 
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent(prev => (prev + 1) % images.length)
-    }, 3000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrent(prev => (prev + 1) % images.length)
+  //   }, 3000);
 
-    return () => clearInterval(interval)
-  }, [current])
+  //   return () => clearInterval(interval)
+  // }, [current])
 
 
-  const nextBanner = () => {
-    setCurrent(prev => (prev + 1) % images.length)
-  }
+  // const nextBanner = () => {
+  //   setCurrent(prev => (prev + 1) % images.length)
+  // }
 
-  const prevBanner = () => {
-    setCurrent(prev => (prev - 1 + images.length) % images.length)
-    // console.log(current)
-  }
+  // const prevBanner = () => {
+  //   setCurrent(prev => (prev - 1 + images.length) % images.length)
+  //   // console.log(current)
+  // }
 
   return (
     <div>
@@ -52,10 +70,11 @@ function Banner() {
         {/* Banner Slider */}
         <div
           className='h-full w-full overflow-hidden '
+          ref={emblaRef}
         >
           <div
-            className="flex h-full  w-full   transition-transform duration-1200 ease-out "
-            style={{ transform: `translateX(-${current * 100}%)` }}
+            className="flex h-full  w-full    ease-out "
+            // style={{ transform: `translateX(-${current * 100}%)` }}
           >
             {
               images.map((address, index) => (
@@ -82,9 +101,9 @@ function Banner() {
           className='hidden md:flex absolute bottom-3 right-3 '
         >
 
-          <CircleArrowLeft  onClick={prevBanner} className='h-10 w-10 text-white cursor-pointer   mr-3' />
+          <CircleArrowLeft  onClick={scrollPrev} className='h-10 w-10 text-white cursor-pointer   mr-3' />
 
-          <CircleArrowRight  onClick={nextBanner} className='h-10 w-10 text-white cursor-pointer   ' />
+          <CircleArrowRight  onClick={scrollNext} className='h-10 w-10 text-white cursor-pointer   ' />
 
         </div>
 

@@ -26,7 +26,10 @@ function Card() {
 
   return (
     <div
-      className='hover:border  border hover:border-black border-white   bg-[#edece8]  sm:w-[45%]  md:w-[30%] lg:w-[24%] w-full mt-3  p-4  group  h-106 '
+      className='hover:border  border hover:border-black border-white   bg-[#edece8] 
+      flex-[0_0_100%]
+      -full mt-3  p-4  group  h-106 '
+      // sm:w-[45%]  md:w-[30%] lg:w-[24%]
     >
 
 

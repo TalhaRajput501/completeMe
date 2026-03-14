@@ -7,6 +7,7 @@ import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { ObjectId } from "mongodb";
 import { cartProduct } from "@/components/ui/CartItem";
 import { toast } from "sonner";
+import { User } from "@/models/user.model";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
@@ -164,4 +165,23 @@ export const productsForCharge = async(products: (string | ObjectId)[]) => {
   } catch (error) {
     console.log('Error in productsforcharge ', error)
   }
+}
+
+export const uploadBannerImg = async(images: File[]) => {
+  try {
+    if(!images) return
+    await dbConnect()
+    const res = await Promise.all(
+      images.map(file => uploadPics(file))
+    )
+    const imgUrls = res.map(r => r.secure_url)
+    await User.updateOne(
+      {role: 'admin'},
+      {bannerImages: imgUrls}
+    )
+    console.log('Images urls', imgUrls)
+  } catch (error) {
+    console.log('Something went whong while uploading banner')
+  } 
+
 }

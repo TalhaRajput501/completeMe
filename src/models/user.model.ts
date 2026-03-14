@@ -4,6 +4,7 @@ interface User {
   username: string;
   password: string;
   role: string;
+  bannerImages: string[];
   // storeCategory: string;
 }
 
@@ -21,6 +22,9 @@ const userSchema = new mongoose.Schema<User>({
     required: true,
     default: 'admin'
   },
+  bannerImages: {
+    type: [String]
+  }
   // storeCategory : {
   //   type:String,
   //   required: true, 

@@ -1,9 +1,8 @@
 'use client'
 import Banner from "@/components/ui/Banner";
 import Card from "@/components/ui/Card";
+import ShoeSection from "@/components/ui/ShoeSection";
 import React, { useEffect } from "react"
-import Button from "@/components/ui/Button";
-import Heading from "@/components/ui/Heading";
 
 
 
@@ -23,31 +22,9 @@ export default function Home() {
       >
 
 
-        <div
-          className=""
-        >
+        <Banner />
+        <ShoeSection />
 
-          <Banner />
-        </div>
-
-        <div
-          className="flex flex-wrap items-center justify-center "
-        >
-          <Card />
-          <Card />
-          <Card />
-
-          <Card />
-
-          <div className="mt-5">
-
-          <Heading>
-            This is custom component
-          </Heading>
-          <Button >Click Me</Button>
-
-          </div>
-        </div>
 
       </div>
 
