@@ -64,12 +64,12 @@ function Banner() {
   return (
     <div>
       <div 
-        className='  relative   w-full md:h-[72vh] h-[59vh]  '
+        className=' mx-auto relative w-full  md:h-[72vh] h-[59vh]  '
       >
 
         {/* Banner Slider */}
         <div
-          className='h-full w-full overflow-hidden '
+          className=' relative h-full w-full overflow-hidden '
           ref={emblaRef}
         >
           <div

@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { Heart, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
+import { truncate } from '@/lib/utils'
 import StockStatusPill from './StockStatusPill';
 
 interface CardProps {
@@ -14,22 +15,16 @@ interface CardProps {
 }
 
 
+
 function Card() {
 
   const [heartFill, setHeartFill] = useState<boolean>(false)
 
-  const truncate = (text: string) => {
-    const truncatedText = text.trim().substring(0, 87).concat('.....')
-
-    return truncatedText
-  }
 
   return (
     <div
-      className='hover:border  border hover:border-black border-white   bg-[#edece8] 
-      flex-[0_0_100%]
-      -full mt-3  p-4  group  h-106 '
-      // sm:w-[45%]  md:w-[30%] lg:w-[24%]
+      className='bg-[#edece8] flex-[0_0_100%] mt-3  p-4  h-106 card '
+    // sm:w-[45%]  md:w-[30%] lg:w-[24%]
     >
 
 
@@ -46,7 +41,7 @@ function Card() {
 
       {/* Information */}
       <div
-        className='flex flex-col item-center jusitfy-cneter '
+        className='flex flex-col item-center jusitfy-cneter card-'
       >
 
         {/* Name and Description */}
@@ -54,13 +49,16 @@ function Card() {
           {/* Name*/}
           <div>
             <h1
-              className='font-bold text-xl hover:underline hover:cursor-pointer  '
+              // className=' text-xl hover:underline hover:cursor-pointer  '
+              className="card-title text-black mt-2"
             >Product Name </h1>
           </div>
           {/* Description*/}
           <div>
-            <p>
-              {truncate('Lor pa vero eum magni ab tempora eaque facilis adipisci o s quo quisquam esse nostrum consequuntur amet p  umenda quam. Suscipit possimus iure maxime pariatur sapiente assumenda culpa quasi et nobis quae.')}
+            <p
+              className="text-black text-sm sm:text-md"
+            >
+              {truncate({ text: 'Lor pa vero eum magni ab tempora eaque facilis adipisci o s quo quisquam esse nostrum consequuntur amet p  umenda quam. Suscipit possimus iure maxime pariatur sapiente assumenda culpa quasi et nobis quae.', limit: 40 })}
             </p>
           </div>
         </div>

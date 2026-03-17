@@ -1,5 +1,6 @@
-@import "tailwindcss";
 @import "tw-animate-css";
+@import "tailwindcss";
+@plugin "daisyui";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -118,7 +119,8 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    /* @apply bg-background text-foreground; */
+    @apply bg-white;
   }
 }
 

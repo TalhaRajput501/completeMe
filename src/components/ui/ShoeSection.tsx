@@ -47,7 +47,7 @@ function ShoeSection() {
         </button>
 
         {/* Viewport */}
-        <div className="overflow-hidden" ref={emblaRef}>
+        <div className="overflow-hidden px-3" ref={emblaRef}>
           {/* Container */}
           <div className="flex">
             {temp.map((_, ind) => (

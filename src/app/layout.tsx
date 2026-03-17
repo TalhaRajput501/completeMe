@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import ReduxProvider from "@/lib/store/ReduxProvider";
 import { Toaster } from "@/components/ui/sonner"
 import ClientLayout from "@/components/ui/ClientLayout";
+import React from "react";
 
 
 export const metadata = {
@@ -25,14 +26,14 @@ export default async function RootLayout(
   const session = await getServerSession(options) // this is for performance 
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className='antia liased'
+        className='antia liased bg-white'
       >
         <Providers session={session}>
           <ReduxProvider>
             <div
-              className="h-screen flex flex-col "
+              className="  flex flex-col max-w-[1400px] mx-auto"
             >
               <nav>
                 <Navbar />
