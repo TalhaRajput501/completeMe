@@ -21,14 +21,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Mobile Hamburger Icon */}
           <Menu
             onClick={() => setShowMobileBar(prev => !prev)}
-            className={`fixed top-18 block md:hidden sm:w-9 sm:h-9 w-8 h-8 left-2 bg-gray-500 rounded text-black`}
+            className={`fixed top-18 block md:hidden sm:w-9 sm:h-9 w-8 h-8 left-2 bg-blue-600 rounded text-white`}
             size={'24'}
           />
 
           {/* This is the side bar */}
           <div
             // todo manage its height 
-            className={`   h-[calc(100vh-4rem)] select-none ${showSideBar ? 'md:w-2/12 ' : 'md:w-[72px]  '} border-black border-r transition-all duration-400 bg-[#3dbdf1]   ease-out fixed md:static md:translate-x-0 ${showMobileBar ? 'translate-x-0 w-[70%]' : '-translate-x-full'}`}
+            className={`   h-[calc(100vh-4rem)] select-none ${showSideBar ? 'md:w-2/12 ' : 'md:w-[72px]  '} border-slate-200 border-r transition-all duration-400 bg-white   ease-out fixed md:static md:translate-x-0 ${showMobileBar ? 'translate-x-0 w-[70%]' : '-translate-x-full'}`}
           >
             <div className="flex flex-col justify-center items-center">
 
@@ -38,18 +38,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               >
                 {/* This hamburger icon is for desktop */}
                 <div
-                  className={`  ${showSideBar ? 'mx-0' : 'mx-auto'} hidden md:block w-fit p-2 hover:bg-gray-500 rounded-lg cursor-pointer  `}
+                  className={`  ${showSideBar ? 'mx-0' : 'mx-auto'} hidden md:block w-fit p-2 hover:bg-slate-100 rounded-lg cursor-pointer  `}
                   onClick={() => setShowSideBar(prev => !prev)}
                 >
                   {
                     showSideBar ? (
                       <X
-                        className={`mx- w-6 md:w-8 text-[#11283d] `}
+                        className={`mx- w-6 md:w-8 text-slate-700 `}
                       />
 
                     ) : (
                       <Menu
-                        className={`mx- relative  w-6 md:w-8 text-[#11283d] `}
+                        className={`mx- relative  w-6 md:w-8 text-slate-700 `}
                       />
                     )
                   }
@@ -57,11 +57,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 {/* This hamburger icon is for mobile */}
                 <div
-                  className={`block md:hidden  w-fit p-2 hover:bg-gray-500 rounded-lg cursor-pointer  `}
+                  className={`block md:hidden  w-fit p-2 hover:bg-slate-100 rounded-lg cursor-pointer  `}
                   onClick={() => setShowMobileBar(prev => !prev)}
                 >
                   <X
-                    className={` w-6   text-[#11283d]  `}
+                    className={` w-6   text-slate-700  `}
                   />
                 </div>
 
@@ -69,10 +69,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link href={'/dashboard/home'}>
                   <abbr title="Home" className='no-underline'>
                     <div
-                      className=' w-full hover:bg-[#e6f6fd] flex py-3 rounded-lg cursor-pointer  '
+                      className=' w-full hover:bg-blue-50 flex py-3 rounded-lg cursor-pointer  '
                     >
-                      <Home className={` w-6   md:w-8 text-[#0f2438] mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
-                      <p className={`text-[#11283d] no-underline font-bold justify-center items-center  
+                      <Home className={` w-6   md:w-8 text-slate-700 mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
+                      <p className={`text-slate-700 no-underline font-semibold justify-center items-center  
                         ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
                         `}
                       >
@@ -85,10 +85,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link href={'/dashboard/products'}>
                   <abbr title="Products" className='no-underline'>
                     <div
-                      className=' w-full hover:bg-gray-500 flex py-3 rounded-lg cursor-pointer  '
+                      className=' w-full hover:bg-blue-50 flex py-3 rounded-lg cursor-pointer  '
                     >
-                      <Store className={` w-6   md:w-8 text-[#11283d] mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
-                      <p className={`text-[#11283d] no-underline font-bold justify-center items-center  
+                      <Store className={` w-6   md:w-8 text-slate-700 mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
+                      <p className={`text-slate-700 no-underline font-semibold justify-center items-center  
                         ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
                         `}
                       >
@@ -101,10 +101,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link href={'/dashboard/orders'}>
                   <abbr title="My Orders" className='no-underline'>
                     <div
-                      className=' w-full hover:bg-gray-500 flex py-3 rounded-lg cursor-pointer  '
+                      className=' w-full hover:bg-blue-50 flex py-3 rounded-lg cursor-pointer  '
                     >
-                      <ClipboardList className={` w-6   md:w-8 text-[#11283d] mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
-                      <p className={`text-[#11283d] no-underline font-bold justify-center items-center  
+                      <ClipboardList className={` w-6   md:w-8 text-slate-700 mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
+                      <p className={`text-slate-700 no-underline font-semibold justify-center items-center  
                         ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
                         `}
                       >
@@ -117,10 +117,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link href={'/dashboard/settings'}>
                   <abbr title="Settings" className='no-underline'>
                     <div
-                      className=' w-full hover:bg-gray-500 flex py-3 rounded-lg cursor-pointer  '
+                      className=' w-full hover:bg-blue-50 flex py-3 rounded-lg cursor-pointer  '
                     >
-                      <Settings className={` w-6   md:w-8 text-[#11283d] mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
-                      <p className={`text-[#11283d] no-underline font-bold justify-center items-center  
+                      <Settings className={` w-6   md:w-8 text-slate-700 mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
+                      <p className={`text-slate-700 no-underline font-semibold justify-center items-center  
                         ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
                         `}
                       >
@@ -133,10 +133,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link href={'/dashboard/analytics'}>
                   <abbr title="Analytics" className='no-underline'>
                     <div
-                      className=' w-full hover:bg-gray-500 flex py-3 rounded-lg cursor-pointer  '
+                      className=' w-full hover:bg-blue-50 flex py-3 rounded-lg cursor-pointer  '
                     >
-                      <ChartNoAxesCombined className={` w-6   md:w-8 text-[#11283d] mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
-                      <p className={`text-[#11283d] no-underline font-bold justify-center items-center  
+                      <ChartNoAxesCombined className={` w-6   md:w-8 text-slate-700 mx-2 ${showSideBar ? 'md:mx-1' : 'md:mx-auto'}`} />
+                      <p className={`text-slate-700 no-underline font-semibold justify-center items-center  
                         ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
                         `}
                       >
@@ -150,10 +150,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
               {/* This is logout button */}
               <div
-                className='hover:bg-red-500 bottom-1 md:px-2 px-1 py-2 cursor-pointer absolute flex rounded-lg  '
+                className='hover:bg-red-50 border border-red-200 hover:border-red-300 bottom-1 md:px-2 px-1 py-2 cursor-pointer absolute flex rounded-lg transition-colors  '
               >
-                <LogOut className={` md:w-8 w-7 justify-center items-center text-[#11283d] ${showSideBar ? 'mx-1' : 'mx-auto'}`} />
-                <p className={`text-[#11283d] no-underline font-bold justify-center items-center  
+                <LogOut className={` md:w-8 w-7 justify-center items-center text-red-600 ${showSideBar ? 'mx-1' : 'mx-auto'}`} />
+                <p className={`text-red-600 no-underline font-semibold justify-center items-center  
                   ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
                  `}
                 >

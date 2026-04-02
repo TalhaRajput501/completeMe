@@ -40,12 +40,9 @@ function Navbar() {
 
   return (
     <>
-      <div
-
-
-      >
+      <div>
         <div
-          className={`navigation transition-transform   duration-80 ${show ? ' sm:translate-y-0' : 'sm:-translate-y-full'} z-50  bg-[#3dbdf1] shadow-sm top-0 static    right-0 left-0  py-2 px-3  `}
+          className={`navigation transition-transform duration-80 ${show ? ' sm:translate-y-0' : 'sm:-translate-y-full'} z-50 bg-white border-b border-slate-200 shadow-sm top-0 static right-0 left-0 py-2 px-3`}
         >
           <div
             className='flex items-center justify-between '
@@ -54,9 +51,9 @@ function Navbar() {
             <Link href={'/'}>
               <div>
                 <img
-                  className='w-12 border rounded-full '
-                  src="https://www.cartier.com/dw/image/v2/BGTJ_PRD/on/demandware.static/-/Sites-cartier-master/default/dwa0b893d9/images/large/80e7c0c14dd05306bb26f4fe91e56934.png?sw=350&sh=350&sm=fit&sfrm=png"
-                  alt=""
+                  className='w-12 h-12 object-cover rounded-full'
+                  src="/ecom.webp"
+                  alt="Ecommerce Logo"
                 />
               </div>
             </Link>
@@ -71,13 +68,13 @@ function Navbar() {
               <Link
                 href={'/sign-in'}
               >
-                <User className="w-9 cursor-pointer  h-10 mx-3  text-[#11283d]" />
+                <User className="w-9 cursor-pointer h-10 mx-3 text-slate-700 hover:text-blue-600 transition-colors" />
               </Link>
 
               <Link
                 href={'/cart'}
               >
-                <ShoppingCart className="w-9 cursor-pointer  h-10 mx-3  text-[#11283d]" />
+                <ShoppingCart className="w-9 cursor-pointer h-10 mx-3 text-slate-700 hover:text-blue-600 transition-colors" />
               </Link>
 
             </div>
