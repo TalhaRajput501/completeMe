@@ -3,9 +3,7 @@ import mongoose from "mongoose";
 interface User {
   username: string;
   password: string;
-  role: string;
-  bannerImages: string[];
-  // storeCategory: string;
+  role: string;  
 }
 
 const userSchema = new mongoose.Schema<User>({
@@ -21,14 +19,7 @@ const userSchema = new mongoose.Schema<User>({
     type: String,
     required: true,
     default: 'admin'
-  },
-  bannerImages: {
-    type: [String]
-  }
-  // storeCategory : {
-  //   type:String,
-  //   required: true, 
-  // }
+  }  
 
 })
 

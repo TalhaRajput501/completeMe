@@ -2,6 +2,11 @@ import { dbConnect } from "@/lib/dbConnect";
 import { Order } from "@/models/orders.model";
 import { NextResponse } from "next/server";
 
+
+
+// For Single Order
+
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ orderId: string }> }
@@ -30,3 +35,4 @@ export async function PATCH(
     });
   }
 }
+
