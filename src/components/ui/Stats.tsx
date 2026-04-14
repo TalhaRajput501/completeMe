@@ -10,19 +10,19 @@ import {
 import { useStats } from '@/hooks/useStats'
 
 function Stats() {
-  const stats = {
-    totalRevenue: 0,
-    revenueChange: 0,
-    totalOrders: 0,
-    ordersChange: 0,
-    totalProducts: 0,
-    productsChange: 0,
-    activeCustomers: 0,
-    customersChange: 0
-  }
+  // const stats = {
+  //   totalRevenue: 0,
+  //   revenueChange: 0,
+  //   totalOrders: 0,
+  //   ordersChange: 0,
+  //   totalProducts: 0,
+  //   productsChange: 0,
+  //   activeCustomers: 0,
+  //   customersChange: 0
+  // }
 
-  const { revenue, order: order, products, activeCustomers } = useStats()
-  const talha = [revenue, order, products, activeCustomers]
+  const { revenue, order, products, activeCustomers } = useStats()
+  // const talha = [revenue, order, products, activeCustomers]
 
   return ( 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">

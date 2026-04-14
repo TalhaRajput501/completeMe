@@ -222,11 +222,11 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-6 lg:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Orders Management</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">Orders Management</h1>
           <p className="text-slate-600 mt-1">Track and manage all customer orders</p>
         </div>
         

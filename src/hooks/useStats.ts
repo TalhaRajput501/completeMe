@@ -1,3 +1,4 @@
+'use client';
 import { getRequest } from "@/utils/getRequest";
 import { useEffect, useState } from "react";
 import { ApiResponse } from "../../types/ApiResponse";
@@ -21,7 +22,7 @@ export function useStats() {
   useEffect(() => {
 
     // IIFE 
-    (async() => {
+    const fetchData = async () => {
 
       try {
 
@@ -33,14 +34,15 @@ export function useStats() {
           products: r.products,
           activeCustomers: r.activeCustomers,
         })
-
+        console.log('Stats data fetched:', r)
         // return {data.}
       } catch (error) {
         throw error instanceof Error ? error.message : "Unknown error";
       }
 
 
-    })();
+    };
+    fetchData();
   }, []);
   return data;
 }

@@ -10,7 +10,7 @@ import TopSelling from '@/components/ui/TopSelling'
 function DashboardHomePage() {
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-6 lg:p-6">
       {/* Header Section */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">

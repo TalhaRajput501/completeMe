@@ -4,6 +4,7 @@ import { Product } from "@/models/product.model";
 import { NextResponse } from "next/server";
 import { ApiResponse } from "../../../../types/ApiResponse";
 import { StatsData } from "@/hooks/useStats";
+import { requireAuth } from "@/utils/authGuard";
 
 type statsRes = [number, number, {totalAmount: number}[]]
 
@@ -11,6 +12,9 @@ export async function GET(){
 
   try {
     
+    // const {session} = await requireAuth('admin')
+
+
     await dbConnect()
 
     const response: statsRes = await Promise.all([
