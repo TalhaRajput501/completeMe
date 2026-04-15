@@ -1,7 +1,8 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { Eye, EyeOff, KeyRound, Mail, MailCheck, ShieldCheck } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import { useInfoChange } from '@/hooks/useInfoChange'
 
 function PasswordField({
   id,
@@ -9,13 +10,15 @@ function PasswordField({
   placeholder,
   visible,
   onToggle,
+  ...rest
 }: {
   id: string
   label: string
   placeholder: string
   visible: boolean
   onToggle: () => void
-}) {
+} & React.ComponentPropsWithoutRef<'input'>
+) {
   return (
     <div>
       <label htmlFor={id} className="text-sm font-semibold text-slate-700">
@@ -29,6 +32,7 @@ function PasswordField({
           placeholder={placeholder}
           className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-11 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           autoComplete="off"
+          {...rest}
         />
         <button
           type="button"
@@ -44,20 +48,43 @@ function PasswordField({
 }
 
 function Account() {
-  const [showCurrent, setShowCurrent] = React.useState(false)
-  const [showNew, setShowNew] = React.useState(false)
-  const [showConfirm, setShowConfirm] = React.useState(false)
+  const [showCurrent, setShowCurrent] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
-  const session = useSession() 
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
+  const [error, setError] = useState('')
 
-  const handlePasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
+  const session = useSession()
+
+  const handlePasswordChange = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('Session data on form submit:', session)
+    setError('') // Clear previous errors
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setError('All password fields are required')
+      return
+    }
+
+    const matchPassword = currentPassword === newPassword || currentPassword === confirmPassword;
+    const differPassword = newPassword !== confirmPassword;
+
+    if (matchPassword) {
+      setError("New password cannot be the same as the old password")
+    }
+
+    if (differPassword) {
+      setError("New password and confirm password do not match")
+    }
+
+    console.log('Three of the password fields:', { currentPassword, newPassword, confirmPassword })
+    // useInfoChange({ creds: { password: { current: currentPassword, new: newPassword, confirm: confirmPassword } } })
   }
 
 
-  const handleEmailChange = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailChange = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('Session data on form submit:', session)
   }
@@ -88,6 +115,7 @@ function Account() {
 
         {/* Password Change Form */}
         <form
+          noValidate
           onSubmit={handlePasswordChange}
           className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 space-y-4 basis-1/2  "
         >
@@ -96,11 +124,20 @@ function Account() {
             <h3 className="font-semibold text-base sm:text-lg">Change Password</h3>
           </div>
 
+          {error && (
+            <div className="rounded-lg border border-red-100 bg-red-50 p-3 text-xs sm:text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
           <PasswordField
             id="currentPassword"
             label="Current Password"
             placeholder="Enter current password"
             visible={showCurrent}
+            value={currentPassword}
+            required
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCurrentPassword(e.target.value)}
             onToggle={() => setShowCurrent((prev) => !prev)}
           />
 
@@ -109,6 +146,8 @@ function Account() {
             label="New Password"
             placeholder="Enter new password"
             visible={showNew}
+            value={newPassword}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
             onToggle={() => setShowNew((prev) => !prev)}
           />
 
@@ -117,6 +156,8 @@ function Account() {
             label="Confirm New Password"
             placeholder="Re-enter new password"
             visible={showConfirm}
+            value={confirmPassword}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
             onToggle={() => setShowConfirm((prev) => !prev)}
           />
 
@@ -162,11 +203,11 @@ function Account() {
             <div className="mt-1 relative">
               <input
                 name='email'
-                type={'text' }
+                type={'text'}
                 placeholder='Enter New E-mail'
                 className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-11 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 autoComplete="off"
-              /> 
+              />
             </div>
           </div>
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-1">

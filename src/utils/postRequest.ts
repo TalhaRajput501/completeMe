@@ -16,5 +16,5 @@ export async function postRequest<T>({ url, data }: { url: string; data: T }) {
     throw new Error(`Failed to post at: ${url}`);
   }
 
-  return res
+  return res.data as T;
 }
