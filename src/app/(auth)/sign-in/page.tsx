@@ -114,15 +114,15 @@ export default function Page() {
               )}
 
               {/* Sign In Form */}
-              <form onSubmit={handleSubmit} className='space-y-6'>
+              <form onSubmit={handleSubmit} className='space-y-4'>
                 
-                {/* Email Input */}
+                {/* Username Input */}
                 <div>
-                  <label htmlFor='email' className='block text-sm font-semibold text-slate-700 mb-2'>
-                    Email Address
+                  <label htmlFor='username' className='block text-sm font-semibold text-slate-700 px-1 mb-1'>
+                    Username
                   </label>
                   <input
-                    id='email'
+                    id='username'
                     autoFocus
                     autoComplete='username'
                     placeholder='admin@store.com'
@@ -136,7 +136,7 @@ export default function Page() {
 
                 {/* Password Input */}
                 <div>
-                  <label htmlFor='password' className='block text-sm font-semibold text-slate-700 mb-2'>
+                  <label htmlFor='password' className='block text-sm font-semibold text-slate-700 px-1 mb-1'>
                     Password
                   </label>
                   <div className='relative'>
@@ -167,11 +167,11 @@ export default function Page() {
                 {/* Remember Me & Forgot Password */}
                 <div className='flex items-center justify-between text-sm'>
                   <label className='flex items-center gap-2 cursor-pointer'>
-                    <input 
+                    {/* <input 
                       type='checkbox' 
                       className='w-4 h-4 rounded border-slate-300 text-slate-700 focus:ring-slate-500'
-                    />
-                    <span className='text-slate-600'>Remember me</span>
+                    /> */}
+                    {/* <span className='text-slate-600'>Remember me</span> */}
                   </label>
                   <a href='#' className='text-slate-700 hover:text-slate-900 font-medium'>
                     Forgot password?

@@ -53,11 +53,11 @@ function PaymentForm(
       return
     }
 
-    if(!orderId){
-      setLoading(false)
-      toast.message('Something went worng refresh the page')
-      return
-    }
+    // if(!orderId){
+    //   setLoading(false)
+    //   toast.message('Something went wrong refresh the page')
+    //   return
+    // }
 
 
     // -----

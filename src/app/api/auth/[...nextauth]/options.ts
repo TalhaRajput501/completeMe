@@ -11,6 +11,7 @@ export const options: NextAuthOptions = {
       name: "Admin Login",
       credentials: {
         username: { label: "username", type: "text" },
+        email: { label: "email", type: "text" }, 
         password: { label: "password", type: "password" },
       },
       async authorize(credentials): Promise<User | null> {
@@ -52,6 +53,7 @@ export const options: NextAuthOptions = {
         token.username = user.username;
         token.role = user.role;
         token.storeCategory = user.storeCategory
+        token.email = user.email;
       }
       return token;
     },
@@ -60,6 +62,7 @@ export const options: NextAuthOptions = {
         session.user.username = token.username;
         session.user.role = token.role;
         session.user.storeCategory = token.storeCategory;
+        session.user.email = token.email;
       }
       return session;
     },

@@ -52,26 +52,26 @@ export async function POST(request: NextRequest) {
 
     // create draft order
     await dbConnect()
-    const orderFromDB = new Order({
-      products: productsArray,
-      totalAmount: totalBill * 100, // us dollars
-      status: "draft",
-    });
+    // const orderFromDB = new Order({
+    //   products: productsArray,
+    //   totalAmount: totalBill * 100, // us dollars
+    //   status: "draft",
+    // });
 
     // creat payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalBill * 100, // us dollars
+      amount: 100 * 100, // us dollars
       currency: "usd",
       // automatic_payment_methods: { enabled: true },
       payment_method_types: ["card"],
       metadata: {
-        orderId: orderFromDB._id.toString(),
+        orderId: 'orderFromDB._id.toString()',
       },
     });
 
     // now intent id is available take it and save the draft order
-    orderFromDB.paymentIntentId = paymentIntent.id;
-    await orderFromDB.save();
+    // orderFromDB.paymentIntentId = paymentIntent.id;
+    // await orderFromDB.save();
 
     // console.log("product from frontend", products);
     // console.log("get only ids", objectIds);
@@ -83,15 +83,15 @@ export async function POST(request: NextRequest) {
 
     console.log({
       clientSecret: paymentIntent.client_secret,
-      orderId: orderFromDB._id,
+      // orderId: orderFromDB._id,
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
-      orderId: orderFromDB._id.toString(),
+      // orderId: orderFromDB._id.toString(),
     });
   } catch (error) {
-    console.error("Internal Error from /peyment-intent route: ", error);
+    console.log("Internal Error from /peyment-intent route: ", error);
     return NextResponse.json({
       error,
     });

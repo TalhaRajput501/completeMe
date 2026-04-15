@@ -1,6 +1,8 @@
 'use client'
 import React, { lazy, Suspense, useState } from 'react'
 import { Settings2, ShieldUser } from 'lucide-react'
+// import  GeneralSettings from '@/components/ui/General'
+// import  AccountSettings from '@/components/ui/Account'
 
 type Tabs = 'general' | 'account'
 
@@ -27,6 +29,12 @@ const tabs: {
   },
 ]
 
+const components: Record<Tabs,  React.ReactNode> = {
+  general: <GeneralSettings/>,
+  account: <AccountSettings />,
+}
+
+
 const LoadingFallback = () => (
   <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-slate-500">
     Loading settings...
@@ -51,7 +59,7 @@ function Page() {
                 <button
                   type="button"
                   onClick={() => setCurrentTab(id)}
-                  className={`w-full rounded-lg border px-3 py-2.5 text-left transition-colors ${currentTab === id
+                  className={`w-full rounded-lg border px-3 py-2.5 cursor-pointer text-left transition-colors ${currentTab === id
                     ? 'border-blue-200 bg-blue-50 text-blue-700'
                     : 'border-transparent text-slate-700 hover:bg-slate-50'
                     }`}
@@ -71,7 +79,10 @@ function Page() {
       <div className="mt-6 sm:mt-8">
         <Suspense fallback={<LoadingFallback />}>
           <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-            {currentTab === 'general' ? <GeneralSettings /> : <AccountSettings />}
+            {/* {currentTab === 'general' ? <GeneralSettings /> : <AccountSettings />} */}
+            {
+              tabs.map(tab => tab.id === currentTab) && components[currentTab]
+            }
           </div>
         </Suspense>
       </div>

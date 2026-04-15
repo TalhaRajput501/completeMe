@@ -2,12 +2,17 @@ import mongoose from "mongoose";
 
 interface User {
   username: string;
+  email: string;
   password: string;
   role: string;  
 }
 
 const userSchema = new mongoose.Schema<User>({
   username: {
+    type: String,
+    required: true
+  },
+  email: {
     type: String,
     required: true
   },

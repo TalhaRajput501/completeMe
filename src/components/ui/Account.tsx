@@ -1,6 +1,7 @@
- 'use client'
+'use client'
 import React from 'react'
-import { Eye, EyeOff, KeyRound, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff, KeyRound, Mail, MailCheck, ShieldCheck } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 
 function PasswordField({
   id,
@@ -47,8 +48,18 @@ function Account() {
   const [showNew, setShowNew] = React.useState(false)
   const [showConfirm, setShowConfirm] = React.useState(false)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const session = useSession() 
+
+
+  const handlePasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log('Session data on form submit:', session)
+  }
+
+
+  const handleEmailChange = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log('Session data on form submit:', session)
   }
 
   return (
@@ -72,62 +83,105 @@ function Account() {
         </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 space-y-4"
-      >
-        <div className="flex items-center gap-2 text-slate-800">
-          <KeyRound className="h-5 w-5 text-blue-600" />
-          <h3 className="font-semibold text-base sm:text-lg">Change Password</h3>
-        </div>
 
-        <PasswordField
-          id="currentPassword"
-          label="Current Password"
-          placeholder="Enter current password"
-          visible={showCurrent}
-          onToggle={() => setShowCurrent((prev) => !prev)}
-        />
+      <div className='flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4' >
 
-        <PasswordField
-          id="newPassword"
-          label="New Password"
-          placeholder="Enter new password"
-          visible={showNew}
-          onToggle={() => setShowNew((prev) => !prev)}
-        />
+        {/* Password Change Form */}
+        <form
+          onSubmit={handlePasswordChange}
+          className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 space-y-4 basis-1/2  "
+        >
+          <div className="flex items-center gap-2 text-slate-800">
+            <KeyRound className="h-5 w-5 text-blue-600" />
+            <h3 className="font-semibold text-base sm:text-lg">Change Password</h3>
+          </div>
 
-        <PasswordField
-          id="confirmPassword"
-          label="Confirm New Password"
-          placeholder="Re-enter new password"
-          visible={showConfirm}
-          onToggle={() => setShowConfirm((prev) => !prev)}
-        />
+          <PasswordField
+            id="currentPassword"
+            label="Current Password"
+            placeholder="Enter current password"
+            visible={showCurrent}
+            onToggle={() => setShowCurrent((prev) => !prev)}
+          />
 
-        <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs sm:text-sm text-blue-700">
-          <p className="font-semibold mb-1 flex items-center gap-1.5">
-            <ShieldCheck className="h-4 w-4" />
-            Password rules
-          </p>
-          <p>Use at least 8 characters with a mix of uppercase, lowercase, number, and symbol.</p>
-        </div>
+          <PasswordField
+            id="newPassword"
+            label="New Password"
+            placeholder="Enter new password"
+            visible={showNew}
+            onToggle={() => setShowNew((prev) => !prev)}
+          />
 
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-1">
-          <button
-            type="reset"
-            className="rounded-lg border border-slate-300 px-4 py-2.5 text-slate-700 font-semibold hover:bg-slate-50 transition-colors"
-          >
-            Clear
-          </button>
-          <button
-            type="submit"
-            className="rounded-lg bg-blue-600 px-4 py-2.5 text-white font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Update Password
-          </button>
-        </div>
-      </form>
+          <PasswordField
+            id="confirmPassword"
+            label="Confirm New Password"
+            placeholder="Re-enter new password"
+            visible={showConfirm}
+            onToggle={() => setShowConfirm((prev) => !prev)}
+          />
+
+          <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs sm:text-sm text-blue-700">
+            <p className="font-semibold mb-1 flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4" />
+              Password rules
+            </p>
+            <p>Use at least 8 characters with a mix of uppercase, lowercase, number, and symbol.</p>
+          </div>
+
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-1">
+            {/* <button
+              type="reset"
+              className="rounded-lg border border-slate-300 px-4 py-2.5 text-slate-700 font-semibold hover:bg-slate-50 transition-colors"
+            >
+              Clear
+            </button> */}
+            <button
+              type="submit"
+              className="rounded-lg bg-blue-600 px-4 py-2.5 text-white font-semibold hover:bg-blue-700 transition-colors cursor-pointer "
+            >
+              Update Password
+            </button>
+          </div>
+        </form>
+
+
+        {/* Email Change Form */}
+        <form
+          onSubmit={handleEmailChange}
+          className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 space-y-4 basis-1/2  "
+        >
+          <div className="flex items-center gap-2 text-slate-800">
+            <MailCheck className="h-5 w-5 text-blue-600" />
+            <h3 className="font-semibold text-base sm:text-lg">Change Email</h3>
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-slate-700">
+              Email
+            </label>
+            <div className="mt-1 relative">
+              <input
+                name='email'
+                type={'text' }
+                placeholder='Enter New E-mail'
+                className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-11 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                autoComplete="off"
+              /> 
+            </div>
+          </div>
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-1">
+            <button
+              type="submit"
+              className="rounded-lg bg-blue-600 px-4 py-2.5 text-white font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
+            >
+              Update Email
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+
     </div>
   )
 }
