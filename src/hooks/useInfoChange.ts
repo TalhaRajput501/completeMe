@@ -1,24 +1,34 @@
-import { postDto } from "@/app/api/user/route";
 import { postRequest } from "@/utils/postRequest";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import type { ApiResponse } from "../../types/ApiResponse";
+import type { UserInfoUpdateDto } from "../../types/user";
 
-export function useInfoChange({creds}: {creds: postDto}){
+export function useInfoChange() {
+  const [data, setData] = useState<ApiResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [data, setData] = useState<unknown>()
+  async function infoChange({ creds }: { creds: UserInfoUpdateDto }) {
+    setLoading(true);
+    setError(null);
 
+    try {
+      const response = await postRequest<UserInfoUpdateDto>({
+        url: "/api/user",
+        data: creds,
+      });
 
-  useEffect(() => {
-    async function infoChange() {
-      
-      const response = await postRequest<postDto>({
-        url: '/api/user',
-        data: creds
-      })
-
-      setData(response)
+      setData(response);
+      return response;
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Unable to update account information";
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
     }
-    infoChange()
-  }, [])
+  }
 
-  return {data}
+  return { data, loading, error, infoChange, setError };
 }

@@ -1,6 +1,6 @@
 
 
-// ✅ Generic ApiResponse - works for any data type
+// Generic ApiResponse - works for any data type
 export interface ApiResponse<T = unknown> {
   success: boolean;
   statusCode: number;

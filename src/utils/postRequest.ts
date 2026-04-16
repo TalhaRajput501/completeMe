@@ -1,6 +1,12 @@
-import { ApiResponse } from "../../types/ApiResponse";
+import type { ApiResponse } from "../../types/ApiResponse";
 
-export async function postRequest<T>({ url, data }: { url: string; data: T }) {
+export async function postRequest<TRequest, TResponse = unknown>({
+  url,
+  data,
+}: {
+  url: string;
+  data: TRequest;
+}) {
 
   const r = await fetch(url, {
     method: "POST",
@@ -10,11 +16,11 @@ export async function postRequest<T>({ url, data }: { url: string; data: T }) {
     body: JSON.stringify(data), 
   });
 
-  const res: ApiResponse = await r.json();
+  const res: ApiResponse<TResponse> = await r.json();
 
-  if (!res.success) {
-    throw new Error(`Failed to post at: ${url}`);
+  if (!r.ok || !res.success) {
+    throw new Error(res.error || res.message || `Failed to post at: ${url}`);
   }
 
-  return res.data as T;
+  return res;
 }
