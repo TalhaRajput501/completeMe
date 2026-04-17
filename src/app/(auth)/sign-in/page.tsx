@@ -26,7 +26,7 @@ export default function Page() {
       password,
       redirect: false,
     })
-
+    console.log('Response from signIn:', res)
     if (res?.ok && !res?.error) {
       router.push('/dashboard/home')
     } else {

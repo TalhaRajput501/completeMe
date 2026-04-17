@@ -20,9 +20,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2026-01-28.clover",
-  });
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   // Get the raw body as text. Stripe signature verification requires raw body.
   const rawBody = await request.text();
   console.log("whole request: ", request);

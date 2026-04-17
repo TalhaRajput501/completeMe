@@ -18,7 +18,7 @@ export const options: NextAuthOptions = {
         // connect the database bro     
         await dbConnect();
 
-        console.log("this is the data coming from frontend ", credentials);
+        console.log("Credentials ", credentials);
         try {
           const user = await UserModel.findOne({ username: credentials?.username });
 
@@ -33,9 +33,9 @@ export const options: NextAuthOptions = {
             : false;
 
           if (!isMatched) {
-            console.log("password is incorrect");
-            // throw new Error("Password is incorrect");
-            return null;
+            console.log("Password is incorrect");
+            throw new Error("Password is incorrect");
+            // return null;
           }
 
           // ok so everything good at this point now return the user
