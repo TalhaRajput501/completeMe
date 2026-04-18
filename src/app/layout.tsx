@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+// @ts-ignore
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Providers from "@/components/ui/Providers";
@@ -28,19 +28,25 @@ export default async function RootLayout(
   return (
     <html lang="en" className="dark">
       <body
-        className='antia liased bg-white'
+        className='antia liased bg-blue-50  '
       >
         <Providers session={session}>
           <ReduxProvider>
             <div
-              className="  flex flex-col max-w-[1400px] mx-auto"
+              className="  flex flex-col max-w-[1400px] mx-auto  "
             >
               <nav>
                 <Navbar />
               </nav>
 
               {/* Notification toaster basically for payment fail or error */}
-              <Toaster position="top-right" className="bg-black" />
+              <Toaster position="top-right" toastOptions={{
+                classNames: {
+                  toast: '!bg-white !text-red-800', // Target the toast container
+                  title: '!text-slate-900',
+                  description: '!text-slate-600',
+                }
+              }} />
 
               {/* Client Layout */}
               {/* This layout is for store subscription */}

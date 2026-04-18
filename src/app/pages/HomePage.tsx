@@ -2,13 +2,97 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Watch, Shirt, ShoppingBag } from 'lucide-react'
+import { ArrowRight, Watch, Shirt, ShoppingBag, ShirtIcon, SportShoe } from 'lucide-react'
+import CategoryBanner from '@/components/ui/CategoryBanner'
+import { ProductCard } from '@/components/ui/ProductsCards'
+import ProductInfoCard, { ProductInfoCardProps } from '@/components/ui/ProductInfoCard'
+import WhyUs from '@/components/ui/WhyUs'
+import Button from '@/components/ui/Button'
+import VideoIntro from '@/components/ui/VideoIntro'
+import ShoeSection from '@/components/ui/ShoeSection'
 
 function HomePage() {
+
+  const watches: ProductInfoCardProps[] = [
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop",
+      title: "Royal Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: Watch
+    },
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop",
+      title: "Smart Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: Watch
+    },
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop",
+      title: "Classic Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: Watch
+    },
+  ]
+
+
+  const shoes: ProductInfoCardProps[] = [
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&auto=format&fit=crop",
+      title: "Royal Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: SportShoe
+    },
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&auto=format&fit=crop",
+      title: "Smart Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: SportShoe
+    },
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&auto=format&fit=crop",
+      title: "Classic Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: SportShoe
+    },
+  ]
+
+
+  const clothes: ProductInfoCardProps[] = [
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop",
+      title: "Royal Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: ShirtIcon
+    },
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop",
+      title: "Smart Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: ShirtIcon
+    },
+    {
+      link: "/products/watch",
+      imageSrc: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop",
+      title: "Classic Watch",
+      description: "Luxury timepieces that combine style with precision. From classic to modern designs.",
+      iconName: ShirtIcon
+    },
+  ]
+
+
+
   return (
     <div className="bg-white">
       {/* Hero Section */}
-      <section className="relative h-[70vh] md:h-[80vh] bg-gradient-to-br from-slate-100 to-blue-50 overflow-hidden">
+      <section className="relative h-[70vh] 2xl:h-[40vh] md:h-[80vh] bg-gradient-to-br from-slate-100 to-blue-50 overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1920&auto=format&fit=crop"
@@ -18,7 +102,7 @@ function HomePage() {
             priority
           />
         </div>
-        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 flex items-center">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-6 leading-tight">
               Discover Your Style
@@ -27,18 +111,70 @@ function HomePage() {
               Premium watches, elegant clothes, and comfortable shoes. Everything you need to look your best.
             </p>
             <Link href="#categories">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition-colors shadow-lg flex items-center gap-2">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors cursor-pointer shadow-lg flex items-center gap-2">
                 Shop Now
                 <ArrowRight className="w-5 h-5" />
-              </button>
+              </Button>
             </Link>
           </div>
         </div>
       </section>
 
+
+      {/* Watches Showcase Banner */}
+      <div className="py-16 md:py-8 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+          <CategoryBanner heading='Watches' btnLink='/products/watches' products={watches} />
+        </div>
+      </div>
+
+      <hr className='bg-gray-400' />
+
+      {/* Watches Showcase Banner */}
+      <div className="py-16 md:py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+          <CategoryBanner heading='Shoes' btnLink='/products/shoes' products={shoes} />
+        </div>
+      </div>
+
+
+      {/* Why Choose Us */}
+      <div className="py-16 md:py-24 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+          <WhyUs />
+        </div>
+      </div>
+
+      <hr className='bg-gray-400' />
+
+      {/* Clothes Showcase Banner */}
+      <div className="py-16 md:py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+          <CategoryBanner heading='Clothes' btnLink='/products/clothes' products={clothes} />
+        </div>
+      </div>
+
+      <hr className='bg-gray-400' />
+
+      {/* Video Section */}
+      <div className="py-16 md:py-8 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+          <VideoIntro />
+        </div>
+      </div>
+
+      <hr className='bg-gray-400' />
+
+      {/* Clothes Showcase Banner */}
+      <div className="py-16 md:py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+          <ShoeSection />
+        </div>
+      </div>
+
       {/* Categories Grid */}
       <section id="categories" className="py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
               Shop by Category
@@ -139,61 +275,10 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              Why Shop With Us
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              We're committed to providing you with the best shopping experience
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl p-8 border border-slate-200 text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3">Premium Quality</h3>
-              <p className="text-slate-600">
-                All our products are carefully selected to ensure the highest quality standards.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-8 border border-slate-200 text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3">Best Prices</h3>
-              <p className="text-slate-600">
-                Competitive pricing without compromising on quality. Great value for your money.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-8 border border-slate-200 text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3">Fast Delivery</h3>
-              <p className="text-slate-600">
-                Quick and secure shipping to your doorstep. Track your order every step of the way.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-3xl p-12 md:p-16 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Ready to Start Shopping?

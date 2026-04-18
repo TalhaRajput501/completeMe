@@ -11,7 +11,7 @@ function ShoeSection() {
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'start' },
-    [Autoplay({ delay: 3000, stopOnInteraction: false })]
+    // [Autoplay({ delay: 3000, stopOnInteraction: false })]
   )
 
   const scrollPrev = useCallback(() => {
@@ -40,14 +40,14 @@ function ShoeSection() {
         {/* Prev Button */}
         <button
           onClick={scrollPrev}
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow hover:bg-white"
+          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow hover:bg-white text-gray-800"
           aria-label="Previous slide"
         >
           <ChevronLeft size={20} />
         </button>
 
         {/* Viewport */}
-        <div className="overflow-hidden px-3" ref={emblaRef}>
+        <div className="overflow-hidden px-" ref={emblaRef}>
           {/* Container */}
           <div className="flex">
             {temp.map((_, ind) => (
@@ -64,7 +64,7 @@ function ShoeSection() {
         {/* Next Button */}
         <button
           onClick={scrollNext}
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow hover:bg-white"
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow hover:bg-white text-gray-800"
           aria-label="Next slide"
         >
           <ChevronRight size={20} />

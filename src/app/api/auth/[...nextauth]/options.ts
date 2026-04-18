@@ -2,7 +2,7 @@ import { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { dbConnect } from "@/lib/dbConnect";
 import bcrypt from "bcrypt";
-import { User as UserModel } from "@/models/user.model"; 
+import { User as UserModel } from "@/models/user.model";  
 
 export const options: NextAuthOptions = {
   providers: [
@@ -20,6 +20,10 @@ export const options: NextAuthOptions = {
 
         console.log("Credentials ", credentials);
         try {
+          if(!credentials?.username || !credentials?.password){
+            console.log("Username or password not provided");
+            return null;
+          }
           const user = await UserModel.findOne({ username: credentials?.username });
 
           if (!user) {
@@ -44,10 +48,17 @@ export const options: NextAuthOptions = {
           console.log("Error in authorize:", error);
           return null
         }
-      },
+      }
     }),
   ],
   callbacks: {
+    async redirect({url, baseUrl}){
+      console.log("Redirecting to ", url, " from baseUrl ", baseUrl); 
+      if(url.startsWith('/')) return `${baseUrl}${url}`
+      else if (new URL(url).origin === baseUrl) return url
+      else return baseUrl
+    },
+    // it will store data in token
     async jwt({ user, token }) {
       if (user) {
         token.username = user.username;
@@ -57,6 +68,7 @@ export const options: NextAuthOptions = {
       }
       return token;
     },
+    // it will read that data from token and expose in session like useSession() or getServerSession()
     async session({ session, token }) {
       if (token) {
         session.user.username = token.username;

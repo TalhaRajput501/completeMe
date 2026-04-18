@@ -4,6 +4,7 @@ import ProductInfoCard, { ProductInfoCardProps } from './ProductInfoCard';
 import { Watch } from 'lucide-react';
 import Button from './Button';
 import Link from 'next/link';
+import Heading from './Heading';
 
 function CategoryBanner({ heading, btnLink, products }: { heading: string; btnLink: string; products: ProductInfoCardProps[] }) {
 
@@ -47,7 +48,7 @@ function CategoryBanner({ heading, btnLink, products }: { heading: string; btnLi
   }
   return (
     <section>
-      <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4 text-center">{heading}</h1>
+      <Heading extraClassName=" text-slate-800 mb-4 text-center">{heading}</Heading>
       {/* <Button children="Browse Collection" onClick={handle} /> */}
 
       <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-8">
