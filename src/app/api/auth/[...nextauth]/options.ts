@@ -53,7 +53,7 @@ export const options: NextAuthOptions = {
   ],
   callbacks: {
     async redirect({url, baseUrl}){
-      console.log("Redirecting to ", url, " from baseUrl ", baseUrl); 
+      // console.log("Redirecting to ", url, " from baseUrl ", baseUrl); 
       if(url.startsWith('/')) return `${baseUrl}${url}`
       else if (new URL(url).origin === baseUrl) return url
       else return baseUrl

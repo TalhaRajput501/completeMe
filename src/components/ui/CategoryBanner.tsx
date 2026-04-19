@@ -5,6 +5,7 @@ import { Watch } from 'lucide-react';
 import Button from './Button';
 import Link from 'next/link';
 import Heading from './Heading';
+import { truncateLetter } from '@/lib/utils';
 
 function CategoryBanner({ heading, btnLink, products }: { heading: string; btnLink: string; products: ProductInfoCardProps[] }) {
 

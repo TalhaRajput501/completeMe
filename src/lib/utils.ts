@@ -17,3 +17,14 @@ export const truncate = ({text, limit}: {text: string; limit: number}  ) => {
   // return truncatedText
 
 }
+
+
+export const truncateLetter = ({ text, limit }: { text: string; limit: number }): string => {
+  const cleanText = text.trim()
+  
+  if (cleanText.length <= limit) {
+    return cleanText // no need to cut, return as-is
+  }
+  
+  return cleanText.substring(0, limit).trim() + '...'
+}
