@@ -1,9 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import { User, ShoppingCart } from "lucide-react";
+import { usePathname } from 'next/navigation';
+import { Heart, User, ShoppingCart } from "lucide-react";
 
 function Navbar() {
+  const pathname = usePathname()
 
   const [show, setShow] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -38,6 +40,12 @@ function Navbar() {
     console.log(scrollPercent) // devide them and multipy by 100 
   }
 
+  const iconLinkClass = (href: string) =>
+    `mx-1 rounded-full p-2 transition-colors ${pathname === href
+      ? 'bg-blue-100 text-blue-600'
+      : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600'
+    }`
+
   return (
     <>
       <div>
@@ -67,14 +75,26 @@ function Navbar() {
 
               <Link
                 href={'/sign-in'}
+                className={iconLinkClass('/sign-in')}
+                aria-label="Account"
               >
-                <User className="w-9 cursor-pointer h-10 mx-3 text-slate-700 hover:text-blue-600 transition-colors" />
+                <User className="h-6 w-6" />
+              </Link>
+
+              <Link
+                href={'/wish-list'}
+                className={iconLinkClass('/wish-list')}
+                aria-label="Wishlist"
+              >
+                <Heart className="h-6 w-6" />
               </Link>
 
               <Link
                 href={'/cart'}
+                className={iconLinkClass('/cart')}
+                aria-label="Cart"
               >
-                <ShoppingCart className="w-9 cursor-pointer h-10 mx-3 text-slate-700 hover:text-blue-600 transition-colors" />
+                <ShoppingCart className="h-6 w-6" />
               </Link>
 
             </div>
