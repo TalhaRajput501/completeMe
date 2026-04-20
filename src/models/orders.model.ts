@@ -6,14 +6,15 @@ export interface OrderProduct {
   price: number;
 }
 
-type OrderStatus = "draft" | "pending" | "processing" | "delivered" | "cancelled";  
+export type OrderStatus = "draft" | "pending" | "processing" | "delivered" | "cancelled";  
 
 export interface OrderType extends Document {
   products: OrderProduct[];
-  customerInfo: {
+  customerInfo?: {
     name: string;
     address: string;
     phone: number;
+    email: string;
   };
   paymentIntentId: string;
   status: OrderStatus;
@@ -43,15 +44,19 @@ const ordersSchema = new mongoose.Schema<OrderType>(
     customerInfo: {
       name: {
         type: String,
-        required: true,
+        // required: true,
       },
       address: {
         type: String,
-        required: true,
+        // required: true,
       },
       phone: {
         type: Number,
-        required: true,
+        // required: true,
+      },
+      email: {
+        type: String,
+        // required: true,
       },
     },
     paymentIntentId: {
