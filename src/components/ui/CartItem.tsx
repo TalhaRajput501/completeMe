@@ -1,109 +1,75 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import QuantityCounter from './QuantityCounter'
-import { ProductType } from '@/schemas/product.schema'
-import { ObjectId } from 'mongoose';
-import Image from 'next/image';
-import { eachCartProduct } from '@/app/product/[category]/[id]/[name]/page';
-import { useAppDispatch, useAppSelector } from '@/lib/store/reduxHooks';
-import { X } from 'lucide-react';
-import { deleteItem } from '@/lib/features/cartSlice';
+import Image from 'next/image'
+import { useAppDispatch } from '@/lib/store/reduxHooks'
+import { X } from 'lucide-react'
+import { deleteItem } from '@/lib/features/cartSlice'
+import { cartProduct } from '../../../types/productTypes'
 
-// db product
-export interface cartProduct {
-  _id: string // i just remove | ObjectId from here in case any error occur 
-  name: string;
-  images: string[];
-  price: number;
-  qtyToBuy: number
-}
 
 interface cartItemProps {
-  product: cartProduct;
+  product: cartProduct
 }
 
 function CartItem({ product }: cartItemProps) {
- 
-  const reduxCart = useAppSelector(state => state.cart.products)
   const dispatch = useAppDispatch()
+  const previewImage = product.images?.[0]
+  const totalPrice = product.price * product.qtyToBuy
 
   return (
-    <div className='flex   w-[70%] mt-3 mx-auto  '>
-      <div className='flex w-full  border items-center gap-2  '>
+    <article className='relative rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4'>
+      <button
+        type='button'
+        className='absolute right-2 top-2 rounded-full border border-blue-200 bg-white p-1 text-blue-500 transition-colors hover:bg-blue-50'
+        onClick={() => dispatch(deleteItem(product._id))}
+        aria-label='Remove product from cart'
+      >
+        <X className='h-4 w-4' />
+      </button>
 
-        <div className=''>
-          {/* Image */}
-          {
-            product.images.map(image => (
-              <div key={image} className='relative w-55 h-32 '>
-                <Image className='border rounded' fill src={image} alt={image} />
-              </div>
-            ))
-          }
+      <div className='flex flex-col gap-4 sm:flex-row'>
+        <div className='relative h-40 w-full overflow-hidden rounded-lg border border-slate-200 bg-white sm:h-28 sm:w-44 sm:shrink-0'>
+          {previewImage ? (
+            <Image className='object-cover' fill src={previewImage} alt={product.name} />
+          ) : (
+            <div className='flex h-full items-center justify-center text-sm text-slate-400'>
+              No image
+            </div>
+          )}
         </div>
 
-        <div className='flex w-full items-center justify-around'>
-          {/* Information */}
-          <div className='flex  flex-col ml-2'>
-            <div>
-              <h1 className='text-lg font-semibold  text-[#11283d] ' >Name:</h1>
-              <p>{product.name}</p>
+        <div className='grid flex-1 gap-4 sm:grid-cols-3 sm:items-center'>
+          <div>
+            <h2 className='text-sm font-semibold uppercase tracking-wide text-slate-500'>Product</h2>
+            <p className='text-base font-semibold text-slate-800'>{product.name}</p>
+            <p className='mt-1 text-sm text-slate-600'>
+               <span className='font-semibold text-slate-800'>${product.price}</span> / unit
+            </p>
+          </div>
+
+          <div className='sm:justify-self-center'>
+            <h2 className='text-sm font-semibold uppercase tracking-wide text-slate-500'>Quantity</h2>
+            <div className='mt-1'>
+              <QuantityCounter
+                controlToChangeCart
+                deleteIcon
+                qtyToBuy={product.qtyToBuy}
+                productPrice={product.price}
+                currentProductId={product._id}
+                className='px-2 py-1 text-base'
+              />
             </div>
-
-            <div>
-              <h1 className='text-lg font-semibold  text-[#11283d] ' >Unit Price:</h1>
-              <p className=''>
-                PKR: &#8203;
-                <span className='font-bold '>
-                  {product.price}
-                </span>
-              </p>
-            </div>
           </div>
 
-          {/* Counter */}
-          <div className='flex flex-col'>
-            <h1 className='text-md font-semibold  text-[#11283d] ' >Quantity:</h1>
-            <QuantityCounter
-              controlToChangeCart
-              deleteIcon
-              qtyToBuy={product.qtyToBuy}  
-              // setQty={setQuantityToBuy}
-              // setSummary={setSummaryTotal}
-              productPrice={product.price}
-              currentProductId={product._id as string}
-              className=' p-0.5 px-1 '
-            />
+          <div className='sm:justify-self-end'>
+            <h2 className='text-sm font-semibold uppercase tracking-wide text-slate-500'>Total</h2>
+            <p className='text-lg font-bold text-slate-800'>$ {totalPrice}</p>
           </div>
-
-          {/* Total */}
-          <div className='w-[25%]  '>
-            <h1 className='text-lg font-semibold  text-[#11283d] ' >Total:</h1>
-            {
-              reduxCart.map(item => item._id === product._id && (
-                <p key={item._id} >
-                  PKR: &#8203;
-                  <span className='font-bold   '>
-                    {product.price * product.qtyToBuy}
-                  </span>
-                </p>
-              )
-              )
-            }
-          </div>
-        </div>
-
-        {/* cross icon  */}
-        <div
-          className='relative w-fit h-full  cursor-pointer  '
-          onClick={() => dispatch(deleteItem(product._id))}
-        >
-          <X className='border-[#3dbdf1] text-[#3dbdf1] bg-gray-200 hover:bg-gray-300 border-1 rounded-full p-0.5 absolute top-2 right-2 ' />
         </div>
       </div>
-    </div>
+    </article>
   )
 }
-
 
 export default CartItem

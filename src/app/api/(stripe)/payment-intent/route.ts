@@ -5,6 +5,7 @@ import { Order, OrderProduct } from "@/models/orders.model";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { ApiResponse } from "../../../../../types/ApiResponse";
 
 if (process.env.STRIPE_SECRET_KEY === undefined) {
   throw new Error("Stripe secret key is required");
@@ -52,26 +53,27 @@ export async function POST(request: NextRequest) {
 
     // create draft order
     await dbConnect()
-    // const orderFromDB = new Order({
-    //   products: productsArray,
-    //   totalAmount: totalBill * 100, // us dollars
-    //   status: "draft",
-    // });
+    const orderFromDB = new Order({
+      products: productsArray,
+      totalAmount: totalBill,  
+      status: "draft",
+    });
 
     // creat payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 100 * 100, // us dollars
+      amount: totalBill * 100, // us dollars
       currency: "usd",
       // automatic_payment_methods: { enabled: true },
       payment_method_types: ["card"],
       metadata: {
-        orderId: 'orderFromDB._id.toString()',
+        orderId: orderFromDB._id.toString(),
       },
     });
+    // console.log('payment intent created ', paymentIntent)
 
-    // now intent id is available take it and save the draft order
-    // orderFromDB.paymentIntentId = paymentIntent.id;
-    // await orderFromDB.save();
+    // Now intent id is available take it and save the draft order
+    orderFromDB.paymentIntentId = paymentIntent.id;
+    await orderFromDB.save();
 
     // console.log("product from frontend", products);
     // console.log("get only ids", objectIds);
@@ -81,19 +83,27 @@ export async function POST(request: NextRequest) {
     // console.log("order products array", productsArray);
     // console.log("order from db", orderFromDB);
 
-    console.log({
+    console.log('Intent Created : ',{
       clientSecret: paymentIntent.client_secret,
-      // orderId: orderFromDB._id,
+      orderId: orderFromDB._id,
     });
 
-    return NextResponse.json({
+    return NextResponse.json<ApiResponse>({
+      success: true,
+      statusCode: 200, 
+      message: "Payment intent created successfully",
+      data: {
       clientSecret: paymentIntent.client_secret,
-      // orderId: orderFromDB._id.toString(),
+      orderId: orderFromDB._id.toString(),
+    }
     });
   } catch (error) {
-    console.log("Internal Error from /peyment-intent route: ", error);
-    return NextResponse.json({
-      error,
+    console.error("Internal Error from /peyment-intent route: ", error);
+    return NextResponse.json<ApiResponse>({
+      success: false,
+      statusCode: 500,
+      message: "Failed to create payment intent",
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 }

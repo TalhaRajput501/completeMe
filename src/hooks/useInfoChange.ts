@@ -17,7 +17,7 @@ export function useInfoChange() {
         url: "/api/user",
         data: creds,
       });
-
+      if (!response) throw new Error("No response from server");
       setData(response);
       return response;
     } catch (err) {
