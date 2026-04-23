@@ -20,7 +20,7 @@ function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false }: Order
 
     // Order summary box 
     <div
-      className='m-6 p-6 pt-4 sticky inset-0 top-11 bg-[#c0e8fb] text-[#11283d] rounded'>
+      className='m-0 rounded-2xl border border-slate-200 bg-white p-6 pt-5 text-slate-800 shadow-sm'>
       <h1 className='font-bold text-2xl'>Order Summary</h1>
 
       <div className='flex justify-between mt-0.5'>
@@ -33,7 +33,7 @@ function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false }: Order
         <p className='font-semibold'>0</p>
       </div>
 
-      <hr className="border-none h-0.5 bg-gray-900 mt-2" />
+      <hr className='border-none h-0.5 bg-slate-300 mt-3' />
 
       <div className='flex justify-between mt-0.5'>
         <p>Total</p>
@@ -42,19 +42,14 @@ function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false }: Order
 
       {buttonVisibility && (
         <div
-          className=' w-full border flex items-center mt-9 justify-center   '
+          className='w-full mt-9'
         >
 
           <Link className='w-full' href={`/${buttonUrl}`}>
-            <button className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
+            <button className='w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer rounded-lg py-2.5 px-3 font-semibold transition-colors'>
               {buttonText}
             </button>
           </Link>
-          {/* <button
-          onClick={() => console.log(products)}
-          className='w-full bg-[#3dbdf1] hover:bg-[#02aaf5]  cursor-pointer rounded py-2 px-3 font-semibold'>
-          show me the redux cart
-          </button> */}
         </div>
       )}
 

@@ -138,7 +138,7 @@ function Account() {
           username: normalizedUsername,
         },
       })
-
+      // if(!response) throw new Error('Failed to update username')
       setUsernameMessage({
         type: 'success',
         text: response.message || 'Username updated successfully.',

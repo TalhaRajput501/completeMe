@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import { ProductInfoCardProps, wishListInLocal, WishProduct } from '../../../types/productTypes'
 import { useAppDispatch, useAppSelector } from '@/lib/store/reduxHooks'
 import { addToWishList, removeFromWishList } from '@/lib/features/wishListSlice'
-import { wishListKey, cartKey } from './ClientLayout'
+import { wishListKey } from './ClientLayout'
 
 function HomeCard({ product }: { product: ProductInfoCardProps }) {
   const [isFavorite, setIsFavorite] = useState(false)
@@ -27,39 +27,40 @@ function HomeCard({ product }: { product: ProductInfoCardProps }) {
 
   // Currying function to handle favorite button click
   const handleFavourite = (productId: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
-
+    // todo not working do it without fucking copilot
     // e.stopPropagation()
-    // console.log(productId) 
-    const localWish = localStorage.getItem(wishListKey)
-    const localWishList: wishListInLocal[] = JSON.parse(localWish ?? '[]')
-    if (localWishList.length > 0) {
-      let newWishList: wishListInLocal[] = localWishList
-      if (newWishList.some(item => item.product === productId)) {
-        const filtered = newWishList.filter(item => item.product !== productId)
-        localStorage.setItem(wishListKey, JSON.stringify(filtered))
-        setIsFavorite(false)
-      }else {
-        newWishList.push({product: productId, note: ''})
-        localStorage.setItem(wishListKey, JSON.stringify(newWishList))
-        setIsFavorite(true)
+    console.log(productId)
+
+
+
+    let localWishList: wishListInLocal[] = JSON.parse(localStorage.getItem(wishListKey) ?? '[]')
+
+    if (localWishList.some(item => item.product === productId)) {
+      dispatch(removeFromWishList({ id: productId }))
+      localWishList = localWishList.filter(item => item.product !== productId)
+      localStorage.setItem(wishListKey, JSON.stringify(localWishList))
+      setIsFavorite(false)
+    } else {
+      setIsFavorite(true)
+      const wish: WishProduct = {
+        id: product.id,
+        image: product.imageSrc,
+        name: product.name,
+        price: product.price,
+        note: '',
       }
+      dispatch(addToWishList({ wish }))
+      const forLocal: wishListInLocal = {
+        product: productId,
+        note: '',
+      }
+      if (localWishList.some((item: wishListInLocal) => item.product === productId)) {
+        return
+      }
+      localWishList.push(forLocal)
+      localStorage.setItem(wishListKey, JSON.stringify(localWishList))
     }
 
-    // if (wishProducts.some(item => item.id === productId)) {
-    //   dispatch(removeFromWishList({ id: productId }))
-    //   setIsFavorite(false)
-    //   return
-    // } else {
-    //   setIsFavorite(true)
-    //   const wish: WishProduct = {
-    //     id: product.id,
-    //     image: product.imageSrc,
-    //     name: product.name,
-    //     price: product.price,
-    //     note: '',
-    //   }
-    //   dispatch(addToWishList({ wish }))
-    // }
   }
 
   return (
