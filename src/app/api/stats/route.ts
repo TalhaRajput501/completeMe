@@ -11,7 +11,7 @@ type statsRes = [number, number, {totalAmount: number}[]]
 export async function GET(){
 
   try {
-    
+     await requireAuth()
     // const {session} = await requireAuth('admin')
 
 
@@ -53,9 +53,10 @@ export async function GET(){
     return NextResponse.json(res)
 
   } catch (error) {
-    NextResponse.json<ApiResponse>({
+    return NextResponse.json<ApiResponse>({
       statusCode: 500,
-      success: false
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong"
     })
   }
 

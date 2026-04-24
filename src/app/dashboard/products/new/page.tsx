@@ -106,11 +106,11 @@ export default function Page() {
 
     try {
       console.log('Submitting product:', parsed.data, 'with images:', selectedFiles)
-      const response = await createProduct({
+      const data = await createProduct({
         product: parsed.data,
         images: selectedFiles,
       })
-      const message = response.message || 'Product added successfully.'
+      const message = 'Product added successfully.'
       setSuccessMessage(message)
       toast.success(message)
       resetForm()

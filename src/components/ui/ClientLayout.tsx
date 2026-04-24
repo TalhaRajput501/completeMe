@@ -1,19 +1,24 @@
 'use client'
 import React, { useEffect } from 'react'
 import { getProductsWithIds } from "@/lib/actions/products.actions";
-import { cartProduct } from "@/components/ui/CartItem";
 import { store } from "@/lib/store/store";
+import { cartProduct, eachCartProduct, wishListInLocal, WishProduct } from '../../../types/productTypes';
 import { useAppDispatch } from "@/lib/store/reduxHooks";
 import { addCartItems } from "@/lib/features/cartSlice";
-import { eachCartProduct } from '@/app/product/[category]/[id]/[name]/page';
+import { addToWishList } from '@/lib/features/wishListSlice'
 
+export const wishListKey = 'wishlist'
+export const cartKey = 'cartProducts'
 function ClientLayout({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     const getCartProducts = async () => {
+      const localCart = localStorage.getItem(cartKey)
+      const wishList = localStorage.getItem(wishListKey)
 
-      const localCart = localStorage.getItem('cartProducts')
+
+      // * For Cart 
       if (localCart) {
 
         const jsonCart = JSON.parse(localCart) // this array
@@ -35,21 +40,56 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
 
         dispatch(addCartItems(productsWithQty))
 
-
       }
+      // * For Wish List
+      if (wishList) {
+
+        const jsonWishList: wishListInLocal[] = JSON.parse(wishList)
+        const ids = jsonWishList.map((item: wishListInLocal) => item.product)
+
+        const products: cartProduct[] = await getProductsWithIds(ids)
+
+        const productMap = new Map(jsonWishList.map(item => [item.product, item.note]))
+
+        const final: WishProduct[] = products.map((item) => {
+          const note = productMap.get(item._id)
+          return {
+            id: item._id,
+            image: item.images[0],
+            name: item.name,
+            price: item.price,
+            note,
+          }
+        })
+
+        final.forEach(product => {
+          dispatch(addToWishList({ wish: product }))
+        });
+      }
+
     }
     getCartProducts()
 
     const unsubscribe = store.subscribe(() => {
       // as my redux store change i have to save that snapshopt of store in localstorage 
       const currentState = store.getState()
+      // * For Cart
       const products: cartProduct[] = currentState.cart.products
-      const arrForLocal = products.map(item => ({ product: item._id, quantity: item.qtyToBuy }))
+      const arrForLocal: eachCartProduct[] = products.map(item => ({ product: item._id, quantity: item.qtyToBuy }))
+      // * For WishList
+      const wishList: WishProduct[] = currentState.wishList.products
+      const wishForLocal: wishListInLocal[] = wishList.map(item => ({ product: item.id, note: item.note ?? '' }))
+
       if (products.length === 0) {
-        localStorage.removeItem('cartProducts')
-      } else {
+        localStorage.removeItem(cartKey)
+      } 
+      else if (wishForLocal.length === 0) {
         // console.log('this is going in localstorage in subscriber', arrForLocal)
-        localStorage.setItem('cartProducts', JSON.stringify(arrForLocal))
+        localStorage.removeItem(wishListKey)
+      } 
+      else {
+        localStorage.setItem(cartKey, JSON.stringify(arrForLocal))
+        localStorage.setItem(wishListKey, JSON.stringify(wishForLocal))
       }
     })
 
