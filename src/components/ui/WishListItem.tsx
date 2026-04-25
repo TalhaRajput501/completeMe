@@ -7,28 +7,53 @@ import { truncateLetter } from '@/lib/utils'
 import { formatCurrency } from '@/app/wish-list/page'
 import { useAppDispatch } from '@/lib/store/reduxHooks'
 import { updateWishListNote, removeFromWishList } from '@/lib/features/wishListSlice'
-import { WishProduct } from '../../../types/productTypes'
+import { addCartItems } from '@/lib/features/cartSlice'
+import { cartProduct, wishListInLocal, WishProduct } from '../../../types/productTypes'
+import { toast } from 'sonner'
+import { wishListKey } from './ClientLayout'
 
 
-function WishListItem({product}: {product: WishProduct}) {
+function WishListItem({ product }: { product: WishProduct }) {
 
   const [note, setNote] = useState<string>(product.note ?? '')
   const dispatch = useAppDispatch()
 
   const handleUpdateNote = () => {
-    if(!product.note) return
-    dispatch(updateWishListNote({id: product.id, note: product.note}))
+    dispatch(updateWishListNote({ id: product.id, note }))
+    const list: wishListInLocal[] = JSON.parse(localStorage.getItem(wishListKey) || '[]')
+    const updatedList = list.map((item) =>
+      item.product === product.id ? { ...item, note } : item,
+    )
+    localStorage.setItem(wishListKey, JSON.stringify(updatedList))
+    toast.success('Note updated')
   }
 
   const handleDeleteWishItem = () => {
-    dispatch(removeFromWishList({id: product.id}))
+  
+    dispatch(removeFromWishList({ id: product.id }))
+    const list: wishListInLocal[] = JSON.parse(localStorage.getItem(wishListKey) || '[]')
+    const updatedList = list.filter((item) => item.product !== product.id)
+    localStorage.setItem(wishListKey, JSON.stringify(updatedList))
+    toast.success('Item removed from wish list')
+  }
+  
+  const handleAddToCart = () => {
+    const cartProduct : cartProduct = {
+      _id: product.id,
+      name: product.name,
+      price: product.price,
+      images: [product.image],
+      qtyToBuy: 1
+    }
+    dispatch(removeFromWishList({ id: product.id }))
+    dispatch(addCartItems([cartProduct]))
+    toast.success('Item moved to cart')
   }
 
-  
+  // if(!wishList) return <div></div>
 
   return (
     <article
-     
       className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -65,17 +90,16 @@ function WishListItem({product}: {product: WishProduct}) {
                   id={`note-${product.id}`}
                   maxLength={50}
                   rows={1}
-                  defaultValue={product.note ?? ''}
                   placeholder="Add a short note (max 50 letters)"
-                  className="h-9 w-full resize-none rounded-l-lg bg-transparent px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none overflow-y-hidden"
+                  className="h-12 md:h-9 w-full resize-none rounded-l-lg bg-transparent px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none overflow-y-hidden"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 />
                 <button
                   type="button"
                   aria-label={`Save note for ${product.name}`}
-                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-r-lg border-l border-slate-300 bg-white text-blue-600 transition-colors hover:bg-blue-50"
-                  onClick={handleUpdateNote}
+                  className={`inline-flex h-12 md:h-9 w-9 shrink-0 items-center justify-center rounded-r-lg border-l border-slate-300 text-blue-600 transition-colors hover:bg-blue-50 ${note === product.note ? 'bg-white  cursor-not-allowed' : 'hover:bg-blue-100 cursor-pointer bg-blue-500 text-white hover:bg-blue-600'}`}
+                  onClick={handleUpdateNote} 
                 >
                   <Check className="h-4 w-4" />
                 </button>
@@ -85,28 +109,33 @@ function WishListItem({product}: {product: WishProduct}) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <div className="mr-1">
-            <p className="text-right text-lg font-semibold text-slate-800">
-              {formatCurrency(product.price)}
-            </p>
-          </div>
-
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end justify-between">
+          {/* Remove Wish Item */}
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            Move to Cart
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 cursor-pointer"
             onClick={handleDeleteWishItem}
           >
             <Trash2 className="h-4 w-4" />
             Remove
           </button>
+
+          {/* Price and add to cart button */}
+          <div className="mr-1 flex items-center gap-4">
+            <p className="text-right text-lg font-semibold text-slate-800">
+              {formatCurrency(product.price)}
+            </p>
+
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 cursor-pointer"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Move to Cart
+            </button>
+
+          </div>
         </div>
       </div>
     </article>
