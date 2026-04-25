@@ -1,65 +1,75 @@
 'use client'
 import React, { useEffect, useState, useMemo } from 'react'
-import { SlidersHorizontal, Plus, Funnel, ChevronDown, Trash2, SquarePen, ListRestart, RotateCw, View, Eye, Search, Download, Upload, PackageX, Package, TrendingUp, Archive } from 'lucide-react'
+import { SlidersHorizontal, Plus, Funnel, ChevronDown, Trash2, SquarePen, ListRestart, RotateCw, View, Eye, Search, Download, Upload, PackageX, Package, TrendingUp, Archive, X } from 'lucide-react'
 import Link from 'next/link'
 import FilterPopUp from '@/components/ui/FilterPopUp'
-import Pills, { Option } from '@/components/ui/Pills'
+import Pills from '@/components/ui/Pills'
 import UpdateDrawer from '@/components/ui/UpdateDrawer'
-import { getProducts } from '../../../lib/actions/products.actions'
+import { getProducts, getProductsBySearchQuery, getProductStats } from '../../../lib/actions/products.actions'
 import { ProductType } from '@/schemas/product.schema'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import loader from '@/assets/loader2.gif'
 import StockStatusPill from '@/components/ui/StockStatusPill'
+import { CategoryOption, categoryOptions, featureOptionsByCategory, genderOptions, SelectOption, sizeOptionsByCategory } from '../../../../types/productStyle'
+import { toast } from 'sonner'
+import useDebounceValue from '@/hooks/useDebounceValue'
+import CategoryPills from '@/components/ui/CategoryPills'
 
+type Stats = {
+  total: number;
+  active: number;
+  lowStock: number;
+  outOfStock: number;
+  totalValue: number;
+};
 
+// export const filterOptions: Record<string, Option[]> = {
+//   genderOptions: [
+//     { value: 'men', label: 'Male' },
+//     { value: 'women', label: 'Female' },
+//     { value: 'unisex', label: 'Unisex' },
+//   ],
+
+//   featureOptions: [
+//     { value: "analog", label: "Analog Display" },
+//     { value: "digital", label: "Digital Display" },
+//     { value: "smart", label: "Smart Watch" },
+//     { value: "waterresistant", label: "Water Resistant" },
+//     { value: "stainlesssteel", label: "Stainless Steel" },
+//     { value: "chronograph", label: "Chronograph Function" },
+//     { value: "leatherstrap", label: "Leather Strap" },
+//   ],
+
+//   sizeOptions: [
+//     { value: "28mm", label: "28 mm (Small)" },
+//     { value: "32mm", label: "32 mm (Medium - Women)" },
+//     { value: "36mm", label: "36 mm (Unisex)" },
+//     { value: "40mm", label: "40 mm (Standard Men’s)" },
+//     { value: "44mm", label: "44 mm (Large Dial)" },
+//     { value: "46mm", label: "46 mm (Extra Large)" },
+//   ],
+
+//   categoryOptions: [
+//     { value: 'watch', label: 'Watches' },
+//     { value: 'shoe', label: 'Shoes' },
+//     { value: 'cloth', label: 'Clothes' },
+//   ]
+
+// }
 export default function Page() {
-
-  const filterOptions: Record<string, Option[]> = {
-    genderOptions: [
-      { value: 'men', label: 'Male' },
-      { value: 'women', label: 'Female' },
-      { value: 'unisex', label: 'Unisex' },
-    ],
-
-    featureOptions: [
-      { value: "analog", label: "Analog Display" },
-      { value: "digital", label: "Digital Display" },
-      { value: "smart", label: "Smart Watch" },
-      { value: "waterresistant", label: "Water Resistant" },
-      { value: "stainlesssteel", label: "Stainless Steel" },
-      { value: "chronograph", label: "Chronograph Function" },
-      { value: "leatherstrap", label: "Leather Strap" },
-    ],
-
-    sizeOptions: [
-      { value: "28mm", label: "28 mm (Small)" },
-      { value: "32mm", label: "32 mm (Medium - Women)" },
-      { value: "36mm", label: "36 mm (Unisex)" },
-      { value: "40mm", label: "40 mm (Standard Men’s)" },
-      { value: "44mm", label: "44 mm (Large Dial)" },
-      { value: "46mm", label: "46 mm (Extra Large)" },
-    ],
-
-    categoryOptions: [
-      { value: 'watch', label: 'Watches' },
-      { value: 'shoe', label: 'Shoes' },
-      { value: 'cloth', label: 'Clothes' },
-    ]
-
-  }
 
   // const [inputClicked, setInputClicked] = useState(false)
 
   // Selection for filters 
-  const [selectedGenders, setSelectedGenders] = useState<Option[]>([])
-  const [selectedFeatures, setSelectedFeatures] = useState<Option[]>([])
-  const [selectedSize, setSelectedSize] = useState<Option[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<Option[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<CategoryOption>(categoryOptions[0]) // default to first category
+  const [selectedGenders, setSelectedGenders] = useState<SelectOption[]>([genderOptions[2]])
+  const [selectedFeatures, setSelectedFeatures] = useState<SelectOption[]>([featureOptionsByCategory[selectedCategory.value][0]])
+  const [selectedSize, setSelectedSize] = useState<SelectOption[]>([sizeOptionsByCategory[selectedCategory.value][0]])
 
 
   const [showFilterBox, setShowFilterBox] = useState<boolean>(false)
-  const [showUpdateDrawer, setShowUpdateDrawer] = useState<boolean>(false)
+  // const [showUpdateDrawer, setShowUpdateDrawer] = useState<boolean>(false)
   const [currentProductDetailBox, setCurrentProductDetailBox] = useState<string | null>(null)
   const [showProductDetailBox, setShowProductDetailBox] = useState<boolean>(false)
   const [reloadEnable, setReloadEnable] = useState<boolean>(true)
@@ -68,38 +78,71 @@ export default function Page() {
   const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set())
   const [selectAll, setSelectAll] = useState<boolean>(false)
 
-  // Filter products based on search query
-  const filteredProducts = useMemo(() => {
-    if (!searchQuery) return products
-    const query = searchQuery.toLowerCase()
-    return products.filter(product => 
-      product.name.toLowerCase().includes(query) ||
-      product.category.toLowerCase().includes(query) ||
-      product.brand?.toLowerCase().includes(query) ||
-      product.tags.some(tag => tag.toLowerCase().includes(query))
-    )
-  }, [products, searchQuery])
+  // Stats states
+  const [stat, setStat] = useState<Stats>({
+    total: 0,
+    active: 0,
+    lowStock: 0,
+    outOfStock: 0,
+    totalValue: 0
+  })
 
-  // Calculate stats
-  const stats = useMemo(() => {
-    const total = products.length
-    const active = products.filter(p => p.isActive).length
-    const lowStock = products.filter(p => p.stock < 10 && p.stock > 0).length
-    const outOfStock = products.filter(p => p.stock === 0).length
-    const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock), 0)
-    
-    return { total, active, lowStock, outOfStock, totalValue }
-  }, [products])
+  // Pagination
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(12)
+
+  // Filter products based on search query
+
+  const debouncedSearchQuery = useDebounceValue({ value: searchQuery, delay: 500 })
+
+
+  const myProducts = async () => {
+    setReloadEnable(false)
+    try {
+      // console.log('debounced search query is ', debouncedSearchQuery)
+      if (debouncedSearchQuery) {
+        const searchedProducts = await getProductsBySearchQuery(page, limit, debouncedSearchQuery)
+        setProducts(searchedProducts)
+        setReloadEnable(true)
+        return
+      }
+      const allProducts = await getProducts(page, limit)
+      setProducts(allProducts)
+      setReloadEnable(true)
+    } catch (error) {
+      console.log('error in frontend in get all products ', error)
+      toast.error('Failed to load products')
+    }
+  }
+
+
+  // This is for initial loading of products and stats when we open the page
+  useEffect(() => {
+    ; (async () => {
+      try {
+        await myProducts()
+        // Calculate stats
+        const { total, active, lowStock, outOfStock, totalValue } = await getProductStats()
+        setStat({ total, active, lowStock, outOfStock, totalValue })
+      } catch (error) {
+        console.error('Error fetching product stats:', error)
+        toast.error('Failed to load product statistics')
+      }
+    })()
+  }, [page, limit, debouncedSearchQuery])
+
+
 
   // Handle select all checkbox
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedProducts(new Set())
     } else {
-      setSelectedProducts(new Set(filteredProducts.map(p => p._id!)))
+      setSelectedProducts(new Set(products.map(p => p._id!)))
     }
     setSelectAll(!selectAll)
   }
+
 
   // Handle individual checkbox
   const handleSelectProduct = (productId: string) => {
@@ -110,30 +153,12 @@ export default function Page() {
       newSelected.add(productId)
     }
     setSelectedProducts(newSelected)
-    setSelectAll(newSelected.size === filteredProducts.length)
+    setSelectAll(newSelected.size === products.length)
   }
 
-  // This is for Reload Button
-  const myProducts = async () => {
-    setReloadEnable(false)
-    console.log('entering in the my products section')
-    try {
-      const allProducts = await getProducts()
-      setProducts(allProducts)
-      console.log(allProducts)
-      setReloadEnable(true)
-    } catch (error) {
-      console.log('error in frontend in get all products ', error)
-    }
-  }
 
-  useEffect(() => {
-    myProducts()
-  }, [])
-
-
+  // This is for handling the product detail box when we click on a product row
   const handleDetailBox = (productId: string) => {
-
     if (currentProductDetailBox === productId) {
       // now assume that box is already opened
       setShowProductDetailBox(false);
@@ -144,10 +169,8 @@ export default function Page() {
       setCurrentProductDetailBox(productId);
       setShowProductDetailBox(true);
     }
-
     console.log(showProductDetailBox)
   }
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-6">
@@ -165,7 +188,7 @@ export default function Page() {
           <div className="flex items-center justify-between mb-2">
             <Package className="w-5 h-5 text-blue-600" />
           </div>
-          <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
+          <p className="text-2xl font-bold text-slate-800">{stat.total}</p>
           <p className="text-xs text-slate-600">Total Products</p>
         </div>
 
@@ -173,7 +196,7 @@ export default function Page() {
           <div className="flex items-center justify-between mb-2">
             <TrendingUp className="w-5 h-5 text-emerald-600" />
           </div>
-          <p className="text-2xl font-bold text-slate-800">{stats.active}</p>
+          <p className="text-2xl font-bold text-slate-800">{stat.active}</p>
           <p className="text-xs text-slate-600">Active</p>
         </div>
 
@@ -181,7 +204,7 @@ export default function Page() {
           <div className="flex items-center justify-between mb-2">
             <Archive className="w-5 h-5 text-amber-600" />
           </div>
-          <p className="text-2xl font-bold text-slate-800">{stats.lowStock}</p>
+          <p className="text-2xl font-bold text-slate-800">{stat.lowStock}</p>
           <p className="text-xs text-slate-600">Low Stock</p>
         </div>
 
@@ -189,7 +212,7 @@ export default function Page() {
           <div className="flex items-center justify-between mb-2">
             <PackageX className="w-5 h-5 text-red-600" />
           </div>
-          <p className="text-2xl font-bold text-slate-800">{stats.outOfStock}</p>
+          <p className="text-2xl font-bold text-slate-800">{stat.outOfStock}</p>
           <p className="text-xs text-slate-600">Out of Stock</p>
         </div>
 
@@ -197,7 +220,7 @@ export default function Page() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-emerald-600 text-lg">$</span>
           </div>
-          <p className="text-2xl font-bold text-slate-800">${stats.totalValue.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-slate-800">${stat.totalValue.toLocaleString()}</p>
           <p className="text-xs text-slate-600">Inventory Value</p>
         </div>
       </div>
@@ -212,18 +235,23 @@ export default function Page() {
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
               placeholder="Search by name, category, brand, or tags..."
               type="text"
+              disabled={!reloadEnable}
             />
+            {
+              searchQuery &&
+              <X onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 hover:text-slate-500 cursor-pointer" />
+            }
           </div>
 
 
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-2">
-            <Link href="/dashboard/products/new">
-              <button className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm">
+            <Link href="/dashboard/products/new" className=''>
+              <button className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm cursor-pointer">
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Add Product</span>
               </button>
@@ -231,7 +259,7 @@ export default function Page() {
 
             <button
               onClick={() => setShowFilterBox(true)}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm"
+              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm cursor-pointer"
             >
               <SlidersHorizontal className="w-4 h-4" />
               <span className="hidden sm:inline">Filter</span>
@@ -240,13 +268,13 @@ export default function Page() {
             <button
               onClick={myProducts}
               disabled={!reloadEnable}
-              className="px-4 py-2.5 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm"
+              className="px-4 py-2.5 bg-slate-600 hover:bg-slate-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm cursor-pointer"
             >
               <RotateCw className={`w-4 h-4 ${!reloadEnable ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Reload</span>
             </button>
 
-            <button
+            {/* <button
               className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm"
               title="Export to CSV"
             >
@@ -260,7 +288,7 @@ export default function Page() {
             >
               <Upload className="w-4 h-4" />
               <span className="hidden sm:inline">Import</span>
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -309,7 +337,7 @@ export default function Page() {
 
             <tbody className="bg-white divide-y divide-slate-200">
               {
-                filteredProducts.length !== 0 ? filteredProducts.map(product => (
+                products.length !== 0 ? products.map(product => (
                   <React.Fragment key={product._id}>
                     <tr
                       onClick={() => handleDetailBox(product._id!)}
@@ -358,11 +386,10 @@ export default function Page() {
                       <td className="py-3 px-4 text-slate-800 font-semibold">${product.price}</td>
 
                       <td className="py-3 px-4">
-                        <span className={`font-semibold ${
-                          product.stock === 0 ? 'text-red-600' :
+                        <span className={`font-semibold ${product.stock === 0 ? 'text-red-600' :
                           product.stock < 10 ? 'text-amber-600' :
-                          'text-emerald-600'
-                        }`}>
+                            'text-emerald-600'
+                          }`}>
                           {product.stock}
                         </span>
                       </td>
@@ -516,7 +543,7 @@ export default function Page() {
                       </tr>
                     )}
                   </React.Fragment>
-                )) : products.length === 0 ? (
+                )) : products.length === 0 && !reloadEnable ? (
                   // Loading state
                   <tr>
                     <td colSpan={8} className="py-12 text-center">
@@ -542,43 +569,31 @@ export default function Page() {
         </div>
 
         {/* Results Summary */}
-        {filteredProducts.length > 0 && (
+        {products.length > 0 && (
           <div className="mt-4 text-sm text-slate-600 text-center">
-            Showing {filteredProducts.length} of {products.length} products
+            Showing {products.length} of {products.length} products
           </div>
         )}
       </div>
 
 
-
-
-
-
-
-        {/* <button
-          onClick={() => console.log(products)}
-          className='bg-red-400 px-3 py-1 text-white'
-        >
-          show Product
-        </button>
-
+      {/* Pagination Buttons */}
+      <div className='w-full mt-5 justify-center flex mx-auto '>
         <button
-          className='bg-red-400 m-5 px-3 py-1 text-white'
+          className="px-4 py-2 bg-white rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
         >
-          again call function
-        </button> */}      {/* Update Drawer */}
-      <UpdateDrawer
-        isOpen={showUpdateDrawer}
-        onClose={() => setShowUpdateDrawer(false)}
-      >
-
-        <div
-          className={`bg-yellow-500  `}
+          Previous
+        </button>
+        <button
+          className="ml-2 px-4 py-2 bg-white rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => setPage(page + 1)}
+          disabled={products.length < 12 ? true : false}
         >
-          hello
-        </div>
-      </UpdateDrawer>
-
+          Next
+        </button>
+      </div>
 
       {/* This is the Filter PopUp */}
       <div>
@@ -586,27 +601,26 @@ export default function Page() {
           isOpen={showFilterBox}
           onClose={() => setShowFilterBox(false)}
         >
-
           <div
             className='flex flex-col  '
           >
-
             <div
               className='  '
             >
-
               {/* Category Filters */}
               <div
                 className='flex flex-col'
               >
-                <h1>Select Category</h1>
+                <h1 className='text-gray-600 text-md font-semibold'>Select Category</h1>
                 <div
                   className='flex flex-wrap'
                 >
-                  <Pills
-                    pillOptions={filterOptions.categoryOptions}
+                  <CategoryPills
+                    pillOptions={categoryOptions}
                     selected={selectedCategory}
                     setSelected={setSelectedCategory}
+                    setSelectedFeatures={setSelectedFeatures}
+                    setSelectedSize={setSelectedSize}
                   />
                 </div>
               </div>
@@ -615,12 +629,12 @@ export default function Page() {
               <div
                 className='flex flex-col'
               >
-                <h1>Select Gender</h1>
+                <h1 className='text-gray-600 text-md font-semibold'>Select Gender</h1>
                 <div
                   className='flex flex-wrap'
                 >
                   <Pills
-                    pillOptions={filterOptions.genderOptions}
+                    pillOptions={genderOptions}
                     selected={selectedGenders}
                     setSelected={setSelectedGenders}
                   />
@@ -631,12 +645,12 @@ export default function Page() {
               <div
                 className='flex flex-col'
               >
-                <h1>Select Size</h1>
+                <h1 className='text-gray-600 text-md font-semibold'>Select Size</h1>
                 <div
                   className='flex flex-wrap'
                 >
                   <Pills
-                    pillOptions={filterOptions.sizeOptions}
+                    pillOptions={sizeOptionsByCategory[selectedCategory.value]}
                     selected={selectedSize}
                     setSelected={setSelectedSize}
                   />
@@ -647,12 +661,12 @@ export default function Page() {
               <div
                 className='flex flex-col'
               >
-                <h1>Select Features</h1>
+                <h1 className='text-gray-600 text-md font-semibold'>Select Features</h1>
                 <div
                   className='flex flex-wrap'
                 >
                   <Pills
-                    pillOptions={filterOptions.featureOptions}
+                    pillOptions={featureOptionsByCategory[selectedCategory.value]}
                     selected={selectedFeatures}
                     setSelected={setSelectedFeatures}
                   />
@@ -660,9 +674,10 @@ export default function Page() {
               </div>
 
               <button
-                className=' border-b items-center justify-center flex mt-4 mx-auto p-1 px-2 rounded-2xl bg-gray-950 cursor-pointer  text-white  content-center'
+                className=' border-b items-center justify-center flex mt-4 mx-auto p-1 px-2 rounded-2xl bg-blue-500 cursor-pointer  text-white  content-center'
+                onClick={() => setShowFilterBox(false)}
               >
-                <p className='pr-2' >Apply Filters</p>
+                <p className='px-2 py-1.5' >Apply Filters</p>
                 <Funnel className='text-white p-0.5' />
               </button>
 
