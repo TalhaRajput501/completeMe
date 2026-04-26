@@ -28,3 +28,17 @@ export const truncateLetter = ({ text, limit }: { text: string; limit: number })
   
   return cleanText.substring(0, limit).trim() + '...'
 }
+
+
+
+
+  // Format date
+  export const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }

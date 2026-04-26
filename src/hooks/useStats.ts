@@ -34,7 +34,7 @@ export function useStats() {
           products: r.products,
           activeCustomers: r.activeCustomers,
         })
-        console.log('Stats data fetched:', r)
+        // console.log('Stats data fetched:', r)
         // return {data.}
       } catch (error) {
         throw error instanceof Error ? error.message : "Unknown error";
