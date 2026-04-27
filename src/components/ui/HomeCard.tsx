@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import { ProductInfoCardProps, wishListInLocal, WishProduct } from '../../../types/productTypes'
 import { useAppDispatch, useAppSelector } from '@/lib/store/reduxHooks'
 import { addToWishList, removeFromWishList } from '@/lib/features/wishListSlice'
-import { wishListKey } from './ClientLayout'
+import { wishListKey } from './ClientLayout' 
 
 function HomeCard({ product }: { product: ProductInfoCardProps }) {
   const [isFavorite, setIsFavorite] = useState(false)
@@ -24,14 +24,10 @@ function HomeCard({ product }: { product: ProductInfoCardProps }) {
       }
     })
   }, [wishProducts, product.id])
-
-  // Currying function to handle favorite button click
-  const handleFavourite = (productId: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
-    // todo not working do it without fucking copilot
-    // e.stopPropagation()
+ 
+  const handleFavourite = (productId: string, e: React.MouseEvent<HTMLButtonElement>)  => {
+    e.stopPropagation()
     console.log(productId)
-
-
 
     let localWishList: wishListInLocal[] = JSON.parse(localStorage.getItem(wishListKey) ?? '[]')
 
@@ -63,6 +59,7 @@ function HomeCard({ product }: { product: ProductInfoCardProps }) {
 
   }
 
+
   return (
     // <Link key={idx} href={product.link} >
     <div className="group bg-gradient-to-br from-slate-50 to-white rounded-2xl overflow-hidden border border-slate-200 transition-all">
@@ -84,7 +81,7 @@ function HomeCard({ product }: { product: ProductInfoCardProps }) {
         }
         {/* Favorite button */}
         <button
-          onClick={handleFavourite(product.id)}
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleFavourite( product.id, e)}
           className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md hover:scale-110 transition-transform  cursor-pointer"
         >
           <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-slate-600'}`} />

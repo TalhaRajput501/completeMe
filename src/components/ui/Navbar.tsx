@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Heart, User, ShoppingCart } from "lucide-react";
+import { Heart, User, ShoppingCart, Package } from "lucide-react";
 
 function Navbar() {
   const pathname = usePathname()
@@ -31,17 +31,14 @@ function Navbar() {
     window.addEventListener('scroll', handleScroll)
   }, [lastScrollY])
 
-  const dummy = () => {
-    const currentScroll = window.scrollY
-    const scrollPercent = (currentScroll / window.innerHeight) * 100
-
-    console.log(currentScroll)  // obtained marks --> how much i scrolled
-    console.log(window.innerHeight) // total marks --> how much is total height of screen
-    console.log(scrollPercent) // devide them and multipy by 100 
-  }
-
-  const iconLinkClass = (href: string) =>
+  const iconOnlyClass = (href: string) =>
     `mx-1 rounded-full p-2 transition-colors ${pathname === href
+      ? 'bg-blue-100 text-blue-600'
+      : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600'
+    }`
+
+  const iconWithTextClass = (href: string) =>
+    `mx-1 inline-flex items-center gap-2 rounded-full px-2.5 py-2 transition-colors ${pathname === href
       ? 'bg-blue-100 text-blue-600'
       : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600'
     }`
@@ -71,30 +68,40 @@ function Navbar() {
             <div
               className='flex '
             >
-              {/* <User onClick={dummy} className="w-9 cursor-pointer  h-10 mx-3  text-red-500" /> */}
-
               <Link
                 href={'/sign-in'}
-                className={iconLinkClass('/sign-in')}
-                aria-label="Account"
+                className={iconOnlyClass('/sign-in')}
+                aria-label="Admin Sign In"
+                title="Admin Sign In"
               >
                 <User className="h-6 w-6" />
               </Link>
 
               <Link
                 href={'/wish-list'}
-                className={iconLinkClass('/wish-list')}
+                className={iconWithTextClass('/wish-list')}
                 aria-label="Wishlist"
               >
                 <Heart className="h-6 w-6" />
+                <span className='hidden sm:inline text-sm font-medium'>Wishlist</span>
               </Link>
 
               <Link
                 href={'/cart'}
-                className={iconLinkClass('/cart')}
+                className={iconWithTextClass('/cart')}
                 aria-label="Cart"
               >
                 <ShoppingCart className="h-6 w-6" />
+                <span className='hidden sm:inline text-sm font-medium'>Cart</span>
+              </Link>
+
+              <Link
+                href={'/order-tracking'}
+                className={iconWithTextClass('/order-tracking')}
+                aria-label="Track Order"
+              >
+                <Package className="h-6 w-6" />
+                <span className='hidden sm:inline text-sm font-medium'>Track</span>
               </Link>
 
             </div>

@@ -39,20 +39,21 @@ function FilterPopUp({ children, onClose, isOpen }: PopUpProps) {
       {/* background overlay */}
       <div
         onClick={onClose}
-        className="absolute inset-0  bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
       />
       {/* content */}
-      <div className="relative   overflow-y-auto  bg-white dark:bg-neutral-900 rounded-xl shadow-lg p-6 h-[70%] md:h-[70%] w-[90%] md:max-w-[40%] ">  
+      <div className="relative w-[92%] sm:w-[88%] md:w-[72%] lg:w-[56%] xl:w-[44%] max-h-[86vh] h-auto overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xl">
         
         {/* cross button on popup */}
         <div
           onClick={onClose}
-          className='absolute right-4 top-4   ' 
+          className='absolute right-4 top-4'
         >
           <button
-            className=' bg-gray-900 text-white p-0.5 rounded-full flex cursor-pointer '
+            className='rounded-full border border-slate-300 bg-white p-1 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 cursor-pointer'
+            aria-label='Close filters'
           >
-            <XIcon />
+            <XIcon className='h-5 w-5' />
           </button>
         </div>
 
