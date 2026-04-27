@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "src/components/ui/ThankYouEmail.jsx"  ],
   "exclude": [
     "node_modules"
   ]
