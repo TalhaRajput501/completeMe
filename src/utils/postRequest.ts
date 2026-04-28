@@ -7,20 +7,32 @@ export async function postRequest<TRequest, TResponse = unknown>({
   url: string;
   data: TRequest;
 }) {
+  try {
+    const requestInit: RequestInit = {
+      method: "POST",
+    };
 
-  const r = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data), 
-  });
+    if (data instanceof FormData) {
+      requestInit.body = data;
+    } else {
+      requestInit.headers = {
+        "Content-Type": "application/json",
+      };
+      requestInit.body = JSON.stringify(data);
+    }
 
-  const res: ApiResponse<TResponse> = await r.json();
+    const r = await fetch(url, requestInit);
 
-  if (!r.ok || !res.success) {
-    throw new Error(res.error || res.message || `Failed to post at: ${url}`);
+    const res: ApiResponse<TResponse> = await r.json();
+
+    if (!res.success || !r.ok) {
+      throw new Error(res.message);
+    }
+
+    return res;
+  } catch (error) {
+    console.error(
+      error instanceof Error ? error.message : `Failed to post at: ${url}`,
+    );
   }
-
-  return res;
 }

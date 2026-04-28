@@ -19,6 +19,8 @@ export interface OrderType extends Document {
   paymentIntentId: string;
   status: OrderStatus;
   totalAmount: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const ordersSchema = new mongoose.Schema<OrderType>(

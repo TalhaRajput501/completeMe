@@ -1,3 +1,4 @@
+import { ProductType } from "@/schemas/product.schema"; 
 import { LucideIcon } from "lucide-react";
 
 // local storage product
@@ -61,3 +62,6 @@ export type wishListInLocal = {
   product: string;
   note: string;
 }
+
+export type ProductCategory = ProductType['category']
+export type FilterOption = "newest" | "price-low" | "price-high" | "name"
