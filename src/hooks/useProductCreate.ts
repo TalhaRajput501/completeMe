@@ -9,12 +9,12 @@ type CreateProductArgs = {
   images: File[];
 };
 
-type CreatedProduct = ProductType & {
-  _id?: string;
-};
+// type CreatedProduct = ProductType & {
+//   _id?: string;
+// };
 
 export function useProductCreate() {
-  const [data, setData] = useState<ApiResponse<CreatedProduct> | null>(null);
+  const [data, setData] = useState<CreateProductArgs | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,15 +29,17 @@ export function useProductCreate() {
 
       console.log("FormData entries:", [...formData.entries()]);
 
-      const response = await postRequest<FormData, CreatedProduct>({
+      const response = await postRequest<FormData, CreateProductArgs>({
         url: "/api/products",
         data: formData,
       });
-
+      if (!response) {
+        throw new Error("No response from server");
+      }
       console.log("API response:", response);
 
-
-      setData(response);
+      if(!response.data) throw new Error(response.message || "Failed to create product");
+      setData(response?.data);
       return response;
     } catch (err) {
       const message =

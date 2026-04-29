@@ -61,10 +61,10 @@ export async function POST(request: Request) {
   // At this point the event is verified. Inspect event.type:
 
   try {
-    await dbConnect();
     switch (event.type) {
       case "payment_intent.succeeded": {
         // if succeed extract the data from event
+        await dbConnect();
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         console.log("payment intent succeeded", paymentIntent.id);
 
