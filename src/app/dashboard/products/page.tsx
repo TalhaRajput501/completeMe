@@ -5,7 +5,7 @@ import Link from 'next/link'
 import FilterPopUp from '@/components/ui/FilterPopUp'
 import Pills from '@/components/ui/Pills'
 import UpdateDrawer from '@/components/ui/UpdateDrawer'
-import { getProducts, getProductsBySearchQuery, getProductStats } from '../../../lib/actions/products.actions'
+import { changeStatus, deleteMultipleProducts, deleteProduct, filteredProducts, getProducts, getProductsBySearchQuery, getProductStats } from '../../../lib/actions/products.actions'
 import { ProductType } from '@/schemas/product.schema'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
@@ -110,7 +110,7 @@ export default function Page() {
       setProducts(allProducts)
       setReloadEnable(true)
     } catch (error) {
-      console.log('error in frontend in get all products ', error)
+      console.log('Failed to load products:: ', error)
       toast.error('Failed to load products')
     }
   }
@@ -125,7 +125,7 @@ export default function Page() {
         const { total, active, lowStock, outOfStock, totalValue } = await getProductStats()
         setStat({ total, active, lowStock, outOfStock, totalValue })
       } catch (error) {
-        console.error('Error fetching product stats:', error)
+        console.error('Error fetching product stats:: ', error)
         toast.error('Failed to load product statistics')
       }
     })()
@@ -170,6 +170,60 @@ export default function Page() {
       setShowProductDetailBox(true);
     }
     console.log(showProductDetailBox)
+  }
+
+
+  // This will set the products according to the filter selections.
+  const handleFilterProducts = async () => {
+    try {
+      setShowFilterBox(false)
+      setReloadEnable(false)
+
+      const filtered = await filteredProducts({ selectedCategory, selectedFeatures, selectedSize, selectedGenders, page, limit })
+      // console.log('These are the filtered products coming to the frontend after applying filters', filtered)
+      setProducts(filtered)
+
+    } catch (error) {
+      console.log('Failed to load products:: ', error)
+      toast.error('Failed to load Filtered products')
+    } finally {
+      setReloadEnable(true)
+    }
+
+  }
+
+  // This will update status of acitve/deactive for selected products in bulk action
+  const handleActivation = async (activate: boolean) => {
+    console.log('These are selected products ', selectedProducts)
+    console.log('These are selected products all ', selectAll)
+    try {
+      await changeStatus(selectedProducts, activate)
+      await myProducts()
+      setSelectedProducts(new Set())
+      toast.success(`Products ${activate ? 'activated' : 'deactivated'} successfully`)
+    } catch (error) {
+      console.error('Error in handleActivation', error)
+      toast.error('Failed to update product status')
+    }
+  }
+
+  // This will delete the selected products in bulk action or single product when we click on delete icon in product detail box
+  const handleDeleteProduct = async ({ productId, selectedDelete = false }: { productId?: string, selectedDelete: boolean }) => {
+    try {
+      if (selectedDelete) {
+        await deleteMultipleProducts(Array.from(selectedProducts))
+        toast.success('Products deleted successfully')
+      }
+      if (productId) {
+        await deleteProduct(productId)
+      }
+      setSelectedProducts(new Set())
+      await myProducts()
+      toast.success('Product deleted successfully')
+    } catch (error) {
+      console.error('Error in handleDeleteProduct', error)
+      toast.error('Failed to delete product')
+    }
   }
 
   return (
@@ -295,17 +349,17 @@ export default function Page() {
         {/* Bulk Actions Bar - Show when products are selected */}
         {selectedProducts.size > 0 && (
           <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
-            <span className="text-sm font-medium text-blue-800">
+            <span className="text-sm font-medium text-blue-800 cursor-pointer">
               {selectedProducts.size} product{selectedProducts.size > 1 ? 's' : ''} selected
             </span>
             <div className="flex gap-2">
-              <button className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded font-medium transition-colors">
+              <button onClick={() => handleActivation(true)} className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded font-medium transition-colors cursor-pointer">
                 Activate
               </button>
-              <button className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded font-medium transition-colors">
+              <button onClick={() => handleActivation(false)} className="px-3 py-1.5 bg-slate-600 hover:bg-slate-700 text-white text-sm rounded font-medium transition-colors cursor-pointer">
                 Deactivate
               </button>
-              <button className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm rounded font-medium transition-colors">
+              <button onClick={() => handleDeleteProduct({ selectedDelete: true })} className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm rounded font-medium transition-colors cursor-pointer">
                 Delete
               </button>
             </div>
@@ -367,6 +421,7 @@ export default function Page() {
                             alt={product.name}
                             draggable={false}
                             className="w-10 h-10 rounded-lg object-cover border border-slate-200"
+                            fetchPriority='high'
                           />
                           <div>
                             <p className="font-medium text-slate-800">{product.name}</p>
@@ -509,31 +564,25 @@ export default function Page() {
 
                             {/* Action Buttons */}
                             <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-200">
-                              <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm">
-                                <SquarePen className="w-4 h-4" />
-                                Edit Product
-                              </button>
+                              <Link target='_blank' rel="noopener noreferrer" href={`/dashboard/product/${product._id}`}>
+                                <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm cursor-pointer">
+                                  <SquarePen className="w-4 h-4" />
+                                  Edit Product
+                                </button>
+                              </Link>
 
-                              <Link href={`/product/${product.category}/${product._id}/${product.name.replaceAll(' ', '-')}`}>
-                                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm">
+                              <Link target='_blank' rel="noopener noreferrer" href={`/product/${product.category}/${product._id}/${product.name.replaceAll(' ', '-')}`}>
+                                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm cursor-pointer">
                                   <Eye className="w-4 h-4" />
                                   View on Store
                                 </button>
                               </Link>
 
+
+
                               <button
-                                className={`px-4 py-2 ${product.isActive ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm`}
-                              >
-                                <Archive className="w-4 h-4" />
-                                {product.isActive ? 'Deactivate' : 'Activate'}
-                              </button>
-
-                              <button className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm">
-                                <Plus className="w-4 h-4" />
-                                Duplicate
-                              </button>
-
-                              <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm ml-auto">
+                                onClick={() => handleDeleteProduct({ productId: product._id, selectedDelete: false })}
+                                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm ml-auto cursor-pointer">
                                 <Trash2 className="w-4 h-4" />
                                 Delete Product
                               </button>
@@ -675,7 +724,7 @@ export default function Page() {
 
               <button
                 className=' border-b items-center justify-center flex mt-4 mx-auto p-1 px-2 rounded-2xl bg-blue-500 cursor-pointer  text-white  content-center'
-                onClick={() => setShowFilterBox(false)}
+                onClick={handleFilterProducts}
               >
                 <p className='px-2 py-1.5' >Apply Filters</p>
                 <Funnel className='text-white p-0.5' />
@@ -691,4 +740,3 @@ export default function Page() {
 
   )
 }
-

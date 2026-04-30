@@ -6,6 +6,7 @@ import { User } from "@/models/user.model";
 import { options } from "../auth/[...nextauth]/options";
 import type { ApiResponse } from "../../../../types/ApiResponse";
 import type { UserInfoUpdateDto } from "../../../../types/user";
+import { requireAuth } from "@/utils/authGuard";
 
 export type postDto = UserInfoUpdateDto;
 
@@ -15,15 +16,7 @@ function jsonResponse<T = unknown>(status: number, payload: ApiResponse<T>) {
 
 export async function GET() {
   try {
-    const session = await getServerSession(options);
-
-    if (!session?.user?.username) {
-      return jsonResponse(401, {
-        success: false,
-        statusCode: 401,
-        error: "Unauthorized",
-      });
-    }
+    const { session } = await requireAuth();
 
     await dbConnect();
 
@@ -59,6 +52,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    await requireAuth()
     const session = await getServerSession(options);
 
     if (!session?.user?.username) {
@@ -232,7 +226,7 @@ export async function POST(req: Request) {
             wantsUsernameUpdate ? ". Please sign in again." : ""
           }`;
 
-    return jsonResponse(200, {
+    return NextResponse.json<ApiResponse>({
       success: true,
       statusCode: 200,
       message,
@@ -243,10 +237,10 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
-    return jsonResponse(500, {
+    return NextResponse.json<ApiResponse>({
       statusCode: 500,
       success: false,
-      error:
+      message:
         error instanceof Error
           ? `Error updating user: ${error.message}`
           : "An unknown error occurred",

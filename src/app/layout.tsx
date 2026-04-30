@@ -26,7 +26,7 @@ export default async function RootLayout(
   const session = await getServerSession(options) // this is for performance 
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="scroll-smooth">
       <body
         className='antia liased bg-blue-50  '
       >
@@ -42,7 +42,7 @@ export default async function RootLayout(
               {/* Notification toaster basically for payment fail or error */}
               <Toaster position="top-right" toastOptions={{
                 classNames: {
-                  toast: '!bg-white !text-red-800', // Target the toast container
+                  toast: '!bg-white  ', // Target the toast container
                   title: '!text-slate-900',
                   description: '!text-slate-600',
                 }
