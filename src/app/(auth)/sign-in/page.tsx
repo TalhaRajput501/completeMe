@@ -193,7 +193,7 @@ export default function Page() {
                   {loading ? (
                     <span className='flex items-center justify-center gap-2'>
                     <p>Signing In...</p>
-                    <LoaderCircleIcon className='text-white animate-spin' />
+                    {/* <LoaderCircleIcon className='text-white animate-spin' /> */}
                     </span>
                   ) :
                     ("Sign In to Dashboard")

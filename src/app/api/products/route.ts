@@ -4,6 +4,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import { Product } from "@/models/product.model";
 import { productSchema, ProductType } from "@/schemas/product.schema";
 import type { ApiResponse } from "../../../../types/ApiResponse";
+import { requireAuth } from "@/utils/authGuard";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
@@ -29,6 +30,7 @@ async function uploadPics(file: File) {
 }
 
 export async function GET(req: Request) {
+ 
   const { searchParams } = new URL(req.url);
   const forLanding = searchParams.get("landing") === "true";
   try {
@@ -43,6 +45,7 @@ export async function GET(req: Request) {
             name: 1,
             description: 1,
             images: 1,
+            price: 1,
           },
         ).limit(3),
         Product.find(
@@ -52,6 +55,7 @@ export async function GET(req: Request) {
             name: 1,
             description: 1,
             images: 1,
+            price: 1,
           },
         ).limit(3),
         Product.find(
@@ -61,6 +65,7 @@ export async function GET(req: Request) {
             name: 1,
             description: 1,
             images: 1,
+            price: 1,
           },
         ).limit(3),
       ]);
@@ -97,6 +102,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    await requireAuth();
     await dbConnect();
 
     const contentType = req.headers.get("content-type") || "";

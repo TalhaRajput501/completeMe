@@ -3,13 +3,25 @@ import { OrderType } from '@/models/orders.model'
 import React, { useEffect, useState } from 'react'
 import { Calendar, CheckCircle, ChevronDown, ChevronUp, CreditCard, Eye, MapPin, Package, Phone, User, XCircle } from 'lucide-react'
 import { StatusBadge } from './StatusBadge'
-import { getOrderProductImages } from '@/lib/actions/orders.actions'
+import { getOrderProductImages, updateOrderStatus } from '@/lib/actions/orders.actions'
+import { toast } from 'sonner'
 
 
 
-export default function EachOrder({ order,expandedOrder,  setExpandedOrder }: { order: OrderType, expandedOrder: string, setExpandedOrder: React.Dispatch<React.SetStateAction<string>> }) {
+export default function EachOrder({
+  order,
+  expandedOrder,
+  setExpandedOrder,
+  onOrderStatusUpdated,
+}: {
+  order: OrderType
+  expandedOrder: string
+  setExpandedOrder: React.Dispatch<React.SetStateAction<string>>
+  onOrderStatusUpdated?: () => Promise<void> | void
+}) {
 
   const [productImages, setProductImages] = useState<string[]>([])
+  const [updatingStatus, setUpdatingStatus] = useState(false)
 
   useEffect(() => {
     async function fetchImage()  {
@@ -24,7 +36,21 @@ export default function EachOrder({ order,expandedOrder,  setExpandedOrder }: { 
 
     }
     fetchImage()
-  },[])
+  }, [order.products])
+
+  const handleStatusUpdate = async (nextStatus: OrderType['status']) => {
+    try {
+      setUpdatingStatus(true)
+      await updateOrderStatus({ orderId: String(order._id), status: nextStatus })
+      toast.success(`Order marked as ${nextStatus}`)
+      await onOrderStatusUpdated?.()
+    } catch (error) {
+      console.error('Error updating order status:', error)
+      toast.error('Failed to update order status')
+    } finally {
+      setUpdatingStatus(false)
+    }
+  }
 
 
 
@@ -165,21 +191,33 @@ export default function EachOrder({ order,expandedOrder,  setExpandedOrder }: { 
                         </button> */}
 
                         {order.status === 'pending' && (
-                          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer">
+                          <button
+                            onClick={() => handleStatusUpdate('processing')}
+                            disabled={updatingStatus}
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed"
+                          >
                             <Package className="w-4 h-4 cursor-pointer" />
                             Mark as Processing
                           </button>
                         )}
 
                         {order.status === 'processing' && (
-                          <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer">
+                          <button
+                            onClick={() => handleStatusUpdate('delivered')}
+                            disabled={updatingStatus}
+                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer disabled:bg-green-300 disabled:cursor-not-allowed"
+                          >
                             <CheckCircle className="w-4 h-4" />
                             Mark as Delivered
                           </button>
                         )}
 
                         {(order.status === 'pending' || order.status === 'processing') && (
-                          <button className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer">
+                          <button
+                            onClick={() => handleStatusUpdate('cancelled')}
+                            disabled={updatingStatus}
+                            className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                          >
                             <XCircle className="w-4 h-4" />
                             Cancel Order
                           </button>

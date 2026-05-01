@@ -4,18 +4,18 @@ import ProtectedRoute from '@/components/ui/ProtectedRoute'
 import CleanUrlWrapper from '@/components/ui/CleanUrlWrapper'
 import Link from 'next/link';
 import { Home, Settings, Store, LogOut, Menu, X, ChartNoAxesCombined, ClipboardList, } from "lucide-react";
-import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 
   const [showSideBar, setShowSideBar] = useState(false)
   const [showMobileBar, setShowMobileBar] = useState(false)
-  const router =  useRouter()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
-  const handleLogout = () => {  
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
     localStorage.removeItem('token')
-    
-    router.push(process.env.NEXT_PUBLIC_URL || '/sign-in')
+    await signOut({ callbackUrl: '/sign-in' })
   }
 
   return (
@@ -137,7 +137,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </abbr>
                 </Link>
 
-                <Link href={'/dashboard/analytics'}>
+                {/* <Link href={'/dashboard/analytics'}>
                   <abbr title="Analytics" className='no-underline'>
                     <div
                       className=' w-full hover:bg-blue-50 flex py-3 rounded-lg cursor-pointer  '
@@ -151,20 +151,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       </p>
                     </div>
                   </abbr>
-                </Link>
+                </Link> */}
 
               </div>
 
               {/* This is logout button */}
               <div
+                onClick={handleLogout}
                 className='hover:bg-red-50 border border-red-200 hover:border-red-300 bottom-1 md:px-2 px-1 py-2 cursor-pointer absolute flex rounded-lg transition-colors  '
               >
-                <LogOut onClick={handleLogout} className={` md:w-8 w-7 justify-center items-center text-red-600 ${showSideBar ? 'mx-1' : 'mx-auto'}`} />
+                <LogOut className={` md:w-8 w-7 justify-center items-center text-red-600 ${showSideBar ? 'mx-1' : 'mx-auto'} ${isLoggingOut ? 'animate-pulse' : ''}`} />
                 <p className={`text-red-600 no-underline font-semibold justify-center items-center  
                   ${showSideBar ? 'md:mx-1 md:block' : 'md:hidden'}  mx-1 
                  `}
                 >
-                  Logout
+                  {isLoggingOut ? 'Logging out...' : 'Logout'}
                 </p>
 
               </div>
