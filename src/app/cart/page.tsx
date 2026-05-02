@@ -42,7 +42,7 @@ export default function Page() {
           </section>
 
           <aside className='lg:col-span-4 xl:col-span-3'>
-            <OrderSummary buttonVisibility buttonText='Continue to Checkout' buttonUrl='checkout' />
+            <OrderSummary buttonVisibility buttonDisabled={reduxCart.length === 0} buttonText='Continue to Checkout' buttonUrl='checkout' />
           </aside>
         </div>
       </div>

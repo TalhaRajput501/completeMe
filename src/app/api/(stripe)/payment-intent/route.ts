@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       return total + current.price * quantity!;
     }, 0);
 
-    // final array of products for draft order
+    // Final array of products for draft order
     const productsArray: OrderProduct[] = dbProducts.map((item) => {
       const qty = productMap.get(item._id.toString());
       return {
