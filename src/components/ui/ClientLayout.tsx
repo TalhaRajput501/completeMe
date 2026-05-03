@@ -9,6 +9,8 @@ import { addToWishList } from '@/lib/features/wishListSlice'
 
 export const wishListKey = 'wishlist'
 export const cartKey = 'cartProducts'
+
+
 function ClientLayout({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()
 
@@ -82,13 +84,13 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
 
       if (products.length === 0) {
         localStorage.removeItem(cartKey)
-      } 
-      else if (wishForLocal.length === 0) {
-        // console.log('this is going in localstorage in subscriber', arrForLocal)
-        localStorage.removeItem(wishListKey)
-      } 
-      else {
+      } else {
         localStorage.setItem(cartKey, JSON.stringify(arrForLocal))
+      }
+
+      if (wishForLocal.length === 0) {
+        localStorage.removeItem(wishListKey)
+      } else {
         localStorage.setItem(wishListKey, JSON.stringify(wishForLocal))
       }
     })

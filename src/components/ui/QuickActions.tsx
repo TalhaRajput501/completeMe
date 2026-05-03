@@ -3,7 +3,8 @@ import {
   Plus,
   Eye,
   Edit,
-  BarChart3
+  BarChart3,
+  Settings
 } from 'lucide-react'
 
 
@@ -43,13 +44,13 @@ function QuickActions() {
           </Link>
 
           <Link
-            href="/dashboard/analytics"
+            href="/dashboard/settings"
             className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg hover:from-amber-100 hover:to-amber-200 transition-all group border border-amber-200"
           >
             <div className="p-3 bg-white rounded-full shadow-sm mb-2 group-hover:scale-110 transition-transform">
-              <BarChart3 className="w-5 h-5 text-amber-600" />
+              <Settings className="w-5 h-5 text-amber-600" />
             </div>
-            <span className="text-sm font-semibold text-slate-800">Analytics</span>
+            <span className="text-sm font-semibold text-slate-800">Settings</span>
           </Link>
         </div>
       </div>

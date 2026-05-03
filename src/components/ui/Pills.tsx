@@ -1,12 +1,13 @@
 'use client'
 import React, { SetStateAction, Dispatch } from 'react'
 import { Check, XIcon } from 'lucide-react'
+import { SelectOption } from '../../../types/productStyle';
 
-export type Option =  { value: string, label: string }
+// export type Option =  { value: string, label: string }
 interface PillProps {
-  pillOptions: Option[];
+  pillOptions: SelectOption[];
   selected: { value: string, label: string }[];
-  setSelected: Dispatch<SetStateAction<Option[]>>;
+  setSelected: Dispatch<SetStateAction<SelectOption[]>>;
 }
 
 function Pills({ pillOptions, selected, setSelected }: PillProps) {
@@ -21,7 +22,9 @@ function Pills({ pillOptions, selected, setSelected }: PillProps) {
           prev.some(p => p.value === option.value) ?
             prev.filter(p => p.value !== option.value) :
             [...prev, option]
-        )}
+        )
+        // setSelected([option])
+        }
     >
       <div
         className={` rounded-full pl-2 pr-1 border border-gray-900 flex items-center justify-center ${selected.some(opt => opt.value === option.value) ? 'bg-gray-700 text-white ' : 'bg-gray-200 text-black' } `}>
@@ -29,7 +32,7 @@ function Pills({ pillOptions, selected, setSelected }: PillProps) {
         <p
           className='select-none px-1 '
         >
-          {option.value}
+          {option.label}
         </p>
 
         <p

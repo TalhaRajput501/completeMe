@@ -5,13 +5,14 @@ import loader from '@/assets/loader.gif'
 function LoadingIcon() {
   return (
     <div
-      className=' h-screen bg-transparent  z-55 top-0 fixed  left-0 right-0 flex items-center justify-center'
+      className='w-full min-h-[220px] sm:min-h-[260px] flex items-center justify-center rounded-lg bg-transparent'
     >
 
       <Image
         src={loader}
         alt='Loading...'
-        className='w-22'
+        className='w-20 h-20 sm:w-24 sm:h-24'
+        priority
       />
 
     </div>
