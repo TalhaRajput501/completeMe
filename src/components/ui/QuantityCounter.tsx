@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import { Minus, Plus, Trash } from 'lucide-react'
-import { eachCartProduct } from '@/app/product/[category]/[id]/[name]/page'
 import { useAppDispatch, useAppSelector } from '@/lib/store/reduxHooks';
 import { deleteItem, updateQuantity } from '@/lib/features/cartSlice';
 

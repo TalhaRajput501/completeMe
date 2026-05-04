@@ -9,9 +9,10 @@ interface OrderSummaryProps {
   buttonText?: string;
   buttonUrl?: string;
   buttonVisibility?: boolean;
+  buttonDisabled?: boolean;
 }
 
-function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false }: OrderSummaryProps) {
+function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false, buttonDisabled   }: OrderSummaryProps) {
 
   const total: number = useAppSelector(selectCartTotal)
   // const  products = useAppSelector(state => state.cart.products)
@@ -45,8 +46,11 @@ function OrderSummary({ buttonText, buttonUrl, buttonVisibility = false }: Order
           className='w-full mt-9'
         >
 
-          <Link className='w-full' href={`/${buttonUrl}`}>
-            <button className='w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer rounded-lg py-2.5 px-3 font-semibold transition-colors'>
+          <Link 
+              className={`w-full ${buttonDisabled ? "pointer-events-none opacity-50" : ""}`} 
+              href={`${buttonDisabled ? '#' : `/${buttonUrl}`}`}>
+            <button 
+              className={ `w-full bg-blue-600 hover:bg-blue-700 text-white  rounded-lg py-2.5 px-3 font-semibold transition-colors cursor-pointer`  }>
               {buttonText}
             </button>
           </Link>

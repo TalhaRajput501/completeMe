@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ShoppingCart,
   ArrowUpRight,
@@ -8,10 +8,27 @@ import {
   XCircle,
 } from 'lucide-react'
 import Link from 'next/link'
+import { getRecentOrders } from '@/lib/actions/orders.actions'
+import { OrderType } from '@/models/orders.model'
 
 
 function RecentOrders() {
-  const recentOrders: any[] = []
+  const [recentOrders, setRecentOrders] = useState<OrderType[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchRecentOrders = async () => {
+      try {
+        const orders = await getRecentOrders()
+        setRecentOrders(orders || [])
+      } catch (error) {
+        console.error('Error fetching recent orders:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchRecentOrders()
+  }, [])
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <div className="flex items-center justify-between mb-6">
@@ -21,7 +38,14 @@ function RecentOrders() {
         </Link>
       </div>
 
-      {recentOrders.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12">
+          <div className="p-4 bg-slate-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <ShoppingCart className="w-8 h-8 text-slate-400 animate-pulse" />
+          </div>
+          <p className="text-slate-500 font-medium mb-2">Loading recent orders...</p>
+        </div>
+      ) : recentOrders.length === 0 ? (
         <div className="text-center py-12">
           <div className="p-4 bg-slate-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
             <ShoppingCart className="w-8 h-8 text-slate-400" />
@@ -31,8 +55,8 @@ function RecentOrders() {
         </div>
       ) : (
         <div className="space-y-3">
-          {recentOrders.map((order: any) => (
-            <div key={order._id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+          {recentOrders.map((order) => (
+            <div key={String(order._id)} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
               <div className="flex items-center space-x-4">
                 <div className="p-2 bg-white rounded-lg">
                   {order.status === 'delivered' && <CheckCircle className="w-5 h-5 text-emerald-600" />}
@@ -41,12 +65,12 @@ function RecentOrders() {
                   {order.status === 'cancelled' && <XCircle className="w-5 h-5 text-red-600" />}
                 </div>
                 <div>
-                  <p className="font-medium text-slate-800">Order #{order._id.slice(-6)}</p>
+                  <p className="font-medium text-slate-800">Order #{String(order._id).slice(-6)}</p>
                   <p className="text-sm text-slate-500">{order.customerInfo?.name || 'Guest'}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-slate-800">${order.totalAmount}</p>
+                <p className="font-semibold text-slate-800">${Number(order.totalAmount).toFixed(2)}</p>
                 <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' :
                   order.status === 'processing' ? 'bg-blue-100 text-blue-700' :
                     order.status === 'pending' ? 'bg-amber-100 text-amber-700' :

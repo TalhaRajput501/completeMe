@@ -1,7 +1,7 @@
-import { cartProduct } from "@/components/ui/CartItem";
 import { ProductType } from "@/schemas/product.schema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
+import { cartProduct } from "../../../types/productTypes";
 
 interface initialStateType {
   products: cartProduct[];
@@ -30,7 +30,6 @@ const cartSlice = createSlice({
       );
     },
     deleteItem(state , action: PayloadAction<string>) {
-       
       state.products = state.products.filter((item) => item._id !== action.payload)
     }
   },

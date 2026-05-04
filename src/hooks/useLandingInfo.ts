@@ -1,29 +1,23 @@
 import { getRequest } from "@/utils/getRequest";
 import React, { useEffect, useState } from "react";
+import { LandingInfo } from "../../types/productTypes";
 
-export type LandingInfo = {
-  watch: {
-    _id: string;
-    name: string;
-    description: string;
-    images: string[];
-  }[];
-  cloth: {
-    _id: string;
-    name: string;
-    description: string;
-    images: string[];
-  }[];
-  shoe: {
-    _id: string;
-    name: string;
-    description: string;
-    images: string[];
-  }[];
-}
+
+const initialData = {
+  _id: "",
+  name: "",
+  description: "",
+  images: [],
+  price: 0,
+};
+const initialLandingInfo: LandingInfo = {
+  watch: [initialData, initialData, initialData],
+  cloth: [initialData, initialData, initialData],
+  shoe: [initialData, initialData, initialData],
+};
 
 function useLandingInfo() {
-  const [data, setData] = useState<LandingInfo | null>(null);
+  const [data, setData] = useState<LandingInfo>(initialLandingInfo);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -31,8 +25,9 @@ function useLandingInfo() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Simulate an API call
-        const response = await getRequest<LandingInfo>("/api/products?landing=true"); 
+        const response = await getRequest<LandingInfo>(
+          "/api/products?landing=true",
+        );
         setData(response);
       } catch (error) {
         setError(

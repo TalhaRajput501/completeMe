@@ -14,6 +14,7 @@ import {
 } from "../../../types/productTypes";
 import { requireAuth } from "@/utils/authGuard";
 import { CategoryOption, SelectOption } from "../../../types/productStyle";
+import { sendStockAlert, StockAlertPayload } from "./orders.actions";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
@@ -21,7 +22,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// this functin can be reuse
+// This functin can be reuse
 async function uploadPics(file: File) {
   const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -38,14 +39,42 @@ async function uploadPics(file: File) {
   return result;
 }
 
+// Regex to extract public ID from Cloudinary URL
+function extractPublicIdFromUrl(url: string): string | null {
+  // Regular expression to extract the part after '/upload/'
+  const regex = /\/upload\/(?:v\d+\/)?(.+?)(?:\.[^.]+)?$/;
+  const match = url.match(regex);
+  
+  if (match && match[1]) {
+    // Remove file extension if present
+    return match[1].replace(/\.[^.]+$/, '');
+  }
+  return null;
+}
+
+// This fucntion will delete image from cloudinary.
+async function deleteImageFromCloudinary(imageUrl: string) {
+  try {
+    const publicId = extractPublicIdFromUrl(imageUrl);
+    if (!publicId) {
+      console.error("Invalid image URL");
+      return;
+    }
+    const result = await cloudinary.uploader.destroy(publicId);
+    return result
+  } catch (error) {
+    console.error("Error deleting image from Cloudinary:", error);
+  }
+}
+
 // Funtion to refund stripe payment in case if order cant create successfully after payment
 
 // Add Product
 export const addProduct = async (product: ProductType, images: File[]) => {
   console.log("this is coming from frontend", product, images);
-  
+
   try {
-    await requireAuth()
+    await requireAuth();
     if (images.length <= 0) {
       console.log("Please upload at least one image");
       console.log(images);
@@ -136,29 +165,35 @@ export const getProductsWithFilters = async (
   try {
     await dbConnect();
 
-    const filterQuery: Record<string, 1 | -1> = {}
+    const filterQuery: Record<string, 1 | -1> = {};
     filter.map((filter) => {
       switch (filter) {
-        case 'name':
-          filterQuery.name = 1 
+        case "name":
+          filterQuery.name = 1;
           break;
-        case 'newest':
-          filterQuery.createdAt = -1
+        case "newest":
+          filterQuery.createdAt = -1;
           break;
-        case 'price-high':
-          filterQuery.price = -1
+        case "price-high":
+          filterQuery.price = -1;
           break;
-        case 'price-low':
-          filterQuery.price = 1
-          break
+        case "price-low":
+          filterQuery.price = 1;
+          break;
         default:
           break;
       }
     });
-    const skip = (page -1) * limit
-    const products = await Product.find({ category }).sort(filterQuery).skip(skip).limit(limit)
-    console.log('These are the product going from backend with filters', products)
-    return JSON.parse(JSON.stringify(products))
+    const skip = (page - 1) * limit;
+    const products = await Product.find({ category })
+      .sort(filterQuery)
+      .skip(skip)
+      .limit(limit);
+    console.log(
+      "These are the product going from backend with filters",
+      products,
+    );
+    return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("Error occur in getProductsWithFilters", error);
     throw new Error("Error in getProductsWithFilters");
@@ -166,52 +201,67 @@ export const getProductsWithFilters = async (
 };
 
 // Get Products with multiple filters for dashboard page
-export const filteredProducts = async (
-  { selectedGenders, 
-    selectedCategory, 
-    selectedFeatures, 
-    selectedSize, 
-    page, 
-    limit = 12 
-  } : 
-  { selectedGenders: SelectOption[]; 
-    selectedCategory: CategoryOption; 
-    selectedFeatures: SelectOption[]; 
-    selectedSize: SelectOption[], 
-    page: number, 
-    limit: number 
-  }
-) => {
+export const filteredProducts = async ({
+  selectedGenders,
+  selectedCategory,
+  selectedFeatures,
+  selectedSize,
+  page,
+  limit = 12,
+}: {
+  selectedGenders: SelectOption[];
+  selectedCategory: CategoryOption;
+  selectedFeatures: SelectOption[];
+  selectedSize: SelectOption[];
+  page: number;
+  limit: number;
+}) => {
   try {
-    await dbConnect()
-    const skip = (page -1) * limit
+    await dbConnect();
+    const skip = (page - 1) * limit;
     const products = await Product.find({
       $and: [
         { category: selectedCategory.value },
-        { gender: { $in: selectedGenders.map(g => g.value) } },   
+        { gender: { $in: selectedGenders.map((g) => g.value) } },
         {
           $or: [
-            ...(selectedSize.length > 0 ? [{ 
-              sizeOptions: { $in: selectedSize.map(s => s.value) } 
-            }] : []),
-            ...(selectedFeatures.length > 0 ? [{ 
-              features: { $in: selectedFeatures.map(f => f.value) } 
-            }] : [])
-          ]
-        }
-      ]
-    }).skip(skip).limit(limit)
-    console.log('These are the product going from backend with filters for dashboard', products)
-    return JSON.parse(JSON.stringify(products))
+            ...(selectedSize.length > 0
+              ? [
+                  {
+                    sizeOptions: { $in: selectedSize.map((s) => s.value) },
+                  },
+                ]
+              : []),
+            ...(selectedFeatures.length > 0
+              ? [
+                  {
+                    features: { $in: selectedFeatures.map((f) => f.value) },
+                  },
+                ]
+              : []),
+          ],
+        },
+      ],
+    })
+      .skip(skip)
+      .limit(limit);
+    console.log(
+      "These are the product going from backend with filters for dashboard",
+      products,
+    );
+    return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("Error occur in filteredProducts", error);
     throw new Error("Error in filteredProducts");
   }
-}
-
+};
 
 // Get Products for Search Query
-export const getProductsBySearchQuery = async (page: number, limit: number = 12, query: string) => {
+export const getProductsBySearchQuery = async (
+  page: number,
+  limit: number = 12,
+  query: string,
+) => {
   try {
     await dbConnect();
     const skip = (page - 1) * limit;
@@ -222,14 +272,15 @@ export const getProductsBySearchQuery = async (page: number, limit: number = 12,
         { brand: { $regex: query, $options: "i" } },
         { tags: { $regex: query, $options: "i" } },
       ],
-    }).skip(skip).limit(limit);
+    })
+      .skip(skip)
+      .limit(limit);
     return JSON.parse(JSON.stringify(products));
+  } catch (error) {
+    console.log("Error occur in getProductsBySearchQuery", error);
+    throw new Error("Error in getProductsBySearchQuery");
   }
-    catch (error) {
-      console.log("Error occur in getProductsBySearchQuery", error);
-      throw new Error("Error in getProductsBySearchQuery");
-    }
-}
+};
 
 // Get Products by list of ID's
 export const getProductsWithIds = async (productIds: (string | ObjectId)[]) => {
@@ -301,7 +352,7 @@ export const productsForCharge = async (products: (string | ObjectId)[]) => {
 
 export const uploadBannerImg = async (images: File[]) => {
   try {
-    await requireAuth()
+    await requireAuth();
     if (!images) return;
     await dbConnect();
     const res = await Promise.all(images.map((file) => uploadPics(file)));
@@ -313,42 +364,42 @@ export const uploadBannerImg = async (images: File[]) => {
   }
 };
 
-// Get Products for Suggestions in end of a product page  
+// Get Products for Suggestions in end of a product page
 export const getSuggestionProducts = async (limit: number = 4) => {
   try {
-    await dbConnect();  
-    const products = await Product.aggregate([
-      { $sample: { size: limit } }
-    ]);
+    await dbConnect();
+    const products = await Product.aggregate([{ $sample: { size: limit } }]);
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("Error in getSuggestionProducts", error);
     throw new Error("Error in getSuggestionProducts");
   }
-}
+};
 
 // Get Products Stats For dashboard
-export async function getProductStats() { 
+export async function getProductStats() {
   try {
-    await requireAuth()
+    await requireAuth();
     await dbConnect();
     const total = await Product.countDocuments();
     const active = await Product.countDocuments({ stock: { $gt: 0 } });
-    const lowStock = await Product.countDocuments({ stock: { $lte: 5, $gt: 0 } });
+    const lowStock = await Product.countDocuments({
+      stock: { $lte: 5, $gt: 0 },
+    });
     const outOfStock = await Product.countDocuments({ stock: 0 });
     const totalValueAggre = await Product.aggregate([
       {
         $group: {
           _id: null,
           totalValue: { $sum: { $multiply: ["$price", "$stock"] } },
-        },  
+        },
       },
     ]);
     const totalValue: number = totalValueAggre[0]?.totalValue || 0;
-    return { total, active, lowStock, outOfStock, totalValue }
+    return { total, active, lowStock, outOfStock, totalValue };
   } catch (error) {
-    console.error('Error in getProductStats', error)  
-    throw new Error('Error in getProductStats')
+    console.error("Error in getProductStats", error);
+    throw new Error("Error in getProductStats");
   }
 }
 
@@ -356,58 +407,156 @@ export async function getProductStats() {
 
 export const changeStatus = async (ids: Set<string>, activate: boolean) => {
   try {
-    await requireAuth()
+    await requireAuth();
     await dbConnect();
-    const typedIds = Array.from(ids).map(id => new ObjectId(id));
+    const typedIds = Array.from(ids).map((id) => new ObjectId(id));
     await Product.updateMany(
       { _id: { $in: typedIds } },
       { $set: { isActive: activate, updatedAt: new Date() } },
     );
-    console.log(`Product ${activate ? 'activated' : 'deactivated'} successfully`);
+    console.log(
+      `Product ${activate ? "activated" : "deactivated"} successfully`,
+    );
   } catch (error) {
-    console.error('Error in changeStatus', error)
-    throw new Error('Error in changeStatus')
+    console.error("Error in changeStatus", error);
+    throw new Error("Error in changeStatus");
   }
-}
+};
 
+export const updateProduct = async (
+  id: string,
+  updatedData: Partial<ProductType>,
+  newImages?: File[],
+  deltedImages?: string[],
+) => {
+  try {
+    await requireAuth();
+    await dbConnect();
+    const typedId = new ObjectId(id);
+    const existingProduct = await Product.findById(typedId).select(
+      "name images category stock",
+    );
 
+    let imageUrls: string[] | undefined;
 
+   
+    if (newImages && newImages.length > 0) {  
+      const uploadResult = await Promise.all(
+        newImages.map((file) => uploadPics(file)),
+      );
+      imageUrls = uploadResult.map((res) => res.secure_url);
+    }
+
+    if(deltedImages && deltedImages.length > 0) { 
+      updatedData.images = updatedData.images?.filter(img => !deltedImages.includes(img));
+    }
+
+    const updateFields: Partial<ProductType> = {
+      ...updatedData,
+      ...(imageUrls ? { images: [...imageUrls, ...(updatedData.images || [])] } : {}),
+      
+    };
+    await Product.updateOne(
+      { _id: typedId },
+      { $set: { ...updateFields, updatedAt: new Date() } },
+    );
+    console.log("Product updated successfully");
+
+    if (
+      typeof updateFields.stock === "number" &&
+      updateFields.stock !== existingProduct?.stock &&
+      updateFields.stock <= 5
+    ) {
+      console.log('===================================================')
+      console.log('Stock is less than or equal to 5, sending alert...')
+      console.log('===================================================')
+      await sendStockAlert({
+        id: id,
+        name: updateFields.name || existingProduct?.name || "Unknown Product",
+        images:
+          (updateFields.images as string[] | undefined) ||
+          existingProduct?.images ||
+          [],
+        category:
+          (updateFields.category as string | undefined) ||
+          existingProduct?.category ||
+          "watch",
+        stock: updateFields.stock,
+      });
+    }
+    
+    if(deltedImages && deltedImages.length > 0) {
+      const delRes = await Promise.all(deltedImages.map((img) => deleteImageFromCloudinary(img)));
+      console.log('Response for deleted images from cloudinary', delRes);
+    }
+
+  } catch (error) {
+    console.error("Error in updateProduct", error);
+    throw new Error("Error in updateProduct");
+  }
+};
 
 // Delete Products Functions
 
-// Delete Signle Product 
+// Delete Signle Product
 export const deleteProduct = async (id: string) => {
   try {
-    await requireAuth()
+    await requireAuth();
     await dbConnect();
     const typedId = new ObjectId(id);
     await Product.deleteOne({
       _id: typedId,
-    }); 
+    });
     // console.log('Product deleted successfully')
+  } catch (error) {
+    console.error("Error in deleteProduct", error);
   }
-    catch (error) {
-      console.error('Error in deleteProduct', error)
-    }
-}
-
+};
 
 // Delete Multiple Products
 export const deleteMultipleProducts = async (ids: string[]) => {
   try {
-    await requireAuth()
+    await requireAuth();
     await dbConnect();
-    const objectIds = ids.map(id => new ObjectId(id));
-    await Product
-    .deleteMany({
+    const objectIds = ids.map((id) => new ObjectId(id));
+    await Product.deleteMany({
       _id: {
-        $in: objectIds
-      }
-    })
-
+        $in: objectIds,
+      },
+    });
   } catch (error) {
-    console.error('Error in deleteMultipleProducts', error)
+    console.error("Error in deleteMultipleProducts", error);
   }
-}
+};
 
- 
+// Recheck low-stock products for dashboard alert widget
+export const refreshLowStockProducts = async (ids: string[]) => {
+  try {
+    await requireAuth();
+    await dbConnect();
+
+    const uniqueIds = Array.from(new Set(ids)).filter((id) => ObjectId.isValid(id));
+    if (uniqueIds.length === 0) return [] as StockAlertPayload[];
+
+    const objectIds = uniqueIds.map((id) => new ObjectId(id));
+    const products = await Product.find({
+      _id: { $in: objectIds },
+      stock: { $lte: 5 },
+    }).select("_id images name category stock");
+
+    return JSON.parse(
+      JSON.stringify(
+        products.map((product) => ({
+          id: String(product._id),
+          images: product.images || [],
+          name: product.name,
+          category: product.category,
+          stock: product.stock,
+        })),
+      ),
+    ) as StockAlertPayload[];
+  } catch (error) {
+    console.error("Error in refreshLowStockProducts", error);
+    throw new Error("Error in refreshLowStockProducts");
+  }
+};

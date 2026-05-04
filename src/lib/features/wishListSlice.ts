@@ -16,7 +16,7 @@ const wishListSlice = createSlice({
   initialState,
   reducers: {
     addToWishList: (state, action: PayloadAction<{ wish: WishProduct }>) => {
-      console.log("Adding to wish list:", action.payload.wish);
+      // console.log("Adding to wish list:", action.payload.wish);
       state.products.push(action.payload.wish);
     },
     removeFromWishList: (state, action: PayloadAction<{ id: string }>) => {
