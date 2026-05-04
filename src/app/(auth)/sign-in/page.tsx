@@ -1,15 +1,10 @@
 "use client"
 import React, { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import LoadingIcon from '@/components/ui/LoadingIcon'
 import Button from '@/components/ui/Button'
-import { EyeIcon, EyeOffIcon, Loader, Loader2Icon, LoaderCircleIcon, LoaderPinwheel } from 'lucide-react'
-import Image from 'next/image'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
 export default function Page() {
-  const router = useRouter()
-
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string | null>('')
@@ -27,14 +22,12 @@ export default function Page() {
       return
     }
     try { 
-        
-        const res = await signIn('admin-login', {
+        await signIn('admin-login', {
           username,
           password,
           redirect: true,
           callbackUrl: '/dashboard/home'
         })
-        console.log('Response from signIn:', res) 
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An unexpected error occurred')
 

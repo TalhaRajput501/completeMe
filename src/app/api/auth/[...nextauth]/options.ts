@@ -4,6 +4,14 @@ import { dbConnect } from "@/lib/dbConnect";
 import bcrypt from "bcrypt";
 import { User as UserModel } from "@/models/user.model";  
 
+type AuthUser = {
+  _id: unknown;
+  username: string;
+  email: string;
+  password: string;
+  role: string; 
+};
+
 export const options: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -24,7 +32,9 @@ export const options: NextAuthOptions = {
             console.log("Username or password not provided");
             return null;
           }
-          const user = await UserModel.findOne({ username: credentials?.username });
+          const user = await UserModel.findOne({ username: credentials?.username })
+            .select("username email password role")
+            .lean<AuthUser>();
 
           if (!user) {
             console.log("user not found");
@@ -38,12 +48,16 @@ export const options: NextAuthOptions = {
 
           if (!isMatched) {
             console.log("Password is incorrect");
-            throw new Error("Password is incorrect");
-            // return null;
+            return null;
           }
 
           // ok so everything good at this point now return the user
-          return user;
+          return {
+            id: String(user._id),
+            username: user.username,
+            email: user.email,
+            role: user.role, 
+          };
         } catch (error) {
           console.log("Error in authorize:", error);
           return null
@@ -52,11 +66,11 @@ export const options: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async redirect({url, baseUrl}){
-      // console.log("Redirecting to ", url, " from baseUrl ", baseUrl); 
-      if(url.startsWith('/')) return `${baseUrl}${url}`
-      else if (new URL(url).origin === baseUrl) return url
-      else return baseUrl
+     async redirect({url, baseUrl}){                                                                     
+      console.log("Redirecting to ", url, " from baseUrl ", baseUrl);                                   
+      if(url.startsWith('/')) return `${baseUrl}${url}`                                                 
+      else if (new URL(url).origin === baseUrl) return url                                              
+      else return baseUrl                                                                               
     },
     // it will store data in token
     async jwt({ user, token }) {

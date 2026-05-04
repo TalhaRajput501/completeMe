@@ -382,7 +382,7 @@ export async function getProductStats() {
     await requireAuth();
     await dbConnect();
     const total = await Product.countDocuments();
-    const active = await Product.countDocuments({ stock: { $gt: 0 } });
+    const active = await Product.find({isActive: true}).countDocuments();
     const lowStock = await Product.countDocuments({
       stock: { $lte: 5, $gt: 0 },
     });

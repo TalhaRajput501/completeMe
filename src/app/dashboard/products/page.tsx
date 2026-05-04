@@ -108,6 +108,8 @@ export default function Page() {
       }
       const allProducts = await getProducts(page, limit)
       setProducts(allProducts)
+      const { total, active, lowStock, outOfStock, totalValue } = await getProductStats()
+      setStat({ total, active, lowStock, outOfStock, totalValue })
       setReloadEnable(true)
     } catch (error) {
       console.log('Failed to load products:: ', error)
