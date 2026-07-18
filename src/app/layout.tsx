@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: "completeMe Store",
     images: [
       {
-        url: "/og-image.png",  
+        url: "/og-image.jpg",  
         width: 1200,
         height: 630,
         alt: "completeMe eCommerce Storefront Preview - Shop Premium Clothing, Shoes & Watches",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "completeMe | Premium Modern eCommerce Platform",
     description: "Shop premium clothing, shoes, and watches. A lightning-fast, high-performance eCommerce application built using Next.js and the MERN stack.",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
 
 };
