@@ -10,9 +10,59 @@ import ClientLayout from "@/components/ui/ClientLayout";
 import React from "react";
 
 
-export const metadata = {
-  title: "Complete your personality",
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "completeMe | Premium Modern eCommerce Platform",
+  description: "Shop the latest premium trends in clothing, shoes, and watches. Experience a high-performance, seamless eCommerce platform built with the MERN stack and Next.js.",
+  
+  // 1. Core indexing configurations for the project production domain
+  metadataBase: new URL("https://complete-me-beta.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
+
+  // 2. Keywords optimized specifically for your eCommerce product & stack
+  keywords: [
+    "completeMe",
+    "eCommerce Platform",
+    "Online Shopping",
+    "Buy Clothes Online",
+    "Premium Premium Watches",
+    "MERN Stack eCommerce",
+    "Next.js Shopping Cart",
+    "Fast Web Store",
+    "TalhaRajput501",
+  ],
+
+  // 3. Open Graph (Optimized for store link sharing on LinkedIn, Discord, and FB)
+  openGraph: {
+    title: "completeMe | Premium Modern eCommerce Platform",
+    description: "Discover a seamless online shopping experience on completeMe. Explore premium catalogs of clothing, footwear, and accessories built over a lightning-fast, production-grade MERN & Next.js web application architecture.",
+    url: "https://complete-me-beta.vercel.app",
+    siteName: "completeMe Store",
+    images: [
+      {
+        url: "/og-image.png",  
+        width: 1200,
+        height: 630,
+        alt: "completeMe eCommerce Storefront Preview - Shop Premium Clothing, Shoes & Watches",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+
+  // 4. Twitter Cards (Tailored for seamless X card expansions)
+  twitter: {
+    card: "summary_large_image",
+    title: "completeMe | Premium Modern eCommerce Platform",
+    description: "Shop premium clothing, shoes, and watches. A lightning-fast, high-performance eCommerce application built using Next.js and the MERN stack.",
+    images: ["/og-image.png"],
+  },
+
 };
+
 
 
 export default async function RootLayout(
