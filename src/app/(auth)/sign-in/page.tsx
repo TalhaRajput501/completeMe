@@ -5,8 +5,8 @@ import Button from '@/components/ui/Button'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
 export default function Page() {
-  const [username, setUsername] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+  const [username, setUsername] = useState<string>('talha')
+  const [password, setPassword] = useState<string>('password@123')
   const [error, setError] = useState<string | null>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [showPass, setShowPass] = useState<boolean>(false)
