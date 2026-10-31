@@ -1,5 +1,6 @@
 import { ProductType } from "@/schemas/product.schema"; 
 import { LucideIcon } from "lucide-react";
+import z from "zod";
 
 // local storage product
 export interface eachCartProduct {
@@ -7,13 +8,17 @@ export interface eachCartProduct {
   quantity: number;
 }
 
-export type cartProduct = {
-  _id: string;
-  name: string;
-  images: string[];
-  price: number;
-  qtyToBuy: number;
-};
+export const cartProductSchema = z.object({
+  _id: z.string(),
+  name: z.string(),
+  images: z.array(z.string()),
+  price: z.number(),
+  qtyToBuy: z.number(),
+});
+
+// 2. Automatically extract the TypeScript type from the schema
+// This produces your exact original type structure!
+export type cartProduct = z.infer<typeof cartProductSchema>;
 
 export type ProductInfoCardProps = {
   id: string;

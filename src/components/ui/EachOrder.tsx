@@ -194,7 +194,7 @@ export default function EachOrder({
               <button
                 onClick={() => handleStatusUpdate('processing')}
                 disabled={updatingStatus}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed w-full justify-center sm:w-auto"
               >
                 <Package className="w-4 h-4 cursor-pointer" />
                 Mark as Processing
@@ -205,7 +205,7 @@ export default function EachOrder({
               <button
                 onClick={() => handleStatusUpdate('delivered')}
                 disabled={updatingStatus}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer disabled:bg-green-300 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer disabled:bg-green-300 disabled:cursor-not-allowed w-full justify-center sm:w-auto"
               >
                 <CheckCircle className="w-4 h-4" />
                 Mark as Delivered
@@ -216,12 +216,13 @@ export default function EachOrder({
               <button
                 onClick={() => handleStatusUpdate('cancelled')}
                 disabled={updatingStatus}
-                className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed w-full justify-center sm:w-auto"
               >
                 <XCircle className="w-4 h-4" />
                 Cancel Order
               </button>
             )}
+
           </div>
 
         </div>

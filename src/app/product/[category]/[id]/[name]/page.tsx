@@ -10,7 +10,7 @@ import InnerImageZoom from 'react-inner-image-zoom'
 import 'react-inner-image-zoom/lib/styles.min.css'
 import { ChevronRight, Heart, ShoppingCart, CheckCircle, TruckIcon, RefreshCw, Shield } from 'lucide-react'
 import Link from 'next/link'
-import { eachCartProduct, wishListInLocal, WishProduct } from '../../../../../../types/productTypes'
+import { cartProduct, eachCartProduct, wishListInLocal, WishProduct } from '../../../../../../types/productTypes'
 import ImageSkeleton from '@/components/ui/ImageSkeleton'
 import HeadingSkeleton from '@/components/ui/HeadingSkeleton'
 import ParaSkeleton from '@/components/ui/ParaSkeleton'
@@ -22,7 +22,66 @@ import { addToWishList, removeFromWishList } from '@/lib/features/wishListSlice'
 import { wishListKey } from '@/components/ui/ClientLayout'
 import { toast } from 'sonner'
 import { addCartItems } from '@/lib/features/cartSlice'
+// Add to Cart
 
+export const addToCart = (
+  {
+    product,
+    cartValue,
+    id,
+    cartList,
+    dispatch
+  }: {
+    product: cartProduct;
+    cartValue: number;
+    id: string;
+    cartList: cartProduct[],
+    dispatch: any
+  }) => {
+  // console.log(product)
+  const oldCart = localStorage.getItem('cartProducts')
+  // console.log('this is oldcart ', oldCart)
+
+  if (oldCart) {
+    const oldJson = JSON.parse(oldCart)
+    if (oldJson.length !== 0) {
+      let newCart = oldJson
+      const exists = oldJson.find((item: eachCartProduct) => item.product === id)
+      if (exists) {
+        newCart = oldJson.map((item: eachCartProduct) => {
+          if (item.product === id) {
+            const newItem = { ...item, quantity: cartValue }
+            return newItem
+          } else {
+            return item
+          }
+        }
+        )
+      } else {
+        newCart.push({ product: id, quantity: cartValue })
+      }
+      // if it is already in redux dont add again
+      if (!cartList.some(item => item._id === id)) {
+        dispatch(addCartItems(newCart))
+      }
+      localStorage.setItem('cartProducts', JSON.stringify(newCart))
+      toast.success('Product added to cart!')
+    }
+  } else {
+    localStorage.setItem('cartProducts', JSON.stringify([{ product: id, quantity: cartValue }]))
+    if (!cartList.some(item => item._id === id)) {
+      dispatch(addCartItems([{
+        _id: product?._id || '',
+        name: product?.name || '',
+        images: product?.images || [],
+        price: product?.price || 0,
+        qtyToBuy: cartValue
+      }]))
+    }
+    toast.success('Product added to cart!')
+  }
+
+}
 
 export default function Page() {
 
@@ -92,52 +151,7 @@ export default function Page() {
     }
   }, [id])
 
-  // Add to Cart
-  const addToCart = () => {
-    // console.log(product)
-    const oldCart = localStorage.getItem('cartProducts')
-    // console.log('this is oldcart ', oldCart)
 
-    if (oldCart) {
-      const oldJson = JSON.parse(oldCart)
-      if (oldJson.length !== 0) {
-        let newCart = oldJson
-        const exists = oldJson.find((item: eachCartProduct) => item.product === id)
-        if (exists) {
-          newCart = oldJson.map((item: eachCartProduct) => {
-            if (item.product === id) {
-              const newItem = { ...item, quantity: cartValue }
-              return newItem
-            } else {
-              return item
-            }
-          }
-          )
-        } else {
-          newCart.push({ product: id, quantity: cartValue })
-        }
-        // if it is already in redux dont add again
-        if (!cartList.some(item => item._id === id)) {
-          dispatch(addCartItems(newCart))
-        }
-        localStorage.setItem('cartProducts', JSON.stringify(newCart))
-        toast.success('Product added to cart!')
-      }
-    } else {
-      localStorage.setItem('cartProducts', JSON.stringify([{ product: id, quantity: cartValue }]))
-      if (!cartList.some(item => item._id === id)) {
-        dispatch(addCartItems([{
-          _id: product?._id || '',
-          name: product?.name || '',
-          images: product?.images || [],
-          price: product?.price || 0,
-          qtyToBuy: cartValue
-        }]))
-      }
-      toast.success('Product added to cart!')
-    }
-
-  }
 
   // Handle favorite toggle
   const handleFavourite = (productId: string) => {
@@ -385,7 +399,19 @@ export default function Page() {
 
                     <div className="flex gap-3">
                       <button
-                        onClick={addToCart}
+                        onClick={() => addToCart({
+                          product: {
+                            _id: product._id!,
+                            name: product.name,
+                            images: product.images,
+                            price: product.price,
+                            qtyToBuy: cartValue 
+                          },
+                          cartValue,
+                          id: product._id!,
+                          cartList,
+                          dispatch
+                        })}
                         disabled={product.stock === 0}
                         className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
                       >

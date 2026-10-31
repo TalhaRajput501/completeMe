@@ -198,7 +198,7 @@ export default function Page() {
               {/* Footer */}
               <div className='mt-8 pt-6 border-t border-slate-200 text-center'>
                 <p className='text-slate-600 text-sm'>
-                  © 2026 Your Store. All rights reserved.
+                  © 2026 CompleteMe. All rights reserved.
                 </p>
               </div>
             </div>

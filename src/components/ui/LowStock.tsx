@@ -29,6 +29,7 @@ function LowStock() {
   const [reloading, setReloading] = useState(false)
 
   useEffect(() => {
+    console.log('Setting up Pusher for low stock alerts...')
     let pusher: Pusher | null = null;
     if (!process.env.NEXT_PUBLIC_PUSHER_APP_KEY || !process.env.NEXT_PUBLIC_PUSHER_CLUSTER) return
     // First it will make pusher instance

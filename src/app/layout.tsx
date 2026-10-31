@@ -11,11 +11,12 @@ import React from "react";
 
 
 import { Metadata } from "next";
+import ChatWindow from "@/components/ui/ChatWindow";
 
 export const metadata: Metadata = {
   title: "completeMe | Premium Modern eCommerce Platform",
   description: "Shop the latest premium trends in clothing, shoes, and watches. Experience a high-performance, seamless eCommerce platform built with the MERN stack and Next.js.",
-  
+
   // 1. Core indexing configurations for the project production domain
   metadataBase: new URL("https://complete-me-beta.vercel.app"),
   alternates: {
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     siteName: "completeMe Store",
     images: [
       {
-        url: "/og-image.jpg",  
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "completeMe eCommerce Storefront Preview - Shop Premium Clothing, Shoes & Watches",
@@ -97,6 +98,8 @@ export default async function RootLayout(
                   description: '!text-slate-600',
                 }
               }} />
+
+              <ChatWindow />
 
               {/* Client Layout */}
               {/* This layout is for store subscription */}
