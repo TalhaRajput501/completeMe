@@ -40,14 +40,16 @@ export const addToCart = (
   }) => {
   // console.log(product)
   const oldCart = localStorage.getItem('cartProducts')
-  // console.log('this is oldcart ', oldCart)
+  // console.log('====================')
 
   if (oldCart) {
     const oldJson = JSON.parse(oldCart)
     if (oldJson.length !== 0) {
+      // console.log("inside If oldJSON: ")
       let newCart = oldJson
       const exists = oldJson.find((item: eachCartProduct) => item.product === id)
       if (exists) {
+        // console.log("already exxist in cart just updating the quantity")
         newCart = oldJson.map((item: eachCartProduct) => {
           if (item.product === id) {
             const newItem = { ...item, quantity: cartValue }
@@ -58,14 +60,23 @@ export const addToCart = (
         }
         )
       } else {
+        // console.log("not exist in cart just adding the new item")
         newCart.push({ product: id, quantity: cartValue })
       }
       // if it is already in redux dont add again
       if (!cartList.some(item => item._id === id)) {
-        dispatch(addCartItems(newCart))
+        // console.log("dispatching addCartItems to redux store")
+        dispatch(addCartItems([{
+          _id: product?._id || '',
+          name: product?.name || '',
+          images: product?.images || [],
+          price: product?.price || 0,
+          qtyToBuy: cartValue
+        }]))
       }
       localStorage.setItem('cartProducts', JSON.stringify(newCart))
       toast.success('Product added to cart!')
+
     }
   } else {
     localStorage.setItem('cartProducts', JSON.stringify([{ product: id, quantity: cartValue }]))
@@ -78,8 +89,9 @@ export const addToCart = (
         qtyToBuy: cartValue
       }]))
     }
-    toast.success('Product added to cart!')
+    // toast.success('Product added to cart!')
   }
+  console.log('====================')
 
 }
 

@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
-import { DefaultChatTransport, getToolName, isToolUIPart, lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
-import { BlocksIcon, LoaderPinwheelIcon, MessageCircleText, Send, SendHorizontal, Square, X } from 'lucide-react'
+import { DefaultChatTransport, isToolUIPart, lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
+import { MessageCircleText, SendHorizontal, X } from 'lucide-react'
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Image from 'next/image'
@@ -53,19 +53,16 @@ export default function ChatWindow() {
         }
       }
 
-
       // Add to Cart tool execution
       if (toolCall.toolName === 'addToCart') {
         try {
           const { product, cartValue } = toolCall.input as { product: Omit<cartProduct, 'qtyToBuy'>; cartValue: number }
-          console.log("Adding to cart on frontedn tool",{
-            toolCallId: toolCall.toolCallId,
-            tool: toolCall.toolName,
-            output: {
-              success: true,
-              message: `${product.name} has been added to the cart.`,
-            },
-          })
+          // console.log("Adding to cart on frontedn tool",{
+          //   toolCallId: toolCall.toolCallId,
+          //   tool: toolCall.toolName,
+          //   product,
+          //   cartValue,
+          // })
           addToCart({
             product: {
               ...product,
@@ -87,12 +84,12 @@ export default function ChatWindow() {
           });
 
         } catch (error) {
-          console.error('Error adding to cart:', error);
+          console.error('Error adding to cart inside tool:', error);
           addToolOutput({
             toolCallId: toolCall.toolCallId,
             tool: toolCall.toolName,
             output: {
-              error: `${error instanceof Error ? error.message : 'An unknown error occurred'}`,
+              error: `${error instanceof Error ? error.message : 'An unknown error occurred. Try again'}`,
             },
           })
         }
@@ -162,7 +159,7 @@ export default function ChatWindow() {
 
 
           {/* Messages go here */}
-          <div className="flex-1 overflow-y-auto p-3">
+          <div className="flex-1 overflow-y-auto overflow-x-auto p-3">
             {messages.map((message) => {
               const isUser = message.role === 'user';
               return (
@@ -188,13 +185,16 @@ export default function ChatWindow() {
 
                       // 2. Tool calls — show what the assistant is doing
                       if (isToolUIPart(part)) {
+                        const name = part.type 
+                        const state = part.state ?? 'input-available';
                         return (
                           <div
                             key={index}
                             className="my-1 rounded bg-slate-100 px-2 py-1 text-xs italic text-slate-500"
                           >
                             {/* i have to write some thing like tool is calling or tool is executing */}
-                            🔧  executing toolcall ....
+                            {/* 🔧  executing toolcall .... */}
+                            🔧  {name} — {state}
                           </div>
                         );
                       }
